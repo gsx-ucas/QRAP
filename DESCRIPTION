@@ -1,0 +1,60 @@
+Package: QRseq
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1.0
+Author: Who wrote it
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+Imports: 
+    DT,
+    venn,
+    shiny,
+    limma,
+    DESeq2,
+    gplots,
+    stringr,
+    fdrtool,
+    ggplot2,
+    ggrepel,
+    shinyjs,
+    reshape2,
+    pheatmap,
+    enrichplot,
+    ggbeeswarm,
+    geneplotter,
+    RColorBrewer,
+    shinyWidgets,
+    clusterProfiler,
+    shinycssloaders,
+    sva,
+    plyr,
+    dplyr,
+    Rmisc,
+    psych,
+    WGCNA,
+    doRNG,
+    igraph,
+    GENIE3,
+    plotly,
+    shinyBS,
+    STRINGdb (>= 2.3.0),
+    GEOquery,
+    DEGreport,
+    gprofiler2,
+    shinyalert,
+    ReactomePA,
+    genefilter,
+    visNetwork,
+    edgebundleR,
+    rentrez,
+    shinydashboard,
+    DOSE,
+    SummarizedExperiment,
+    gridExtra,
+    tidyr,
+    ggplotify
