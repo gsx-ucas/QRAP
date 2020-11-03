@@ -10,3 +10,8 @@ if (!requireNamespace("BiocManager", quietly=TRUE))
 ## BiocManager::install("BiocUpgrade") ## you may need this
 BiocManager::install(c("impute", "preprocessCore", "GO.db", "AnnotationDbi"))
 ```
+Install the QRseq package from github:
+```
+## install.packages("devtools") ## 
+devtools::install_github("goushixue/QRseq")
+```
