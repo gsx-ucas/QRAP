@@ -12,6 +12,6 @@ BiocManager::install(c("impute", "preprocessCore", "GO.db", "AnnotationDbi"))
 ```
 Install the QRseq package from github:
 ```
-## install.packages("devtools") ## 
+## install.packages("devtools") ## you may need install devtools first
 devtools::install_github("goushixue/QRseq")
 ```
