@@ -7,9 +7,11 @@ An interactive web tool for analyzing RNA-seq data, which allows you to complete
 ## try http:// if https:// URLs are not supported
 if (!requireNamespace("BiocManager", quietly=TRUE))
     install.packages("BiocManager")
+    
 ## BiocManager::install("BiocUpgrade") ## you may need this
 bio_pkgs <- c("impute", "preprocessCore", "GO.db", "AnnotationDbi", "SummarizedExperiment", "DOSE", "genefilter", 
              "ReactomePA", "DEGreport", "GEOquery", "STRINGdb", "GENIE3", "sva", "clusterProfiler", "geneplotter", "enrichplot", "DESeq2", "limma")
+             
 for (i in bio_pkgs) {
   if (!requireNamespace(i, quietly=TRUE))
   BiocManager::install(i)
