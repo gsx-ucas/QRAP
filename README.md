@@ -2,7 +2,7 @@
 An interactive web tool for analyzing RNA-seq data, which allows you to complete a standard RNAseq analysis process in a short time, including differential analysis, WGCNA, functional enrichment and protein-to-protein network.
 
 # Installation
-- 1. Install the dependencies from Bioconductor:
+> 1. Install the dependencies from Bioconductor:
 ```
 ## try http:// if https:// URLs are not supported
 if (!requireNamespace("BiocManager", quietly=TRUE))
@@ -15,7 +15,7 @@ for (i in bio_pkgs) {
   BiocManager::install(i)
 }
 ```
-- 2. Install the QRseq package from github:
+> 2. Install the QRseq package from github:
 ```
 ## install.packages("devtools") ## you may need install devtools first
 devtools::install_github("goushixue/QRseq")
