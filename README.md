@@ -8,9 +8,12 @@ Install the dependencies from Bioconductor:
 if (!requireNamespace("BiocManager", quietly=TRUE))
     install.packages("BiocManager")
 ## BiocManager::install("BiocUpgrade") ## you may need this
-BiocManager::install(c("impute", "preprocessCore", "GO.db", "AnnotationDbi", "SummarizedExperiment", 
-"DOSE", "genefilter", "ReactomePA", "DEGreport", "GEOquery", "STRINGdb", "GENIE3", "sva", "clusterProfiler", 
-"geneplotter", "enrichplot", "DESeq2", "limma"))
+bio_pkg <- c("impute", "preprocessCore", "GO.db", "AnnotationDbi", "SummarizedExperiment", "DOSE", "genefilter", 
+             "ReactomePA", "DEGreport", "GEOquery", "STRINGdb", "GENIE3", "sva", "clusterProfiler", "geneplotter", "enrichplot", "DESeq2", "limma")
+for (i in bio_pkg) {
+  if (!requireNamespace(i, quietly=TRUE))
+  BiocManager::install(i)
+}
 ```
 Install the QRseq package from github:
 ```
