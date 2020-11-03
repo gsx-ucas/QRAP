@@ -4,21 +4,6 @@ observe({
   }
 })
 
-# output$clpr_sources <- renderUI({
-#   if (is.null(OrgDb())){
-#     selectInput("clpr_source", "Function Source:", choices = "Error: Sepcies Can't Be NULL !!!", width = "100%")
-#   }else {
-#     if (OrgDb() == "org.Hs.eg.db") {
-#       selectInput("clpr_source", "Function Source:",
-#                   c("Gene Ontology"="GO", "Disease Ontology"="DO",
-#                     "KEGG Pathway"="KEGG", "Reactome Pathway"="Reactome"),width = "100%")
-#     }else {
-#       selectInput("clpr_source", "Function Source:",
-#                   c("Gene Ontology"="GO",
-#                     "KEGG Pathway"="KEGG", "Reactome Pathway"="Reactome"),width = "100%")
-#     }
-#   }
-# })
 
 observeEvent(input$start_clpr,{
   if (is.null(OrgDb())) {
@@ -420,7 +405,13 @@ oraPlots <- eventReactive(input$plotORA, {
     }
   }else if (input$oraPlot_type == 'emapplot') {
     if (inherits(clpr_object(), "enrichResult")) {
-      enrichplot::emapplot(clpr_object(), showCategory = input$n_terms, color = input$ora_colorBy)
+      if (input$clpr_source == "GO") {
+        gd <- GOSemSim::godata(OrgDb(), ont = input$GO_ont)
+        compare_emap <- enrichplot::pairwise_termsim(clpr_object(), semData = gd,  method="Wang")
+      }else {
+        compare_emap <- enrichplot::pairwise_termsim(clpr_object())
+      }
+      enrichplot::emapplot(compare_emap, showCategory = input$n_terms, color = input$ora_colorBy)
     }
   }else if (input$oraPlot_type == 'exprs_heatmap') {
     geneID <- as.data.frame(clpr_object())[as.data.frame(clpr_object())$Description %in% input$ora_termID2, "geneID"]
