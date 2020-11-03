@@ -10,14 +10,21 @@ if (!requireNamespace("BiocManager", quietly=TRUE))
     
 ## BiocManager::install("BiocUpgrade") ## you may need this
 bio_pkgs <- c("impute", "preprocessCore", "GO.db", "AnnotationDbi", "SummarizedExperiment", "DOSE", "genefilter", 
-             "ReactomePA", "DEGreport", "GEOquery", "STRINGdb", "GENIE3", "sva", "clusterProfiler", "geneplotter", "enrichplot", "DESeq2", "limma")
+             "ReactomePA", "DEGreport", "GEOquery", "GENIE3", "sva", "clusterProfiler", "geneplotter", "enrichplot", "DESeq2", "limma")
              
 for (i in bio_pkgs) {
   if (!requireNamespace(i, quietly=TRUE))
   BiocManager::install(i)
 }
 ```
->2. Install the QRseq package from github:
+>2. Install STRINGdb (2.3.0)
+```
+## download the development version of STRINGdb 
+download.file("http://www.bioconductor.org/packages/devel/bioc/src/contrib/STRINGdb_2.3.0.tar.gz", "STRINGdb_2.3.0.tar.gz")
+## install from local downloaded source file
+install.packages("STRINGdb_2.3.0.tar.gz", repos = NULL, type = "source")
+```
+>3. Install the QRseq package from github:
 ```
 ## install.packages("devtools") ## you may need install devtools first
 devtools::install_github("goushixue/QRseq")
