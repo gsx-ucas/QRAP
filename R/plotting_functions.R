@@ -119,7 +119,7 @@ plotCorScatter <- function(object, corr_group1, corr_group2, corr_method, design
 dotplotResults <- function(object, x = "GeneRatio", color = "p.adjust",
                             showCategory = 10, terms = NULL, size = "Count", font.size=12){
 
-  results_df <- fortify.results(model = object, showCategory = showCategory, by = size, terms = terms)
+  results_df <- fortify_results(model = object, showCategory = showCategory, by = size, terms = terms)
 
   if (is.null(results_df)) {
     return(NULL)
@@ -158,7 +158,7 @@ dotplotResults <- function(object, x = "GeneRatio", color = "p.adjust",
 #'
 barplotResults <- function(object, x = "GeneRatio", color = "p.adjust",
                             showCategory = 10, terms = NULL, font.size=12){
-  results_df <- fortify.results(model = object, showCategory = showCategory, by = x, terms = terms)
+  results_df <- fortify_results(model = object, showCategory = showCategory, by = x, terms = terms)
 
   if (is.null(results_df)) {
     return(NULL)
@@ -207,7 +207,7 @@ ggtableResults <- function(object, by = "GeneRatio", color = "p.adjust",
   # requireNamespace(ggplotify)
   # requireNamespace(RColorBrewer)
 
-  results_df <- fortify.results(model = object, showCategory = showCategory, by = by, terms = terms)
+  results_df <- fortify_results(model = object, showCategory = showCategory, by = by, terms = terms)
 
   if (is.null(results_df)) {
     return(NULL)

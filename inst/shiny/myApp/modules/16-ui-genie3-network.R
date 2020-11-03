@@ -71,6 +71,7 @@ fluidPage(
     fluidRow(column(5),
              column(4, p("You are in GENIE3 network page ...", style = "color: grey; font-size: 20px")),
              column(3)
+    )
   )
 )
 

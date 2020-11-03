@@ -161,7 +161,7 @@ gprofilerPlot <- eventReactive(input$Plot_gprofiler,{
     } else {
       plot_terms <- NULL
     }
-    pp <- gprofiler2.dotplot(object = gprofiler_object(), by = input$gprofiler_orderBy, terms = plot_terms,
+    pp <- publish_gostdot(object = gprofiler_object(), by = input$gprofiler_orderBy, terms = plot_terms,
                              source = input$sourceTypes, showCategory = input$gprofiler_n_terms, font.size = input$gprofiler_fontsize)
   }else {
     if (dim(gprofiler_object()$result)[1] != 0) {

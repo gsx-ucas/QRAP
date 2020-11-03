@@ -57,4 +57,5 @@ Imports:
     SummarizedExperiment,
     gridExtra,
     tidyr,
-    ggplotify
+    ggplotify,
+    ggnewscale

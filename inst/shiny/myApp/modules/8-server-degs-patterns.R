@@ -23,16 +23,16 @@ degsp_object <- eventReactive(input$run_degsp, {
   withProgress(message = "", min = 0, max = 1, value = 0, {
     if (!isTRUE(input$degsp_switch) | !file.exists("Cache/des_patterns.rds")) {
       conditions <- strsplit(input$degsp_group, "_vs_") %>% unlist %>% unique
-      sampleTable <- subset.Tab(dds(), conditions)
-      
+      sampleTable <- subset_Tab(dds(), conditions)
+
       # sampleTable <- as.data.frame(colData(dds()))[dds()$condition %in% conditions, ]
       # rownames(sampleTable) <- sampleTable$samples
       incProgress(0.2, detail = "Extract differential genes ...")
-      GeneList <- load.DEGs(input$degsp_group) 
+      GeneList <- load.DEGs(input$degsp_group)
       DeGenes <- lapply(GeneList, function(x){
         rownames(x)
       }) %>% unlist %>% unique()
-      
+
       incProgress(0.2, detail = "Subset transformed exprs table ...")
       DeAssay <- assay(trans_value())[DeGenes, sampleTable$samples %>% as.character]
       incProgress(0.4, detail = "Calculating co-expression genes, this will take a while ...")
@@ -80,7 +80,7 @@ degsp_plot <- eventReactive(input$plot_degsp, {
     data <- degsp_object()$normalized
     data$condition <- factor(data$condition, levels = input$degsp_order)
     data <- data[data$cluster %in% as.numeric(input$degsp_cluster), ]
-    p <- deg.PlotCluster(table = data, time = "condition", color = "colored", angle = 45,
+    p <- degPlotCluster(table = data, time = "condition", color = "colored", angle = 45,
                          points = input$degsp_points, boxes = input$degsp_boxes, lines = input$degsp_lines,
                          facet_col = input$degsp_cols, facet_scales = input$degsp_scales)
     if (nchar(input$degsp_ggText != 0)) {
@@ -91,7 +91,7 @@ degsp_plot <- eventReactive(input$plot_degsp, {
     }
     return(p)
   }else {
-    sampleTable <- subset.Tab(dds(), input$degsp_order)
+    sampleTable <- subset_Tab(dds(), input$degsp_order)
     df <- degsp_object()$df[degsp_object()$df$cluster %in% as.numeric(input$degsp_cluster), ]
     data <- as.data.frame(assay(trans_value()))[, rownames(sampleTable)]
     order_ids <- df$cluster %>% order

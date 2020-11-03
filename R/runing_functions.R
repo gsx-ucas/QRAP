@@ -18,7 +18,7 @@
 #'
 #' @export
 
-Run_DESeq2 <- function(expr.data, sample.data, formula, test, fitType, sfType,
+Run.DESeq2 <- function(expr.data, sample.data, formula, test, fitType, sfType,
                        betaPrior, reduced, minReplicatesForReplace, modelMatrixType, useT, minmu) {
   data <- expr.data[, sample.data$samples]
   dds <- DESeqDataSetFromMatrix(data, colData = sample.data, design = as.formula(formula))
@@ -54,7 +54,7 @@ Run_DESeq2 <- function(expr.data, sample.data, formula, test, fitType, sfType,
 #' @importFrom stats model.matrix
 #' @export
 
-remove_Batch <- function(expr.data, designTable, key_words = "batch", design = "condition", method = 'ComBat') {
+remove.Batch <- function(expr.data, designTable, key_words = "batch", design = "condition", method = 'ComBat') {
   if (!key_words %in% colnames(designTable)) {
     stop("Can not find '", key_words ,"' in the sampleTable colnames, please check your input ...", call. = FALSE)
   }
@@ -121,7 +121,7 @@ transform_value <- function(object, blind, fitType, nsub, trans.method, batch.me
 #' @export
 #'
 
-get_DEGs <- function(dds, ctrl, treat, p.adjust = 0.05, abs.lfc = 1, save = FALSE) {
+get.DEGs <- function(dds, ctrl, treat, p.adjust = 0.05, abs.lfc = 1, save = FALSE) {
   if (length(treat) == 0) {
     stop("Treatment groups can not be null ...", call. = FALSE)
   }
@@ -153,7 +153,7 @@ get_DEGs <- function(dds, ctrl, treat, p.adjust = 0.05, abs.lfc = 1, save = FALS
 #' @return DEG List
 #' @export
 #'
-load_DEGs <- function(filesName) {
+load.DEGs <- function(filesName) {
   DEGs.files <- paste0("DEGs/", filesName, ".csv")
   DEGs.List <- lapply(DEGs.files, function(x){
     read.csv(x, row.names = 1, header = T)
@@ -170,7 +170,7 @@ load_DEGs <- function(filesName) {
 #' @export
 #'
 
-load_REGs <- function(filesName) {
+load.REGs <- function(filesName) {
   REGs.files <- paste0("REGs/", filesName, ".csv")
   REGs.List <- lapply(REGs.files, function(x){
     read.csv(x, row.names = 1, header = T)

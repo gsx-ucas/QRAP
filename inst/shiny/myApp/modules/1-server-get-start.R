@@ -649,11 +649,14 @@ output$geo_expr_matrix <- renderUI({
 
 # get input value of gene types
 keyType <- reactive({
-  if (input_data$values == "local") {
-    input$keyType
-  }else {
-    input$geo_keyType
-  }
+  input$keyType
+  # if (input_data$values == "local") {
+  #   print(input$keyType)
+  #   input$keyType
+  # }else {
+  #   print(input$geo_keyType)
+  #   input$geo_keyType
+  # }
 })
 
 # get input value of OrgDb

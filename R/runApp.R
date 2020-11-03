@@ -13,7 +13,6 @@ startQRseq <- function() {
   source(system.file("shiny", "myApp/global.R", package = "QRseq"), local = T)
   addResourcePath(prefix = "www", directoryPath = system.file("shiny", "myApp/www", package = "QRseq"))
   addResourcePath(prefix = "images", directoryPath = system.file("shiny", "myApp/www/images", package = "QRseq"))
-  addResourcePath(prefix = "figures", directoryPath = system.file("shiny", "myApp/www/figures", package = "QRseq"))
 
   shinyApp(ui = mainUI, server = mainServer) %>% runApp()
 

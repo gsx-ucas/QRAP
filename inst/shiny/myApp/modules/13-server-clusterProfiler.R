@@ -20,6 +20,17 @@ observe({
 #   }
 # })
 
+observeEvent(input$start_clpr,{
+  if (is.null(OrgDb())) {
+    shinyalert(title = "warning", text = "The organism you selected was not surpported now, please use gProfiler!", type = "warning")
+  }else {
+    if (!requireNamespace(OrgDb(), quietly=TRUE)) {
+      shinyalert(title = "warning", text = paste0("Can not find package ", OrgDb(), ", please install first!"), type = "warning")
+    }
+  }
+})
+
+
 output$clpr_gsets <- renderUI({
   if (input$clpr_types == 'ORA') {
     if (input$clpr_genes=="DEGs") {
@@ -380,13 +391,13 @@ oraPlots <- eventReactive(input$plotORA, {
     terms = input$ora_termID
   }
   if (input$oraPlot_type == 'dotplot') {
-    dotplot.results(object = clpr_object(), showCategory = input$n_terms, color = input$ora_colorBy,
+    dotplotResults(object = clpr_object(), showCategory = input$n_terms, color = input$ora_colorBy,
                     terms = terms, font.size = input$ora_fontsize, size = input$ora_orderBy)
   }else if (input$oraPlot_type == 'barplot') {
-    barplot.results(object = clpr_object(), x = input$ora_orderBy, showCategory = input$n_terms, color = input$ora_colorBy,
+    barplotResults(object = clpr_object(), x = input$ora_orderBy, showCategory = input$n_terms, color = input$ora_colorBy,
                     terms = terms, font.size = input$ora_fontsize)
   }else if (input$oraPlot_type == 'ggtable') {
-    ggtable.results(object = clpr_object(), by = input$ora_orderBy, showCategory = input$n_terms, color = input$ora_colorBy,
+    ggtableResults(object = clpr_object(), by = input$ora_orderBy, showCategory = input$n_terms, color = input$ora_colorBy,
                     terms = terms, font.size = input$ora_fontsize)
   }else if (input$oraPlot_type == 'cnetplot') {
     if (inherits(clpr_object(), "enrichResult")) {
@@ -401,16 +412,15 @@ oraPlots <- eventReactive(input$plotORA, {
           log2FoldChange <- GeneList %>% sort(decreasing = T)
         }else {
           log2FoldChange <- clpr_geneList()[[1]] %>% sort(decreasing = T)
-          print(head(log2FoldChange))
         }
       }else {
         log2FoldChange = NULL
       }
-      cnetplot(clpr_object(), showCategory = input$n_terms, circular = as.logical(input$ora_circular), foldChange = log2FoldChange)
+      enrichplot::cnetplot(clpr_object(), showCategory = input$n_terms, circular = as.logical(input$ora_circular), foldChange = log2FoldChange)
     }
   }else if (input$oraPlot_type == 'emapplot') {
     if (inherits(clpr_object(), "enrichResult")) {
-      emapplot(clpr_object(), showCategory = input$n_terms, color = input$ora_colorBy)
+      enrichplot::emapplot(clpr_object(), showCategory = input$n_terms, color = input$ora_colorBy)
     }
   }else if (input$oraPlot_type == 'exprs_heatmap') {
     geneID <- as.data.frame(clpr_object())[as.data.frame(clpr_object())$Description %in% input$ora_termID2, "geneID"]
@@ -443,8 +453,6 @@ oraPlots <- eventReactive(input$plotORA, {
     }else {
       Sub_data <- data[rownames(data) %in% genes, sampleTable$samples]
     }
-
-    print(head(Sub_data))
 
     if (input$clpr_source == "GO") {
       main1  <- "ORA (Gene Ontology): "

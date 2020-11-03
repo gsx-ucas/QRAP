@@ -1,5 +1,5 @@
 fluidPage(
-  style = "margin-left:100px;margin-right:100px;",
+  style = "margin-left:10px;margin-right:10px;",
   box(
     title = "Experiment Design Table", width = 7, status = "info",
     # checkboxInput(inputId = "reset_condition", label = "upload a experiment design tab !",

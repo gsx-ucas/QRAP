@@ -10,7 +10,7 @@
 #   usethis::use_package(i, type = "Imports")
 # }
 
-library(STDAP)
+# library(STDAP)
 library(shiny)
 library(DT)
 library(gplots)

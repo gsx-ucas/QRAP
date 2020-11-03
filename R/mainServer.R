@@ -14,6 +14,7 @@
 #' @importFrom plyr join_all
 #' @importFrom utils head untar write.csv
 #' @importFrom stats p.adjust
+#' @importFrom enrichplot cnetplot emapplot
 #'
 #' @export
 

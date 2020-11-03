@@ -41,42 +41,42 @@ fluidPage(
     9,
     h1("Introduction", id = "introduction", style = "width:100%; text-align:left;font-family:'Times New Roman', Times, serif;"),
     hr(style = "border-top: 1px solid orange;"),
-    
+
     h3("Abstract", id = "abstract", style = "width:100%; text-align:left;font-family:'Times New Roman', Times, serif;"),
-    p("We propose a web application (RNASEQ-DASH) for exploring and analyzing RNA sequencing data."),
-    
+    p("We propose a web application (QRseq) for exploring and analyzing RNA sequencing data."),
+
     h3("Pipeline", id = "pipeline", style = "width:100%; text-align:left;font-family:'Times New Roman', Times, serif;"),
-    p("We propose a web application (RNASEQ-DASH) for exploring and analyzing RNA sequencing data."),
-    
+    p("We propose a web application (QRseq) for exploring and analyzing RNA sequencing data."),
+
     h3("Features", id = "features", style = "width:100%; text-align:left;font-family:'Times New Roman', Times, serif;"),
-    p("We propose a web application (RNASEQ-DASH) for exploring and analyzing RNA sequencing data."),
-    
-    h1("Data Input", id = "data-input", style = "width:100%; text-align:left;font-family:'Times New Roman', Times, serif;"),
+    p("We propose a web application (QRseq) for exploring and analyzing RNA sequencing data."),
+
+    h1("User Guide", id = "data-input", style = "width:100%; text-align:left;font-family:'Times New Roman', Times, serif;"),
     hr(style = "border-top: 1px solid orange;"),
 
     h3("Installing", id = "install", style = "width:100%; text-align:left;font-family:'Times New Roman', Times, serif;"),
-    p("We propose a web application (RNASEQ-DASH) for exploring and analyzing RNA sequencing data."),
-    
+    p("We propose a web application (QRseq) for exploring and analyzing RNA sequencing data."),
+
     h3("Data Input", id = "data-input", style = "width:100%; text-align:left;font-family:'Times New Roman', Times, serif;"),
-    p("We propose a web application (RNASEQ-DASH) for exploring and analyzing RNA sequencing data."),
-    
+    p("We propose a web application (QRseq) for exploring and analyzing RNA sequencing data."),
+
     h3("Design & Run", id = "design-run", style = "width:100%; text-align:left;font-family:'Times New Roman', Times, serif;"),
-    p("We propose a web application (RNASEQ-DASH) for exploring and analyzing RNA sequencing data."),
-    
+    p("We propose a web application (QRseq) for exploring and analyzing RNA sequencing data."),
+
     h3("Quality Assessment", id = "data-quality", style = "width:100%; text-align:left;font-family:'Times New Roman', Times, serif;"),
-    p("We propose a web application (RNASEQ-DASH) for exploring and analyzing RNA sequencing data."),
-    
+    p("We propose a web application (QRseq) for exploring and analyzing RNA sequencing data."),
+
     h3("Biological Patterns", id = "bioc-pattern", style = "width:100%; text-align:left;font-family:'Times New Roman', Times, serif;"),
-    p("We propose a web application (RNASEQ-DASH) for exploring and analyzing RNA sequencing data."),
-    
+    p("We propose a web application (QRseq) for exploring and analyzing RNA sequencing data."),
+
     h3("Functional Analysis", id = "function-analysis", style = "width:100%; text-align:left;font-family:'Times New Roman', Times, serif;"),
-    p("We propose a web application (RNASEQ-DASH) for exploring and analyzing RNA sequencing data."),
-    
+    p("We propose a web application (QRseq) for exploring and analyzing RNA sequencing data."),
+
     h3("Network Analysis", id = "network-analysis", style = "width:100%; text-align:left;font-family:'Times New Roman', Times, serif;"),
-    p("We propose a web application (RNASEQ-DASH) for exploring and analyzing RNA sequencing data."),
-    
+    p("We propose a web application (QRseq) for exploring and analyzing RNA sequencing data."),
+
     h3("Get Help", id = "get-help", style = "width:100%; text-align:left;font-family:'Times New Roman', Times, serif;"),
-    p("We propose a web application (RNASEQ-DASH) for exploring and analyzing RNA sequencing data.")
-    
+    p("We propose a web application (QRseq) for exploring and analyzing RNA sequencing data.")
+
   )
 )

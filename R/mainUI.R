@@ -31,7 +31,7 @@ mainUI <- function() {
 
       navbarPage(
         id = "mainMenu",
-        title = "QRSeq",
+        title = "QRseq",
         theme = "www/style/style.css",
         # footer = includeHTML("footer.html"),
         fluid = TRUE,
