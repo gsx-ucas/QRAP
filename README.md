@@ -1,10 +1,10 @@
-# QRseq
+## QRseq
 An interactive web tool for analyzing RNA-seq data, which allows you to complete a standard RNAseq analysis process in a short time, including differential analysis, WGCNA, functional enrichment and protein-to-protein network.
 
-# Depends
+## Depends
 - R (>= 4.0)
 
-# Installation
+## Installation
 >1. Install the dependencies from Bioconductor:
 ```
 ## try http:// if https:// URLs are not supported
