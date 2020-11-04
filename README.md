@@ -2,7 +2,7 @@
 An interactive web tool for analyzing RNA-seq data, which allows you to complete a standard RNAseq analysis process in a short time, including differential analysis, WGCNA, functional enrichment and protein-to-protein network.
 
 ## Depends
-- R (>= 4.0)
+- R (>= 3.5.2)
 
 ## Installation
 >1. Install the dependencies from Bioconductor:
