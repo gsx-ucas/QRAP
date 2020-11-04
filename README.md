@@ -1,5 +1,5 @@
 ## QRseq
-<p style="text-align:justify;font-family:&#39;Times New Roman&#39;, Times, serif;">Here we developed QRseq, a R shiny application can easily launched from local web browser for analyzing sequenced or
+<p style="text-align:justify;>Here we developed QRseq, a R shiny application can easily launched from local web browser for analyzing sequenced or
       published RNA-seq data. QRseq allows user to upload RNA-seq data from local or to input some keyworks or an accession
       number of GEO DataSets within the app to start their analysis. This application start from data input, followed by preprocessing
       data by filtering low expressed genes and poorly reproducible samples, correcting batch effects, normalizing and transforming data,
