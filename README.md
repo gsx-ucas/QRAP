@@ -5,7 +5,7 @@ An interactive web tool for analyzing RNA-seq data, which allows you to complete
 - R (>= 3.5.2)
 
 ## Installation
-#### 1. Install the dependencies from Bioconductor:
+>1. Install the dependencies from Bioconductor:
 ```
 ## try http:// if https:// URLs are not supported
 if (!requireNamespace("BiocManager", quietly=TRUE))
@@ -20,16 +20,14 @@ for (i in bio_pkgs) {
   BiocManager::install(i)
 }
 ```
-#### 2. Install STRINGdb (2.3.0)
+>2. Install STRINGdb (2.3.0)
 ```
-## First, install the released version to install the dependencies
-BiocManager::install("STRINGdb")
 ## download the development version of STRINGdb 
 download.file("http://www.bioconductor.org/packages/devel/bioc/src/contrib/STRINGdb_2.3.0.tar.gz", "STRINGdb_2.3.0.tar.gz")
 ## install from local downloaded source file
 install.packages("STRINGdb_2.3.0.tar.gz", repos = NULL, type = "source")
 ```
-#### 3. Install the QRseq package from github:
+>3. Install the QRseq package from github:
 ```
 ## install.packages("devtools") ## you may need install devtools first
 devtools::install_github("goushixue/QRseq")
