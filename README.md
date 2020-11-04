@@ -22,7 +22,7 @@ for (i in bio_pkgs) {
 ```
 >2. Install STRINGdb (2.3.0)
 ```
-## First, install the released version to install the depencies
+## First, install the released version to install the dependencies
 BiocManager::install("STRINGdb")
 ## download the development version of STRINGdb 
 download.file("http://www.bioconductor.org/packages/devel/bioc/src/contrib/STRINGdb_2.3.0.tar.gz", "STRINGdb_2.3.0.tar.gz")
