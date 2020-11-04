@@ -155,6 +155,7 @@ clpr_object <- eventReactive(input$start_clpr, {
       }
 
       if (input$clpr_source=='GO') {
+        incProgress(0.4, detail = paste("Runing enrichGO ...."))
         if (length(GeneList) > 1) {
           objects <- compareCluster(geneClusters = GeneList, fun = "enrichGO", OrgDb = OrgDb(), ont = input$GO_ont, keyType = keyType(),
                                     pAdjustMethod = input$clpr_pAdjustMethod, minGSSize = input$clpr_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clpr_pval, readable = readable)
@@ -170,6 +171,7 @@ clpr_object <- eventReactive(input$start_clpr, {
         }
 
         if (input$clpr_source=='KEGG'){
+          incProgress(0.4, detail = paste("Runing enrichGO ...."))
           if (length(GeneList) > 1) {
             objects <- compareCluster(geneClusters = GeneList, fun = "enrichKEGG", organism = input$kegg_organism, pAdjustMethod = input$clpr_pAdjustMethod,
                                       minGSSize = input$clpr_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clpr_pval)
@@ -178,6 +180,7 @@ clpr_object <- eventReactive(input$start_clpr, {
                             minGSSize = input$clpr_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clpr_pval)
           }
         }else {
+          incProgress(0.4, detail = paste("Runing enrichGO ...."))
           if (length(GeneList) > 1) {
             objects <- compareCluster(geneClusters = GeneList, fun = "enrichPathway", organism = input$Reactome_organism, pAdjustMethod = input$clpr_pAdjustMethod,
                                       minGSSize = input$clpr_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clpr_pval)

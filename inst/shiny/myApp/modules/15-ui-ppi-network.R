@@ -14,6 +14,8 @@ fluidPage(
       "input.ppi_genes == 'custom'",
       uiOutput("ppi_degenes")
     ),
+    p("*Please note: This step may take a long time if you are running in the first time,
+      beacause some database need be download firstly.", style = "color = orange"),
     actionButton("plot_STRINGdb", "Start STRINGdb", class = "plot-button", width = "100%")
   ),
   column(

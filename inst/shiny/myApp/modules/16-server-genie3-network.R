@@ -108,9 +108,9 @@ genie3_plot <- eventReactive(input$plot_genie3, {
 
     # p <- edgebundle(mygraph, fontsize = input$edgebundle_fontsize)
     p <- ggraph(mygraph, 'linear', circular = TRUE)+
-      geom_edge_arc(edge_width=0.5, color = "lightblue", show.legend = F)+
-      geom_node_point(size=5, color="orange", alpha=0.7)+
-      geom_node_text(aes(label=nodes), angle = angle, size=5, hjust = hjust, alpha=1)+
+      geom_edge_arc(edge_width=0.5, color = input$edgeARCcolor, show.legend = F)+
+      geom_node_point(size = input$edgebundle_nodesize, color = input$edgeNDcolor, alpha = 0.7)+
+      geom_node_text(aes(label = nodes), angle = angle, size = input$edgebundle_fontsize, hjust = hjust, alpha = 1)+
       theme_graph()+
       expand_limits(x = c(-1.3, 1.3), y = c(-1.3, 1.3))
   }else {
@@ -118,10 +118,10 @@ genie3_plot <- eventReactive(input$plot_genie3, {
     nodes <- data.frame(id= unique(union(as.vector(edges$from),as.vector(edges$to))))
 
     p <- visNetwork(nodes, edges, height = "500px", width = "100%") %>%
-      visNodes(size = 18, font = list(size = input$visNetwork_fontsize))%>%
-      visOptions(highlightNearest = list(enabled = T, degree = 0, hover = T), nodesIdSelection = TRUE) %>%
+      visNodes(size = input$visNetwork_nodesize, font = list(size = input$visNetwork_fontsize))%>%
+      visOptions(highlightNearest = list(enabled = T, degree = input$visNetwork_degree, hover = T), nodesIdSelection = TRUE) %>%
       visPhysics(stabilization = FALSE) %>%
-      visEdges(arrows = "to", smooth = FALSE) %>%
+      visEdges(arrows = "to", smooth = as.logical(input$visNetwork_smooth)) %>%
       visLayout(randomSeed = 42)
   }
   return(p)

@@ -3,7 +3,7 @@ fluidPage(
   column(
     4,
     box(
-      title = "Running parameters:", width = 12,collapsible = TRUE,
+      title = "Running parameters:", id = "run_genie_card", width = 12,collapsible = TRUE,
       selectInput("genie3_genes", "What genes to used:", width = "100%",
                   c("Differential Genes", "Pattern Genes", "WGCNA Module Genes")),
       uiOutput("genie3_ref"),
@@ -19,11 +19,20 @@ fluidPage(
         sliderInput("top_genie3_genes", "Top n most significant genes:", min = 0, max = 400, value = 100, step = 20, width = "100%"),
         conditionalPanel(
           "input.genie3_plotTypes == 'edgebundle'",
-          numericInput("edgebundle_fontsize", "Fontsize of text:", value = 15, width = "100%")
+          numericInput("edgebundle_fontsize", "Fontsize of text:", value = 5, width = "100%"),
+          numericInput("edgebundle_nodesize", "Nodesize:", value = 5, width = "100%"),
+          tags$table(
+            style = "width: 100%",
+            tags$td(textInput("edgeARCcolor", "Lines color:", value = "lightblue", width = "100%")),
+            tags$td(textInput("edgeNDcolor", "Nodes color:", value = "orange", width = "100%"))
+          )
         ),
         conditionalPanel(
           "input.genie3_plotTypes == 'visNetwork'",
-          numericInput("visNetwork_fontsize", "Fontsize of text:", value = 30, width = "100%")
+          numericInput("visNetwork_fontsize", "Fontsize of text:", value = 30, width = "100%"),
+          numericInput("visNetwork_nodesize", "Nodesize:", value = 15, width = "100%"),
+          numericInput("visNetwork_degree", "Highlight nearest nodes degree:", value = 1, width = "100%"),
+          selectInput("visNetwork_smooth", "Smooth the links:", c("TRUE", "FALSE"), width = "100%")
         ),
         actionButton("plot_genie3", "Plot GENIE3 NetWork", class = "plot-button", width = "100%")
       )
@@ -59,9 +68,9 @@ fluidPage(
   ),
   column(
     12,
+    withSpinner(dataTableOutput("linkList")),
     conditionalPanel(
       "input.plot_genie3",
-      withSpinner(dataTableOutput("linkList")),
       downloadButton('linkList_download','Download .csv', style = "background-color: black; color:white;", width = "100%")
     )
   ),
