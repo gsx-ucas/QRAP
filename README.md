@@ -1,10 +1,18 @@
 ## QRseq
-An interactive web tool for analyzing RNA-seq data, which allows you to complete a standard RNAseq analysis process in a short time, including differential analysis, WGCNA, functional enrichment and protein-to-protein network.
+Here we developed QRseq, a R shiny application can easily launched from local web browser for analyzing sequenced or published RNA-seq data. QRseq allows user to upload RNA-seq data from local or to input some keyworks or an accession number of GEO DataSets within the app to start their analysis. This application start from data input, followed by preprocessing data by filtering low expressed genes and poorly reproducible samples, correcting batch effects, normalizing and transforming data, identifying differential expressed genes and other biological patterns, exploring the enrichment of functions, analyzing and visualizing the protein to protein networks or gene regulation networks. QRseq provide a clear analysis flow and an user friendly GUI interface but keep most important parameter of involved functions, which suite for both non-programing experience researchers and expert bioinformatic researchers. User can accomplish a standard RNA-seq analysis in hours depend on the size of their dataset and requires using QRseq.
 
-## Depends
+## Features
+[!The main Features](https://github.com/goushixue/QRseq/blob/main/inst/shiny/myApp/www/images/workflow.tiff)
+
+## Installing
+
+### Depends
 - R (>= 3.5.2)
+- DOSE (>= 3.16.0)
+- enrichplot (>= 1.10.0)
+- STRINGdb (>= 2.3.0)
 
-## Installation
+### Installation
 >1. Install the dependencies from Bioconductor:
 ```
 ## try http:// if https:// URLs are not supported
@@ -32,3 +40,24 @@ install.packages("STRINGdb_2.3.0.tar.gz", repos = NULL, type = "source")
 ## install.packages("devtools") ## you may need install devtools first
 devtools::install_github("goushixue/QRseq")
 ```
+## Getting Start
+
+### Launching QRseq
+```
+library(QRseq)
+startQRseq()
+```
+### Start your anlysis
+There are two action buttons in the home page above, click `Get Started Local` if you want upload your own data, or click `Get started GEO` to explore the published data sets.
+[!Screenshot of home page](https://github.com/goushixue/QRseq/blob/main/inst/shiny/myApp/www/images/get-start-button.jpeg)
+
+## Documentation
+The documentation is available at <a href="https://github.com/goushixue/QRseq" target="_blank"> here </a>, the doc include a tutorial and example gallery.
+
+## Development
+
+QRseq development takes place on Github: <a href="https://github.com/goushixue/QRseq" target="_blank">https://github.com/goushixue/QRseq</a>
+
+Please submit any reproducible bugs you encounter to the <a href="https://github.com/goushixue/QRseq/issues" target="_blank">issue tracker</a>
+
+We will also pub most commonly encountered issues in the ***FAQ*** page.
