@@ -87,7 +87,7 @@ transform_value <- function(object, blind, fitType, nsub, trans.method, batch.me
   }
 
   if (batch.method != 'NULL') {
-    cor.expr <- remove_Batch(expr.data = assay(trans_data), designTable = subset(trans_data@colData, select = -sizeFactor),
+    cor.expr <- remove.Batch(expr.data = assay(trans_data), designTable = subset(trans_data@colData, select = -sizeFactor),
                                  key_words = key_words, design = "condition", method = batch.method)
 
     assay(trans_data) <- cor.expr
