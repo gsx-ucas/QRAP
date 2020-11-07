@@ -3,7 +3,7 @@ Type: Package
 Title: Quickly RNA-seq Data Analysis Web Tools
 Version: 0.1.0
 Author: Gou Shixue
-Maintainer: gou_shixue@gibh.ac.cn
+Maintainer: <gou_shixue@gibh.ac.cn>
 Description: QRseq is an R shiny application can easily launched from local web browser for analyzing sequenced or published RNA-seq data. 
 License: MIT
 Encoding: UTF-8
