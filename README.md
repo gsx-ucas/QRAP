@@ -73,4 +73,4 @@ QRseq development takes place on Github: <a href="https://github.com/goushixue/Q
 
 Please submit any reproducible bugs you encounter to the <a href="https://github.com/goushixue/QRseq/issues" target="_blank">issue tracker</a>
 
-We will also pub most commonly encountered issues in the ***FAQ*** page.
+We will also put most commonly encountered issues in the ***FAQ*** page.
