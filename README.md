@@ -38,12 +38,12 @@ install.packages("STRINGdb_2.3.0.tar.gz", repos = NULL, type = "source")
 ```
 >3. Install DOSE (3.16.0) and enrichplot (1.10.0) if your R version < 4.0
 ```
-## download the development version of DOSE (3.16.0) 
+## download DOSE (3.16.0) 
 download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/DOSE_3.16.0.tar.gz", "DOSE_3.16.0.tar.gz")
 ## install from local downloaded source file
 install.packages("DOSE_3.16.0.tar.gz", repos = NULL, type = "source")
 
-## download the development version of enrichplot (1.10.0)
+## download enrichplot (1.10.0)
 download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/enrichplot_1.10.0.tar.gz", "enrichplot_1.10.0.tar.gz")
 ## install from local downloaded source file
 install.packages("enrichplot_1.10.0.tar.gz", repos = NULL, type = "source")
