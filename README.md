@@ -30,8 +30,7 @@ for (i in bio_pkgs) {
   BiocManager::install(i)
 }
 ```
->2. Install STRINGdb (2.3.0) \
->   also install DOSE (3.16.0) and enrichplot (1.10.0) by this way (If need)
+>2. Install STRINGdb (2.3.0)
 ```
 ## download the development version of STRINGdb 
 download.file("http://www.bioconductor.org/packages/devel/bioc/src/contrib/STRINGdb_2.3.0.tar.gz", "STRINGdb_2.3.0.tar.gz")
