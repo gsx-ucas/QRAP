@@ -20,7 +20,7 @@ if (!requireNamespace("BiocManager", quietly=TRUE))
     install.packages("BiocManager")
     
 ## BiocManager::install("BiocUpgrade") ## you may need this
-bio_pkgs <- c("impute", "preprocessCore", "GO.db", "AnnotationDbi", "SummarizedExperiment", "DOSE", "genefilter", 
+bio_pkgs <- c("impute", "preprocessCore", "GO.db", "AnnotationDbi", “STRINGdb”, "SummarizedExperiment", "DOSE", "genefilter", 
              "ReactomePA", "DEGreport", "GEOquery", "GENIE3", "sva", "clusterProfiler", "geneplotter", "enrichplot", "DESeq2", "limma")
              
 for (i in bio_pkgs) {
