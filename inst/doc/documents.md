@@ -22,9 +22,9 @@ As you can see in the home page, there are two action buttons can let you start 
 - click the upload button to upload your data, or you can click the example button to load the example datasets.
 - after you upload the data, a data table will be showed in the right panel, like this:
 
-<figure class="third">
-    <img src="https://github.com/goushixue/QRseq/blob/main/inst/shiny/myApp/www/figures/data-upload-card.jpeg" width="200"/><img src="https://github.com/goushixue/QRseq/blob/main/inst/shiny/myApp/www/figures/preview-uploaded-data.jpeg" width="200"/>
-</figure>
+<center class="half">
+    <img src="https://github.com/goushixue/QRseq/blob/main/inst/shiny/myApp/www/figures/data-upload-card.jpeg" width="35%"/><img src="https://github.com/goushixue/QRseq/blob/main/inst/shiny/myApp/www/figures/preview-uploaded-data.jpeg" width="35%"/>
+</center>
 
 
 ### 2.2 download data from GEO
