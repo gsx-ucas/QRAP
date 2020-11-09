@@ -41,7 +41,7 @@ install.packages("STRINGdb_2.3.0.tar.gz", repos = NULL, type = "source")
 ## remove download source files
 file.remove("STRINGdb_2.3.0.tar.gz")
 ```
->3. Install DOSE (3.16.0), enrichplot (1.10.0), fgsea (>= 1.16.0) and clusterProfiler (>= 3.18.0) if your R version < 4.0
+>3. Install DOSE (3.16.0), enrichplot (1.10.0), fgsea (1.16.0) and clusterProfiler (3.18.0) if your R version < 4.0
 ```
 ## download DOSE (3.16.0) 
 download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/DOSE_3.16.0.tar.gz", "DOSE_3.16.0.tar.gz")
