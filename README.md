@@ -78,7 +78,7 @@ library(QRseq)
 startQRseq()
 ```
 ### Start your anlysis
-There are two action buttons in the home page above, click `Get Started Local` if you want upload your own data, or click `Get started GEO` to explore the published data sets.
+There are two action buttons in the home page above, click `Get Started Local` if you want upload your own data, or click `Get Started GEO` to explore the published data sets.
 ![Screenshot of home page](https://github.com/goushixue/QRseq/blob/main/inst/shiny/myApp/www/images/get-start-button.jpeg)
 
 ## Documentation
