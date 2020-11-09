@@ -28,7 +28,7 @@ Imports:
     geneplotter,
     RColorBrewer,
     shinyWidgets,
-    clusterProfiler,
+    clusterProfiler (>= 3.18.0),
     shinycssloaders,
     sva,
     plyr,
@@ -57,4 +57,5 @@ Imports:
     gridExtra,
     tidyr,
     ggplotify,
-    ggnewscale
+    ggnewscale,
+    fgsea (>= 1.16.0)

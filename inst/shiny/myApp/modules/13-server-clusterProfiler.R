@@ -121,8 +121,13 @@ clpr_object <- eventReactive(input$start_clpr, {
       if (input$clpr_source=='GO') {
         GeneList <- sort(clpr_geneList()[[1]], decreasing = T)
         incProgress(0.4, detail = paste("Runing gseGO..."))
-        objects <- gseGO(geneList = GeneList, OrgDb = OrgDb(), ont = input$GO_ont, keyType = keyType(), pAdjustMethod = input$clpr_pAdjustMethod,
-                       by = input$gsea_method, minGSSize = input$clpr_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clpr_pval)
+        require(OrgDb(), character.only = T)
+        cmd <- paste0("gseGO(geneList = GeneList, OrgDb = ", OrgDb(), ", ont = '", input$GO_ont, "', keyType = '", keyType(),
+                      "', pAdjustMethod = '", input$clpr_pAdjustMethod, "', by = '", input$gsea_method, "', minGSSize = ", input$clpr_minGSSize,
+                      ", maxGSSize = 1000, pvalueCutoff = ", input$clpr_pval, ")")
+        objects <- eval(parse(text = cmd))
+        # objects <- gseGO(geneList = GeneList, OrgDb = OrgDb(), ont = input$GO_ont, keyType = keyType(), pAdjustMethod = input$clpr_pAdjustMethod,
+        #                by = input$gsea_method, minGSSize = input$clpr_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clpr_pval)
       }else if (input$clpr_source=='KEGG' | input$clpr_source=='Reactome') {
         if (keyType() != "ENTREZID") {
           genes_name <- names(clpr_geneList()[[1]])

@@ -22,9 +22,11 @@
 <h3 style="width:100%; text-align:left;font-family:&#39;Times New Roman&#39;, Times, serif;"> Depends </h3>
 
 - R (>= 3.5.2)
+- STRINGdb (>= 2.3.0)
 - DOSE (>= 3.16.0)
 - enrichplot (>= 1.10.0)
-- STRINGdb (>= 2.3.0)
+- fgsea (>= 1.16.0)
+- clusterProfiler (>= 3.18.0)
 
 <h3 style="width:100%; text-align:left;font-family:&#39;Times New Roman&#39;, Times, serif;"> Installation </h3>
 
@@ -36,7 +38,7 @@ if (!requireNamespace("BiocManager", quietly=TRUE))
     install.packages("BiocManager")
     
 ## BiocManager::install("BiocUpgrade") ## you may need this
-bio_pkgs <- c("impute", "preprocessCore", "GO.db", "AnnotationDbi", "SummarizedExperiment", "DOSE", "genefilter", 
+bio_pkgs <- c("impute", "preprocessCore", "GO.db", "AnnotationDbi", "STRINGdb", "SummarizedExperiment", "DOSE", "genefilter", 
              "ReactomePA", "DEGreport", "GEOquery", "GENIE3", "sva", "clusterProfiler", "geneplotter", "enrichplot", "DESeq2", "limma")
              
 for (i in bio_pkgs) {
@@ -53,8 +55,32 @@ download.file("http://www.bioconductor.org/packages/devel/bioc/src/contrib/STRIN
 ## install from local downloaded source file
 install.packages("STRINGdb_2.3.0.tar.gz", repos = NULL, type = "source")
 ```
+- 3. Install DOSE (3.16.0), enrichplot (1.10.0), fgsea (1.16.0) and clusterProfiler (3.18.0) if your R version < 4.0
+```
+## download DOSE (3.16.0) 
+download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/DOSE_3.16.0.tar.gz", "DOSE_3.16.0.tar.gz")
+## install from local downloaded source file
+install.packages("DOSE_3.16.0.tar.gz", repos = NULL, type = "source")
 
-- 3. Install the QRseq package from github:
+## download enrichplot (1.10.0)
+download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/enrichplot_1.10.0.tar.gz", "enrichplot_1.10.0.tar.gz")
+## install from local downloaded source file
+install.packages("enrichplot_1.10.0.tar.gz", repos = NULL, type = "source")
+
+## download fgsea (>= 1.16.0)
+download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/fgsea_1.16.0.tar.gz", "fgsea_1.16.0.tar.gz")
+## install from local downloaded source file
+install.packages("fgsea_1.16.0.tar.gz", repos = NULL, type = "source")
+
+## download clusterProfiler (>= 3.18.0)
+download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/clusterProfiler_3.18.0.tar.gz", "clusterProfiler_3.18.0.tar.gz")
+## install from local downloaded source file
+install.packages("clusterProfiler_3.18.0.tar.gz", repos = NULL, type = "source")
+
+## remove download source files
+file.remove(c("DOSE_3.16.0.tar.gz", "enrichplot_1.10.0.tar.gz", "fgsea_1.16.0.tar.gz", "clusterProfiler_3.18.0.tar.gz"))
+```
+- 4. Install the QRseq package from github:
 
 ```
 ## install.packages("devtools") ## you may need install devtools first
@@ -72,7 +98,7 @@ startQRseq()
 
 <h3 style="width:100%; text-align:left;font-family:&#39;Times New Roman&#39;, Times, serif;"> Start your anlysis </h3>
 
-<p style="text-align:justify;font-family:&#39;Times New Roman&#39;, Times, serif;">As you can see in this page above, there are two action buttons can let you start your data exploring. Click <code>Get Started Local</code> if you want upload your own data, or click <code>Get started GEO</code> to explore the published data sets.</p>
+<p style="text-align:justify;font-family:&#39;Times New Roman&#39;, Times, serif;">As you can see in this page above, there are two action buttons can let you start your data exploring. Click <code>Get Started Local</code> if you want upload your own data, or click <code>Get Started GEO</code> to explore the published data sets.</p>
 
 <img src="../shiny/myApp/www/images/get-start-button.jpeg" width="100%" style="clear: both;display: block;margin: auto;"/>
 
@@ -86,5 +112,5 @@ QRseq development takes place on Github: <a href="https://github.com/goushixue/Q
 
 Please submit any reproducible bugs you encounter to the <a href="https://github.com/goushixue/QRseq/issues" target="_blank">issue tracker</a>
 
-We will also pub most commonly encountered issues in the ***FAQ*** page.
+We will also put most commonly encountered issues in the ***FAQ*** page.
 
