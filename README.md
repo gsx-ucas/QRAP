@@ -8,9 +8,11 @@ Here we developed an R shiny application QRseq, which can easily launched from l
 
 ### Depends
 - R (>= 3.5.2)
+- STRINGdb (>= 2.3.0)
 - DOSE (>= 3.16.0)
 - enrichplot (>= 1.10.0)
-- STRINGdb (>= 2.3.0)
+- fgsea (>= 1.16.0)
+- clusterProfiler (>= 3.18.0)
 
 ### Installation
 >1. Install the dependencies from Bioconductor:
@@ -35,8 +37,11 @@ for (i in bio_pkgs) {
 download.file("http://www.bioconductor.org/packages/devel/bioc/src/contrib/STRINGdb_2.3.0.tar.gz", "STRINGdb_2.3.0.tar.gz")
 ## install from local downloaded source file
 install.packages("STRINGdb_2.3.0.tar.gz", repos = NULL, type = "source")
+
+## remove download source files
+file.remove("STRINGdb_2.3.0.tar.gz")
 ```
->3. Install DOSE (3.16.0) and enrichplot (1.10.0) if your R version < 4.0
+>3. Install DOSE (3.16.0), enrichplot (1.10.0), fgsea (>= 1.16.0) and clusterProfiler (>= 3.18.0) if your R version < 4.0
 ```
 ## download DOSE (3.16.0) 
 download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/DOSE_3.16.0.tar.gz", "DOSE_3.16.0.tar.gz")
@@ -47,6 +52,19 @@ install.packages("DOSE_3.16.0.tar.gz", repos = NULL, type = "source")
 download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/enrichplot_1.10.0.tar.gz", "enrichplot_1.10.0.tar.gz")
 ## install from local downloaded source file
 install.packages("enrichplot_1.10.0.tar.gz", repos = NULL, type = "source")
+
+## download fgsea (>= 1.16.0)
+download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/fgsea_1.16.0.tar.gz", "fgsea_1.16.0.tar.gz")
+## install from local downloaded source file
+install.packages("fgsea_1.16.0.tar.gz", repos = NULL, type = "source")
+
+## download clusterProfiler (>= 3.18.0)
+download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/clusterProfiler_3.18.0.tar.gz", "clusterProfiler_3.18.0.tar.gz")
+## install from local downloaded source file
+install.packages("clusterProfiler_3.18.0.tar.gz", repos = NULL, type = "source")
+
+## remove download source files
+file.remove(c("DOSE_3.16.0.tar.gz", "enrichplot_1.10.0.tar.gz", "fgsea_1.16.0.tar.gz", "clusterProfiler_3.18.0.tar.gz"))
 ```
 >4. Install the QRseq package from github:
 ```
