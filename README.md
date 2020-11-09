@@ -82,7 +82,7 @@ There are two action buttons in the home page above, click `Get Started Local` i
 ![Screenshot of home page](https://github.com/goushixue/QRseq/blob/main/inst/shiny/myApp/www/images/get-start-button.jpeg)
 
 ## Documentation
-The documentation is available at <a href="https://github.com/goushixue/QRseq" target="_blank"> here </a>, the doc include a tutorial and example gallery.
+The documentation is available at <a href="https://github.com/goushixue/QRseq/blob/main/inst/doc/documents.md" target="_blank"> here </a>, the doc include a tutorial and example gallery.
 
 ## Development
 
