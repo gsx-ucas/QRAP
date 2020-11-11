@@ -55,7 +55,9 @@ download.file("http://www.bioconductor.org/packages/devel/bioc/src/contrib/STRIN
 ## install from local downloaded source file
 install.packages("STRINGdb_2.3.0.tar.gz", repos = NULL, type = "source")
 ```
+
 - 3. Install DOSE (3.16.0), enrichplot (1.10.0), fgsea (1.16.0) and clusterProfiler (3.18.0) if your R version < 4.0
+
 ```
 ## download DOSE (3.16.0) 
 download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/DOSE_3.16.0.tar.gz", "DOSE_3.16.0.tar.gz")
@@ -80,6 +82,7 @@ install.packages("clusterProfiler_3.18.0.tar.gz", repos = NULL, type = "source")
 ## remove download source files
 file.remove(c("DOSE_3.16.0.tar.gz", "enrichplot_1.10.0.tar.gz", "fgsea_1.16.0.tar.gz", "clusterProfiler_3.18.0.tar.gz"))
 ```
+
 - 4. Install the QRseq package from github:
 
 ```
