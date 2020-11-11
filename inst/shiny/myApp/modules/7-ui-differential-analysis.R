@@ -26,6 +26,7 @@ fluidPage(
               uiOutput("dea_genes"),
               conditionalPanel(
                 "input.dePlot=='Volcano'",
+                numericInput("show_topn", "Show top N significant genes:", value = 0, min = 0, max = 20, width = "100%"),
                 numericRangeInput("vol_xlimits","xlim range:", value = c(-10, 10), width = "100%"),
                 numericInput("vol_ylimit","ylim range:", value = 30, min = 0, max = 200,  width = "100%")
               ),
@@ -88,6 +89,7 @@ fluidPage(
               conditionalPanel(
                 "input.dePlot=='Volcano'",
                 h2("Additional Parameters of 'Volcano Plot':"), hr(),
+                numericRangeInput("vol_threasholds","P-value and Abs log2FoldChange:", value = c(0.05, 1), width = "100%"),
                 numericInput("vol_size", "Point size:", value = 1, min = 0, max = 5, width = "100%"),
                 numericInput("vol_alpha", "Point alpha:", value = 0.8, min = 0, max = 1, width = "100%"),
                 HTML(

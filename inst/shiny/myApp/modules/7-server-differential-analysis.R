@@ -38,7 +38,7 @@ observeEvent(input$get_DEGs,{
   if ('try-error' %in% class(DesList())) {
     shinyalert(title = "error", text = DesList()[1], type = "error", confirmButtonText = "Close")
   }else {
-    shinyalert(title = "success", text = "Differentially expressed genes which you have selected 
+    shinyalert(title = "success", text = "Differentially expressed genes which you have selected
                have been generated and saved to 'DEGs' directory !", type = "success")
   }
 })
@@ -47,7 +47,7 @@ observeEvent(input$get_DEGs,{
 ## Visualize DEGs
 
 output$dea_genes <- renderUI({
-  selectInput(inputId = "dea_genes", label = "Select DEGs:", choices = stringr::str_remove_all(dir("DEGs"), ".csv"), 
+  selectInput(inputId = "dea_genes", label = "Select DEGs:", choices = stringr::str_remove_all(dir("DEGs"), ".csv"),
               selected = stringr::str_remove_all(dir("DEGs"), ".csv")[1], width = "100%", multiple = T )
 })
 
@@ -62,32 +62,45 @@ observeEvent(input$get_DEGs,{
 # # Volcano Plot
 VolPlot <- eventReactive(input$plot_volcano,{
   Des_list <- load.DEGs(input$dea_genes)
-  ctrl <- strsplit(names(Des_list)[1], "_vs_")[[1]][2]
-  degroup <- strsplit(names(Des_list)[1], "_vs_")[[1]][1]
-  Plot_data <- as.data.frame(results(dds(), contrast = c("condition", degroup, ctrl)))
+  # ctrl <- strsplit(names(Des_list)[1], "_vs_")[[1]][2]
+  # degroup <- strsplit(names(Des_list)[1], "_vs_")[[1]][1]
+  Res_list <- load.REGs(input$dea_genes)
   # Plot_data <- Des_list[[1]]
-  
-  p <- ggplot(data = NULL)+
-    geom_point(aes(x=Plot_data$log2FoldChange, y=-log10(Plot_data$padj)), size = input$vol_size, alpha=input$vol_alpha)+
-    geom_vline(xintercept = c(-input$dea_lfc, input$dea_lfc), lty=3)+
-    geom_hline(yintercept = -log10(input$dea_pval), lty=3)+
+
+  p <- ggplot(data = NULL) + lapply(names(Res_list), function(x){
+      geom_point(aes(x=Res_list[[x]]$log2FoldChange, y=-log10(Res_list[[x]]$padj)), size = input$vol_size, alpha=input$vol_alpha)
+    })+
+    # geom_point(aes(x=Plot_data$log2FoldChange, y=-log10(Plot_data$padj)), size = input$vol_size, alpha=input$vol_alpha)+
+    geom_vline(xintercept = c(-input$vol_threasholds[2], input$vol_threasholds[2]), lty=3)+
+    geom_hline(yintercept = -log10(input$vol_threasholds[1]), lty=3)+
     xlim(input$vol_xlimits[1], input$vol_xlimits[2])+ ylim(-0.5, input$vol_ylimit)+
     labs(x = 'Log2FoldChange', y = '-Log10 adjusted P-value', colour = "DEGs group")+
     theme_classic()
-  
+
   if (input$dea_genes %>% length > 1) {
     p <- p + lapply(names(Des_list), function(x){
       geom_point(aes(x=Des_list[[x]]$log2FoldChange, y=-log10(Des_list[[x]]$padj), col = x), size = input$vol_size, alpha=input$vol_alpha, show.legend = T)
     })
   }else {
-    up <- subset(Plot_data, padj < input$dea_pval & log2FoldChange > input$dea_lfc)
-    down <- subset(Plot_data, padj < input$dea_pval & log2FoldChange < -input$dea_lfc)
-    p <- p + geom_point(aes(x=up$log2FoldChange, y = -log10(up$padj)), color='red', size = input$vol_size, alpha=input$vol_alpha)+
-      geom_point(aes(x=down$log2FoldChange, y = -log10(down$padj)), color='blue', size = input$vol_size, alpha=input$vol_alpha)+
-      geom_text(x=input$vol_xlimits[1]*0.8, y=input$vol_ylimit*0.8, aes(label=paste0('down: ', dim(down)[1])), col='blue', data=NULL)+
-      geom_text(x=input$vol_xlimits[2]*0.8, y=input$vol_ylimit*0.8, aes(label=paste0('up: ', dim(up)[1])), col='red', data=NULL)
+    up <- subset(Res_list[[1]], padj < input$vol_threasholds[1] & log2FoldChange > input$dea_lfc)
+    down <- subset(Res_list[[1]], padj < input$vol_threasholds[1] & log2FoldChange < -input$dea_lfc)
+    if (input$show_topn > 0) {
+      up_topn <- up[order(up$padj), ] %>% head(input$show_topn)
+      down_topn <- down[order(down$padj), ] %>% head(input$show_topn)
+      p <- p + geom_point(aes(x=up$log2FoldChange, y = -log10(up$padj)), color='red', size = input$vol_size, alpha=input$vol_alpha)+
+        geom_point(aes(x=down$log2FoldChange, y = -log10(down$padj)), color='blue', size = input$vol_size, alpha=input$vol_alpha)+
+        geom_text(x=input$vol_xlimits[1]*0.8, y=input$vol_ylimit*0.8, aes(label=paste0('down: ', dim(down)[1])), col='blue', data=NULL)+
+        geom_text(x=input$vol_xlimits[2]*0.8, y=input$vol_ylimit*0.8, aes(label=paste0('up: ', dim(up)[1])), col='red', data=NULL)+
+        geom_label_repel(data = up_topn, aes(x = log2FoldChange, y = -log10(padj), label = rownames(up_topn)), size = 3, color = "red")+
+        geom_label_repel(data = down_topn, aes(x = log2FoldChange, y = -log10(padj), label = rownames(down_topn)), size = 3, color = "blue")
+    }else {
+      p <- p + geom_point(aes(x=up$log2FoldChange, y = -log10(up$padj)), color='red', size = input$vol_size, alpha=input$vol_alpha)+
+        geom_point(aes(x=down$log2FoldChange, y = -log10(down$padj)), color='blue', size = input$vol_size, alpha=input$vol_alpha)+
+        geom_text(x=input$vol_xlimits[1]*0.8, y=input$vol_ylimit*0.8, aes(label=paste0('down: ', dim(down)[1])), col='blue', data=NULL)+
+        geom_text(x=input$vol_xlimits[2]*0.8, y=input$vol_ylimit*0.8, aes(label=paste0('up: ', dim(up)[1])), col='red', data=NULL)
+    }
   }
-  
+
   if (nchar(input$vol_ggText != 0)) {
     add_funcs <- strsplit(input$vol_ggText, "\\+")[[1]]
     p <- p + lapply(add_funcs, function(x){
@@ -222,42 +235,42 @@ DeGene_barPlot <- eventReactive(input$plot_debar,{
     Up_GeneList <- lapply(DesList, function(x){
       dim(subset(x, log2FoldChange > input$dea_lfc))[1]
     })
-    
+
     Down_GeneList <- lapply(DesList, function(x){
       dim(subset(x, log2FoldChange < -input$dea_lfc))[1]
     })
-    
+
     up_df <- data.frame(dea_group = names(DesList), dea_number = Up_GeneList %>% unlist, Reg_Groups = "Up Reg")
     down_df <- data.frame(dea_group = names(DesList), dea_number = Down_GeneList %>% unlist, Reg_Groups = "Down Reg")
     De_number <- rbind(up_df, down_df)
     De_number$dea_group <- factor(De_number$dea_group, levels = names(DesList))
-    
+
     p <- ggplot(data = De_number, aes(x = dea_group, y = dea_number, fill = Reg_Groups))
   }else {
     DEG_list <- lapply(DesList, function(x){
       dim(x)[1]
     })
     De_number <- data.frame(dea_group = names(DesList), dea_number = DEG_list %>% unlist)
-    
+
     p <- ggplot(data = De_number, aes(x = dea_group, y = dea_number))
   }
-  
+
   p <- p + geom_bar(stat = "identity", position = position_dodge(width = 1))+
     labs(x = "Sample Groups", y = "Differential Expressed Genes Number", fill = "Groups")+
     theme_classic()+
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
-  
+
   if (input$debar_number == "yes") {
     p <- p + geom_text(aes(y = dea_number * 1.01, label = dea_number), position = position_dodge(width = 1))
   }
-  
+
   if (nchar(input$debar_ggText != 0)) {
     add_funcs <- strsplit(input$debar_ggText, "\\+")[[1]]
     p <- p + lapply(add_funcs, function(x){
       eval(parse(text = x))
     })
   }
-  
+
   return(p)
 })
 
@@ -330,7 +343,7 @@ output$dea_plotUI <- renderUI({
 output$DeResult_Groups <- renderUI({
   selectInput(
     inputId = "DeTab_ID", label = "Groups Of Differential Expressed Genes:",
-    choices = dir("DEGs") %>% stringr::str_remove_all(".csv"), 
+    choices = dir("DEGs") %>% stringr::str_remove_all(".csv"),
     width = "40%", multiple = F
   )
 })
