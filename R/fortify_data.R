@@ -20,8 +20,8 @@ fortify_results <- function(model, showCategory = 10, terms = NULL, by="geneRati
   if (dim(as.data.frame(model))[1] != 0) {
     if (inherits(model, "compareClusterResult")) {
       if (is.null(terms)) {
-        clsp <- loadNamespace("clusterProfiler")
-        result <- clsp$fortify.compareClusterResult(model, showCategory = showCategory, by = by)
+        enrp <- loadNamespace("enrichplot")
+        result <- enrp$fortify.compareClusterResult(model, showCategory = showCategory, by = by)
         # result <- fortify(model, showCategory = showCategory, by = by)
       }else {
         result <- as.data.frame(model)
