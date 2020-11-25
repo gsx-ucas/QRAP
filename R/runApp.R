@@ -5,7 +5,7 @@
 #' @export
 #'
 
-startQRseq <- function() {
+startQRseq <- function(port = 3838) {
 
   # set upload file size limit as 100MB
   options(shiny.maxRequestSize = 1000 * 1024^2, warn = -1, shiny.sanitize.errors = TRUE)
@@ -14,7 +14,7 @@ startQRseq <- function() {
   addResourcePath(prefix = "www", directoryPath = system.file("shiny", "myApp/www", package = "QRseq"))
   addResourcePath(prefix = "images", directoryPath = system.file("shiny", "myApp/www/images", package = "QRseq"))
 
-  shinyApp(ui = mainUI, server = mainServer) %>% runApp()
+  shinyApp(ui = mainUI, server = mainServer) %>% runApp(port = port)
 
   # appDir <- system.file("shiny", "myApp", package = "QRseq")
   #
