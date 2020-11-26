@@ -47,10 +47,10 @@ download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/DOS
 ## install from local downloaded source file
 install.packages("DOSE_3.16.0.tar.gz", repos = NULL, type = "source")
 
-## download enrichplot (1.10.0)
-download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/enrichplot_1.10.0.tar.gz", "enrichplot_1.10.0.tar.gz")
+## download enrichplot (1.10.1)
+download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/enrichplot_1.10.1.tar.gz", "enrichplot_1.10.1.tar.gz")
 ## install from local downloaded source file
-install.packages("enrichplot_1.10.0.tar.gz", repos = NULL, type = "source")
+install.packages("enrichplot_1.10.1.tar.gz", repos = NULL, type = "source")
 
 ## download fgsea (>= 1.16.0)
 download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/fgsea_1.16.0.tar.gz", "fgsea_1.16.0.tar.gz")
