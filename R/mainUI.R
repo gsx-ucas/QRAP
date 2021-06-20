@@ -50,14 +50,10 @@ mainUI <- function() {
 
         # ----------------------------------
         # tab panel 2 - Neighborhood Browser
-        tabPanel("Get Start", value = "get_start",
-                 source(system.file("shiny", "myApp/modules/1-ui-get-start.R", package = "QRseq"), local = T)$value
-        ),
-
-        # ----------------------------------
-        # tab panel 3 - Location Comparison
-        tabPanel("Design & Run", value = "deseq",
-                 source(system.file("shiny", "myApp/modules/2-ui-condition.R", package = "QRseq"),local = T)$value
+        navbarMenu(
+          title = "Data Preprocess",
+          tabPanel("Get Start", value = "get_start", source(system.file("shiny", "myApp/modules/1-ui-get-start.R", package = "QRseq"), local = T)$value),
+          tabPanel("Design & Run", value = "deseq", source(system.file("shiny", "myApp/modules/2-ui-condition.R", package = "QRseq"),local = T)$value)
         ),
 
         # ----------------------------------
