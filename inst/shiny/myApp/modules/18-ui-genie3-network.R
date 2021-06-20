@@ -14,7 +14,7 @@ fluidPage(
       "input.run_genie",
       box(
         title = "Plot parameters:", width = 12, collapsible = TRUE,
-        radioButtons("genie3_plotTypes", "Plot types:", c("edgebundle", "visNetwork"), inline = T, width = "100%"),
+        radioButtons("genie3_plotTypes", "Plot types:", c("visNetwork", "edgebundle"), inline = T, width = "100%"),
         uiOutput("genie3_Intgenes"),
         sliderInput("top_genie3_genes", "Top n most significant genes:", min = 0, max = 400, value = 100, step = 20, width = "100%"),
         conditionalPanel(
@@ -63,7 +63,7 @@ fluidPage(
     2,
     wellPanel(
       sliderInput("genie3_plot_width", "Figure Width (%):", min = 50, max = 100, value = 100, step = 2, width = "100%"),
-      sliderInput("genie3_plot_height", "Figure Height (px):", min = 200, max = 1000, value = 400, step = 20, width = "100%")
+      sliderInput("genie3_plot_height", "Figure Height (px):", min = 200, max = 1000, value = 620, step = 20, width = "100%")
     )
   ),
   column(
@@ -77,10 +77,9 @@ fluidPage(
   column(
     12,
     hr(),
-    fluidRow(column(5),
-             column(4, p("You are in GENIE3 network page ...", style = "color: grey; font-size: 20px")),
-             column(3)
-    )
+    fluidRow(column(2), column(3, actionLink("pgenie3", "<< Previous", style = "font-size: 20px")),
+             column(4, p("You are in GENIE3 notwork page ...", style = "color: grey; font-size: 20px")),
+             column(3, actionLink("ngenie3", "Next >>", style = "font-size: 20px")))
   )
 )
 

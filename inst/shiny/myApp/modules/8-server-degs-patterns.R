@@ -80,7 +80,7 @@ degsp_plot <- eventReactive(input$plot_degsp, {
     data <- degsp_object()$normalized
     data$condition <- factor(data$condition, levels = input$degsp_order)
     data <- data[data$cluster %in% as.numeric(input$degsp_cluster), ]
-    p <- degPlotCluster(table = data, time = "condition", color = "colored", angle = 45,
+    p <- QRseq::degPlotCluster(table = data, time = "condition", color = "colored", angle = 45,
                          points = input$degsp_points, boxes = input$degsp_boxes, lines = input$degsp_lines,
                          facet_col = input$degsp_cols, facet_scales = input$degsp_scales)
     if (nchar(input$degsp_ggText != 0)) {

@@ -1,5 +1,5 @@
 observe({
-  if (input$nPPI) {
+  if (input$nPPI | input$psgene) {
     updateTabsetPanel(session = session, inputId = 'mainMenu', selected = "genie3")
   }
 })
@@ -86,15 +86,18 @@ observeEvent(input$run_genie, {
 output$genie3_Intgenes <- renderUI({
   selectInput(
     inputId = "genie3_Intgenes",
-    label = "Insterested genes:",
+    label = "Insterested genes (Can be empty):",
     choices = genie3_object()$regulatoryGene %>% as.character %>% unique ,
-    width = "100%",
-    multiple = T
+    width = "100%", multiple = T
   )
 })
 
 genie3_plot <- eventReactive(input$plot_genie3, {
-  genie3_object <- genie3_object()[genie3_object()$regulatoryGene %in% input$genie3_Intgenes, ]
+  if (length(input$genie3_Intgenes) != 0) {
+    genie3_object <- genie3_object()[genie3_object()$regulatoryGene %in% input$genie3_Intgenes, ]
+  }else {
+    genie3_object <- genie3_object()
+  }
   genie3_object <- genie3_object[order(genie3_object$weight, decreasing = T), ]
   genie3_object <- head(genie3_object, input$top_genie3_genes %>% as.numeric)
 

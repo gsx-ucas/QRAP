@@ -27,8 +27,8 @@ fluidPage(
               conditionalPanel(
                 "input.dePlot=='Volcano'",
                 numericInput("show_topn", "Show top N significant genes:", value = 0, min = 0, max = 20, width = "100%"),
-                numericRangeInput("vol_xlimits","xlim range:", value = c(-10, 10), width = "100%"),
-                numericInput("vol_ylimit","ylim range:", value = 30, min = 0, max = 200,  width = "100%")
+                numericRangeInput("vol_xlimits","xlim range:", value = c(-50, 50), width = "100%"),
+                numericInput("vol_ylimit","ylim range:", value = 300, min = 0,  width = "100%")
               ),
               conditionalPanel(
                 "input.dePlot=='Venn'",

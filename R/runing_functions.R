@@ -62,7 +62,7 @@ remove.Batch <- function(expr.data, designTable, key_words = "batch", design = "
     mod = model.matrix(~as.factor(designTable[, design]), data = designTable)
     corrected.expr <- ComBat(dat = expr.data, batch = designTable[, key_words], mod = mod)
   }else {
-    corrected.expr <- removeBatchEffect(x = expr.data, batch = designTable[, key_words], design = designTable)
+    corrected.expr <- removeBatchEffect(x = expr.data, batch = designTable[, key_words], covariates = designTable)
   }
   return(corrected.expr)
 }

@@ -147,7 +147,7 @@ output$preview_card <- renderUI({
     )
   }else {
     box(
-      id = "upload_box", title = "Local Data Upload", width = 12, status = NULL, solidHeader = TRUE, collapsible = T,
+      id = "upload_box", title = "Upload local file", width = 12, status = NULL, solidHeader = TRUE, collapsible = T,
       fileInput("file", "Choose input File:", accept = c("text/csv", "text/comma-separated-values,text/plain",
                                                          ".csv"), placeholder = "*(.csv/.txt reads counts file)", width = "100%"),
       checkboxInput(inputId = "header", label = "First row as header !", value = TRUE, width = "100%"),
@@ -175,13 +175,13 @@ output$filter_data_card <- renderUI({
     conditionalPanel(
       "input.go_geo_filter",
       box(
-        id = "filter_geo_box", title = "Local Data Upload", width = 12, status = NULL, solidHeader = TRUE, collapsible = TRUE,
+        id = "filter_geo_box", title = "Pre-filtering", width = 12, status = NULL, solidHeader = TRUE, collapsible = TRUE,
         uiOutput("gprofiler_species"),
         uiOutput("species_warnning"),
         # bsAlert("species_alert1"),
         selectInput("keyType", "Gene Types:", choices = c("SYMBOL", "ENSEMBL",
                                                           "ENTREZID"), width = "100%"),
-        numericInput("genes_n", "The minimum reads rowSum of genes:", value = 1, width = "100%"),
+        numericInput("genes_n", "Filter out genes that total counts less than:", value = 1, width = "100%"),
         actionButton("filter_local", "Filter Data >>", class = "run-button",  width='100%')
       )
     )
@@ -189,13 +189,13 @@ output$filter_data_card <- renderUI({
     conditionalPanel(
       "input.upload | input.example",
       box(
-        inputId = "filter_local_box", title = "Local Data Upload", width = 12, status = NULL, solidHeader = TRUE, collapsible = TRUE,
+        inputId = "filter_local_box", title = "Pre-filtering", width = 12, status = NULL, solidHeader = TRUE, collapsible = TRUE,
         uiOutput("gprofiler_species"),
         uiOutput("species_warnning"),
         # bsAlert("species_alert1"),
         selectInput("keyType", "Gene Types:", choices = c("SYMBOL", "ENSEMBL",
                                                           "ENTREZID"), width = "100%"),
-        numericInput("genes_n", "The minimum reads rowSum of genes:", value = 1, width = "100%"),
+        numericInput("genes_n", "Filter out genes that total counts less than:", value = 1, width = "100%"),
         actionButton("filter_local", "Filter Data >>", class = "run-button",  width='100%')
       )
     )
@@ -247,8 +247,8 @@ upload_data <- eventReactive(input$upload,{
 
 # read example data
 example <- eventReactive(input$example,{
-  data <- read.table(system.file("extdata", "example.csv", package = "QRseq"), header = T, sep = ',', check.names = F, row.names = 1)
-  data <- data[order(colnames(data))]
+  data <- readRDS(system.file("extdata", "example.rds", package = "QRseq"))
+  # data <- data[order(colnames(data))]
   # data <- round(data, digits = 0)
 })
 
@@ -270,9 +270,6 @@ observeEvent(input$filter_local, {
   # creat alert
   filtered_genes <- dim(data[rowSums(data) < input$genes_n, ])[1]
   left_genes <- dim(data[rowSums(data) >= input$genes_n, ])[1]
-  # createAlert(session, "filter_alert1", "Filter_Alert1", title = NULL,
-  #             content = paste0("Filtering out ", filtered_genes, " low expression genes; ", left_genes," were left for subsequent analysis."),
-  #             append = FALSE, style = "info")
 
   output$filter_local_text <- renderUI({
     p(paste0("Filtering out ", filtered_genes, " low expression genes; ", left_genes," were left for subsequent analysis."), style = "font-weight: 800; padding-top: 3px;")
@@ -287,11 +284,6 @@ local_data <- eventReactive(input$filter_local, {
   }else {
     data <- upload_data()
   }
-  # creat alert
-  # filtered_genes <- dim(data[rowSums(data) < input$genes_n, ])[1]
-  # createAlert(session, "filter_alert1", "Filter_Alert1", title = NULL,
-  #             content = paste0("Finished: filter out ", filtered_genes, " low expression genes."), append = FALSE, style = "success")
-  # filter data
   filtered_data <- data[rowSums(data) >= input$genes_n, ]
 
   return(filtered_data)
@@ -326,8 +318,9 @@ filter_density <- eventReactive(input$filter_local, {
     geom_density(aes(x = log2(sum_row + 1), fill = "Before Filter"), alpha = 0.3, show.legend = T)+
     geom_density(aes(x = log2(sum_row0 + 1), fill = "After Filter"), alpha = 0.3, show.legend = T)+
     geom_vline(xintercept = log2(input$genes_n + 1), col = "red", lty = 2)+
-    labs(x = "log2(RowSum + 1)", y = "Density", fill = "")+
-    theme_classic()
+    labs(x = "log2(Total counts + 1) Per genes", y = "Density", fill = "")+
+    theme_classic()+
+    theme(axis.title = element_text(size = 15), axis.text = element_text(size = 12), legend.text = element_text(size = 15))
 
   return(p)
 })
@@ -364,21 +357,16 @@ output$local_matrix <- renderUI({
   }
 })
 
-# ui output species selections
-output$gprofiler_species <- renderUI({
-  selectInput("gprofiler_species", "Species from ensembl:", choices = get_supported_species(), width = "100%")
+species <- reactive({
+  get_supported_species()
 })
 
-# observe({
-#   if(is.null(input$gprofiler_species))
-#     return(NULL)
-#   if (nchar(input$gprofiler_species) == 0) {
-#     # createAlert(session, "species_alert1", "Species_Alert1", title = NULL,
-#     #             content = "Note: Please choice a species.", append = FALSE, style = "warning")
-#   }else {
-#     closeAlert(session, "Species_Alert1")
-#   }
-# })
+# ui output species selections
+output$gprofiler_species <- renderUI({
+  selectInput("gprofiler_species", "The species:",
+              choices = species()$display_name, selected = "Homo sapiens (Human)", width = "100%")
+})
+
 
 observe({
   output$species_warnning <- renderUI({
@@ -387,9 +375,7 @@ observe({
     if (nchar(input$gprofiler_species) == 0) {
       p("Note: Please choose a species !", style = "font-weight: 800; padding-top: 3px; color: orange;")
     }else {
-      species_choices <- get_supported_species()
-      species_names <- names(species_choices)[species_choices == input$gprofiler_species]
-      p(paste0("Note: You have chosen: ", species_names), style = "font-weight: 800; padding-top: 3px; color: navy;")
+      p(paste0("Note: You have chosen: ", input$gprofiler_species), style = "font-weight: 800; padding-top: 3px; color: navy;")
     }
   })
 })
@@ -663,7 +649,7 @@ keyType <- reactive({
 OrgDb <- eventReactive(input$filter_local | input$filter_local, {
   if (is.null(input$gprofiler_species))
     return(NULL)
-  gprofiler_species <- input$gprofiler_species
+  gprofiler_species <- species()$id[species()$display_name == input$gprofiler_species]
   # if (input_data$values == "local") {
   #   gprofiler_species <- input$gprofiler_species
   # }else {

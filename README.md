@@ -1,5 +1,5 @@
 ## QRseq
-Here we developed an R shiny application QRseq, which can easily launched from local web browser for analyzing sequenced or published RNA-seq data. QRseq allows users to upload RNA-seq data from local or to input some keyworks or an accession number of GEO DataSets within the app to start their analysis. This application start from data input, followed by preprocessing data through filtering out low expressed genes and poorly reproducible samples, correcting batch effects, normalizing and transforming expression values, identifying differential expressed genes and other biological patterns, exploring the enrichment of functions, analyzing and visualizing the protein to protein networks or gene regulation networks. QRseq provide a clear analysis flow and an user friendly GUI interface but keep most important parameter of involved functions, which suite for both non-programing experience researchers and expert bioinformatic researchers. User can accomplish a standard RNA-seq analysis in hours depend on the size of their dataset and requires using QRseq.
+Here we developed QRseq, an R shiny application that can be launched easily from a local web browser for analyzing sequenced or published RNA-seq data. QRseq allows users to upload RNA-seq data from local or to input some keywords or an accession number of GEO DataSets within the app to start their analysis. This application is started from data input, followed by preprocessing data by filtering low expressed genes and poorly reproducible samples, correcting batch effects, normalizing and transforming data, identifying differential expressed genes and other biological patterns, exploring the enrichment of functions, analyzing and visualizing the protein to protein networks or gene regulation networks. QRseq provides a clear analysis flow and a user-friendly GUI interface but keeps the most important parameters of involved functions, which suit both non-programming experience researchers and expert bioinformatics researchers. User can accomplish a standard RNA-seq analysis in hours depending on the size of their dataset and requires using QRseq.
 
 ## Features
 ![The main Features](https://github.com/goushixue/QRseq/blob/main/inst/shiny/myApp/www/images/workflow.jpg)
@@ -47,10 +47,10 @@ download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/DOS
 ## install from local downloaded source file
 install.packages("DOSE_3.16.0.tar.gz", repos = NULL, type = "source")
 
-## download enrichplot (1.10.1)
-download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/enrichplot_1.10.1.tar.gz", "enrichplot_1.10.1.tar.gz")
+## download enrichplot (1.10.0)
+download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/enrichplot_1.10.0.tar.gz", "enrichplot_1.10.0.tar.gz")
 ## install from local downloaded source file
-install.packages("enrichplot_1.10.1.tar.gz", repos = NULL, type = "source")
+install.packages("enrichplot_1.10.0.tar.gz", repos = NULL, type = "source")
 
 ## download fgsea (>= 1.16.0)
 download.file("http://www.bioconductor.org/packages/release/bioc/src/contrib/fgsea_1.16.0.tar.gz", "fgsea_1.16.0.tar.gz")

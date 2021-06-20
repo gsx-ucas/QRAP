@@ -143,6 +143,7 @@ DeGene_heatmap <- eventReactive(input$plot_deheatmap,{
   annotation_col = data.frame(condition = factor(sampleTable$condition))
   rownames(annotation_col) = sampleTable$samples
 
+  print(HeatMap_Data() %>% head)
   color = colorRampPalette(strsplit(input$deheat_color, ",")[[1]])(100)
   if (isTRUE(input$deheat_colanno)) {
     pheatmap(HeatMap_Data(), col=color, scale = "row",
@@ -256,7 +257,7 @@ DeGene_barPlot <- eventReactive(input$plot_debar,{
   }
 
   p <- p + geom_bar(stat = "identity", position = position_dodge(width = 1))+
-    labs(x = "Sample Groups", y = "Differential Expressed Genes Number", fill = "Groups")+
+    labs(x = "Sample Groups", y = "Differential Expressed Genes Number", fill = "Groups", vjust = -0.5)+
     theme_classic()+
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 

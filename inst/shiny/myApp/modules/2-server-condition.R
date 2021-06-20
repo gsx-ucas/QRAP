@@ -14,7 +14,7 @@ sampleTable <- reactive({
     df <- read.table(inFile$datapath, header = T, sep = ',', stringsAsFactors = F)
     df$condition <- factor(df$condition, levels = unique(df$condition))
   }else {
-    conditions <- data() %>% colnames %>% str_replace(replacement = '', pattern = '-[0-9]+')
+    conditions <- data() %>% colnames %>% str_replace(replacement = '', pattern = '-.*')
     df <- data.frame(samples = colnames(data()), condition=factor(conditions, levels = unique(conditions)))
   }
   return(df)

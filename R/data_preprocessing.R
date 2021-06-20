@@ -2,11 +2,10 @@
 #'
 #' @export
 #'
-get_supported_species <- function() {
-  sp <- readRDS(system.file("shiny", "myApp/www/Species/gprofiler_species.rds", package = "QRseq"))
-  pasted_name <- paste0(sp[, "display name"], "(", sp[, "scientific name"], ")")
-  ids <- c("", sp$id)
-  names(ids) <- c("Pleas Input Your Species", pasted_name)
+get_supported_species <- function(datasets = "gprofiler") {
+  ids <- readRDS(system.file("extdata", "species.rds", package = "QRseq"))
+  ids$display_name <- paste0(ids$scientific_name, " (", ids$display_name, ")")
+  ids <- ids[, -2]
   return(ids)
 }
 

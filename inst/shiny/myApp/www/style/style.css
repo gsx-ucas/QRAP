@@ -1,4 +1,4 @@
-.navbar{ 
+.navbar{
   top: 0;
   width: 100%;
   position: fixed;
@@ -7,7 +7,7 @@
 
 .navbar-default .navbar-brand{color: white !important;}
 
-.container-fluid > .tab-content{ 
+.container-fluid > .tab-content{
   margin-top: 60px;
   background-color: rgb(241,246,247) !important;
 }
@@ -16,7 +16,7 @@
 color: white !important;
 background-color: #131416 !important;
 background-image: #131416 !important;
-}                    
+}
 
 .navbar-nav > .active > a {
 color: white !important;
@@ -122,8 +122,8 @@ body {
 /* box-default */
 .box {
   border-top-width:0px;
-  box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.5), 
-                0 1px 4px rgba(0, 0, 0, 0.3), 
+  box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.5),
+                0 1px 4px rgba(0, 0, 0, 0.3),
                 0 0 10px rgba(0, 0, 0, 0.1) inset;
 }
 
@@ -145,8 +145,8 @@ body {
 /* Info box */
 .box.box-info {
   border-top-width:0px;
-  box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.5), 
-                0 1px 4px rgba(0, 0, 0, 0.3), 
+  box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.5),
+                0 1px 4px rgba(0, 0, 0, 0.3),
                 0 0 10px rgba(0, 0, 0, 0.1) inset;
 }
 
@@ -169,17 +169,33 @@ body {
 -------------------------------------------------- */
 
 /* Carousel base class */
-.carousel {
+ .carousel {
   height: 350px;
   margin-bottom: 10px;
 }
+
 /* Since positioning the image, we need to help out the caption */
-.carousel-caption {
+.carousel:hover > .carousel-inner > .item > .container > .carousel-caption {
   z-index: 10;
   font-weight: normal;
+  background-color: transparent;
   text-shadow: 1px 4px 5px rgba(0,0,0,.1);
 }
 
+.carousel-inner > .item > .container > .carousel-caption:hover {
+  z-index: 10;
+  font-weight: normal;
+  background-color: transparent;
+  text-shadow: 1px 4px 5px rgba(0,0,0,.1);
+}
+
+.carousel-caption {
+  z-index: 10;
+  font-weight: normal;
+  background-color: transparent;
+  text-shadow: 1px 4px 5px rgba(0,0,0,.1);
+}
+/*
 .carousel-caption p {
   z-index: 10;
   font-weight: normal;
@@ -187,18 +203,21 @@ body {
   color: white;
   font-size: 28px;
 }
+*/
 
 .carousel-caption h1 {
-	/*font-weight: 800 !important;*/
+	z-index: 10;
+  font-weight: normal;
   color: white;
-  font-size: 40px;
+  font-size: 30px;
   text-shadow: 0 1px 3px rgba(0,0,0,1);
 }
+
 
 /* Declare heights because of positioning of img element */
 .carousel .item {
   height: 350px;
-  background-color: #777;
+  background-color: transparent;
 }
 .carousel-inner > .item > img {
   position: absolute;
@@ -206,6 +225,7 @@ body {
   left: 0;
   min-width: 100%;
   height: 350px;
+  background-color: transparent;
 }
 
 .carousel input {
@@ -226,6 +246,7 @@ body {
     width: 110%;
   }
 }
+
 
 /*
 CSS codes from monocle website
@@ -275,3 +296,4 @@ CSS codes from monocle website
     color: #696969;
     background-color: transparent;
 }
+

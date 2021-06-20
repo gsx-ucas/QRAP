@@ -71,7 +71,7 @@ mainUI <- function() {
         ),
 
         navbarMenu(
-          title = "Expression Analysis",
+          title = "Expression",
           tabPanel("Differential Expression Analysis", value = "dea", source(system.file("shiny", "myApp/modules/7-ui-differential-analysis.R", package = "QRseq"), local = T)$value),
           tabPanel("DEGs Expression Pattern", value = "degsp", source(system.file("shiny", "myApp/modules/8-ui-degs-patterns.R", package = "QRseq"), local = T)$value),
           tabPanel("Expression Visualization", value = "epv", source(system.file("shiny", "myApp/modules/9-ui-expression-visualization.R", package = "QRseq"), local = T)$value)
@@ -85,17 +85,24 @@ mainUI <- function() {
         ),
 
         navbarMenu(
-          title = "Functional Analysis",
-          # tabPanel("ORA analysis"),
-          # tabPanel("GSEA analysis"),
-          tabPanel("ORA & GSEA", value = "clusterProfiler", source(system.file("shiny", "myApp/modules/13-ui-clusterProfiler.R", package = "QRseq"), local = T)$value),
-          tabPanel("g:Profiler API", value = "gProfiler", source(system.file("shiny", "myApp/modules/14-ui-gProfiler.R", package = "QRseq"), local = T)$value)
+          title = "Functions",
+          tabPanel("ORA (gprofiler2)", value = "gprofiler2", source(system.file("shiny", "myApp/modules/13-ui-gProfiler.R", package = "QRseq"), local = T)$value),
+          tabPanel("ORA (clusterProfiler)", value = "ORA_cluster", source(system.file("shiny", "myApp/modules/14-ui-cluster_ORA.R", package = "QRseq"), local = T)$value),
+          tabPanel("GSEA (clusterProfiler)", value = "GSEA_cluster", source(system.file("shiny", "myApp/modules/15-ui-cluster_GSEA.R", package = "QRseq"), local = T)$value)
+
         ),
 
         navbarMenu(
-          title = "Network Analysis",
-          tabPanel("stringDB (PPI)", value = "ppi", source(system.file("shiny", "myApp/modules/15-ui-ppi-network.R", package = "QRseq"), local = T)$value),
-          tabPanel("GENIE3 (GRN)", value = "genie3", source(system.file("shiny", "myApp/modules/16-ui-genie3-network.R", package = "QRseq"), local = T)$value)
+          title = "Networks",
+          tabPanel("KEGG Pathview (pathview)", value = "pathview", source(system.file("shiny", "myApp/modules/16-ui-kegg-pathview.R", package = "QRseq"), local = T)$value),
+          tabPanel("Protein-Protein interaction (stringDB)", value = "ppi", source(system.file("shiny", "myApp/modules/17-ui-ppi-network.R", package = "QRseq"), local = T)$value),
+          tabPanel("Inferred Regulation network (GENIE3)", value = "genie3", source(system.file("shiny", "myApp/modules/18-ui-genie3-network.R", package = "QRseq"), local = T)$value)
+        ),
+
+        navbarMenu(
+          title = "Summarize",
+          tabPanel("Summarize Genes", value = "sgene", source(system.file("shiny", "myApp/modules/19-ui-summarize-gene.R", package = "QRseq"), local = T)$value),
+          tabPanel("Summarize Functions", value = "sfunc", source(system.file("shiny", "myApp/modules/20-ui-summarize-function.R", package = "QRseq"), local = T)$value)
         ),
 
         # ----------------------------------

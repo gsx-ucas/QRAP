@@ -61,7 +61,7 @@ Expr_plot <- eventReactive(input$plot_geneExpr,{
     ResList <- load.REGs(input$expr_de_group)
     if (input$GenePlot_type == "BarPlot" | input$GenePlot_type == "DotPlot") {
       data <- lapply(names(ResList), function(x){
-        df <- ResList[[x]][ResList[[x]] %>% rownames %in% genes, c("padj", "log2FoldChange")]
+        df <- ResList[[x]][genes[genes %in% rownames(ResList[[x]])], c("padj", "log2FoldChange")]
         df$group <- x
         df$genes <- df %>% rownames
         return(df)
@@ -113,7 +113,7 @@ Expr_plot <- eventReactive(input$plot_geneExpr,{
         return(df)
       }) %>% bind_cols()
       rownames(lfc_mat) <- rownames(ResList[[1]])
-      data <- lfc_mat[rownames(lfc_mat) %in% genes, names(ResList)]
+      data <- lfc_mat[genes[genes %in% rownames(lfc_mat)], names(ResList)]
       color = colorRampPalette(strsplit(input$exprsh_color, ",")[[1]])(100)
       pheatmap(data, col=color,
                cluster_col=F, cluster_row=input$cluster_row,
@@ -180,7 +180,7 @@ Expr_plot <- eventReactive(input$plot_geneExpr,{
     # colNames <- sampleTable$samples
     sampleTable <- subset_Tab(dds(), input$expr_group)
 
-    Sub_data <- data[rownames(data) %in% genes, sampleTable$samples] %>% as.matrix
+    Sub_data <- data[genes[genes %in% rownames(data)], sampleTable$samples] %>% as.matrix
     if (dim(Sub_data)[1] == 0) {
       stop("No genes can match to expression data, please check your input, or this genes were filtered out beacause they are low expression genes.")
     }

@@ -1,7 +1,6 @@
 observe({
-  # if (input$nPattern | input$pModule | input$pORA) {
-  if (input$nClpr) {
-    updateTabsetPanel(session = session, inputId = 'mainMenu', selected = "gProfiler")
+  if (input$nWGCNA_3 | input$pORA) {
+    updateTabsetPanel(session = session, inputId = 'mainMenu', selected = "gprofiler2")
   }
 })
 
@@ -63,7 +62,7 @@ gprofiler_object <- eventReactive(input$runGprofiler,{
       incProgress(0.6, detail = "Running gProfiler ...")
       gostres <- gost(query = GeneList,
                       sources = input$gprofiler_sources,
-                      organism = input$gprofiler_species,
+                      organism = species()$id[species()$display_name == input$gprofiler_species],
                       user_threshold = input$gprofiler_pval,
                       correction_method = input$gprofiler_cor_method,
                       evcodes = as.logical(input$gprofiler_evcodes),
@@ -73,7 +72,7 @@ gprofiler_object <- eventReactive(input$runGprofiler,{
       incProgress(0.6, detail = "Running gProfiler ...")
       gostres <- gost(query = GeneList %>% unlist,
                       sources = input$gprofiler_sources,
-                      organism = input$gprofiler_species,
+                      organism = species()$id[species()$display_name == input$gprofiler_species],
                       user_threshold = input$gprofiler_pval,
                       correction_method = input$gprofiler_cor_method,
                       evcodes = as.logical(input$gprofiler_evcodes),

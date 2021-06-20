@@ -4,7 +4,7 @@
 \alias{get_supported_species}
 \title{Get support species names}
 \usage{
-get_supported_species()
+get_supported_species(datasets = "gprofiler")
 }
 \description{
 Get support species names

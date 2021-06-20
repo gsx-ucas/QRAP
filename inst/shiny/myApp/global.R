@@ -2,15 +2,19 @@
 #              "ggplot2", "ggrepel", "shinyjs", "reshape2", "pheatmap", "enrichplot", "ggbeeswarm",
 #              "geneplotter", "RColorBrewer", "shinyWidgets", "clusterProfiler", "shinycssloaders",
 #              "sva", "plyr", "dplyr", "Rmisc", "psych", "WGCNA", "doRNG", "igraph", "GENIE3", "plotly",
-#              "bs4Dash", "shinyBS", "STRINGdb", "GEOquery", "networkD3", "DEGreport", "gprofiler2", "shinyalert",
-#              "ReactomePA", "genefilter", "visNetwork", "edgebundleR", "rentrez"
+#              "shinyBS", "STRINGdb", "GEOquery", "networkD3", "DEGreport", "gprofiler2", "shinyalert",
+#              "ReactomePA", "genefilter", "visNetwork", "edgebundleR", "rentrez", "shinydashboard",
+#              "ggplotify", "ggnewscale", "pathview"
 #              )
 #
 # for (i in Depends) {
-#   usethis::use_package(i, type = "Imports")
+#   if (!requireNamespace(i)) {
+#     BiocManager::install(i)
+#     # print("Not install")
+#   }
 # }
 
-# library(STDAP)
+library(QRseq)
 library(shiny)
 library(DT)
 library(gplots)
@@ -18,16 +22,19 @@ library(venn)
 library(limma)
 library(tidyr)
 library(DOSE)
+library(tibble)
 library(DESeq2)
 library(stringr)
 library(fdrtool)
 library(ggplot2)
 library(ggraph)
+# library(ggridges)
 library(ggrepel)
 library(shinyjs)
 library(rentrez)
 library(reshape2)
 library(pheatmap)
+library(pathview)
 library(enrichplot)
 library(ggbeeswarm)
 library(geneplotter)
@@ -58,6 +65,8 @@ library(ReactomePA)
 library(genefilter)
 library(visNetwork)
 library(edgebundleR)
+
+# options(url.method='libcurl')
 
 get.DEGs <- function(dds, ctrl, treat, p.adjust = 0.05, abs.lfc = 1, save = FALSE) {
   if (length(treat) == 0) {
