@@ -6,7 +6,7 @@ fluidPage(
       id = "degsp_run", title = "Run parameters:", width = 12, collapsible = TRUE,
       switchInput(inputId = "degsp_switch", label = "Use Cache", onStatus = "success", offStatus = "danger", inline = T, labelWidth = "100px"),
       uiOutput('degsp_group'),
-      numericInput("degsp_minc","Minimum number of genes in a group that will be return:", value = 100, width = "100%"),
+      numericInput("degsp_minc","Minimum number of genes in a group that will be return:", value = 30, width = "100%"),
       checkboxInput("degsp_scale", "Scale the expression values by row.", value = TRUE, width = "100%"),
       checkboxInput("degsp_reduce", "Remove genes that are outliers of the cluster distribution.", value = FALSE, width = "100%"),
       # actionButton("degsp_modal_but", "Additional Parameters for Visualization ...", width = "100%",
