@@ -36,8 +36,13 @@ degsp_object <- eventReactive(input$run_degsp, {
       incProgress(0.2, detail = "Subset transformed exprs table ...")
       DeAssay <- assay(trans_value())[DeGenes, sampleTable$samples %>% as.character]
       incProgress(0.4, detail = "Calculating co-expression genes, this will take a while ...")
-      des_patterns <- degPatterns(ma = DeAssay, metadata = sampleTable,reduce = input$degsp_reduce,
-                                  scale = input$degsp_scale, minc = input$degsp_minc, time = "condition", plot = F)
+      if (dim(DeAssay)[1] < input$degsp_minc) {
+        des_patterns <- degPatterns(ma = DeAssay, metadata = sampleTable,reduce = input$degsp_reduce,
+                                    scale = input$degsp_scale, minc = dim(DeAssay)[1] / 2, time = "condition", plot = F)
+      }else {
+        des_patterns <- degPatterns(ma = DeAssay, metadata = sampleTable,reduce = input$degsp_reduce,
+                                    scale = input$degsp_scale, minc = input$degsp_minc, time = "condition", plot = F)
+      }
       saveRDS(des_patterns, "Cache/des_patterns.rds")
     }else {
       des_patterns <- readRDS("Cache/des_patterns.rds")
