@@ -10,6 +10,7 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
 Depends: R (>= 4.0)
+biocViews:
 Imports: 
     DT,
     venn,
@@ -46,7 +47,6 @@ Imports:
     ggplotify,
     ggnewscale,
     rmarkdown
-biocViews:
     sva,
     limma,
     DESeq2,
@@ -63,4 +63,3 @@ biocViews:
     STRINGdb (>= 2.3.0),
     enrichplot (>= 1.10.0),
     clusterProfiler (>= 3.18.0),
-Remotes:
