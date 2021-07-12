@@ -51,6 +51,7 @@ biocViews:
     limma,
     DESeq2,
     GENIE3,
+    pathview,
     GEOquery,
     DEGreport,
     ReactomePA,
