@@ -62,4 +62,4 @@ Imports:
     fgsea (>= 1.16.0),
     STRINGdb (>= 2.3.0),
     enrichplot (>= 1.10.0),
-    clusterProfiler (>= 3.18.0),
+    clusterProfiler (>= 3.18.0)
