@@ -1,7 +1,7 @@
 fluidPage(
   style = "margin-left: 10px; margin-right:10px;",
   box(
-    title = "Run parameters:", width = 4, collapsible = TRUE,
+    title = "Run parameters:", width = 4, collapsible = TRUE, solidHeader = TRUE,
     uiOutput("intgs_degs"),
     uiOutput("intgs_degps"),
     uiOutput("intgs_wgcnaps"),
@@ -45,8 +45,8 @@ fluidPage(
   column(
     12,
     hr(),
-    fluidRow(column(2), column(3, actionLink("psgene", "<< Previous", style = "font-size: 20px")),
-             column(4, p("You are in PPI notwork page ...", style = "color: grey; font-size: 20px")),
-             column(3, actionLink("nsgene", "Next >>", style = "font-size: 20px")))
+    fluidRow(column(3, align = "right", actionLink("psgene", "<< Previous", style = "font-size: 20px")),
+             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
+             column(3, align = "left", actionLink("nsgene", "Next >>", style = "font-size: 20px")))
   )
 )

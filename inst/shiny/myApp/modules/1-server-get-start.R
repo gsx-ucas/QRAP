@@ -59,7 +59,7 @@ output$Organism <- renderUI({
 })
 
 # # output the ui of other search fields
-output$Fiels <- renderUI({
+output$Fields <- renderUI({
   tags$table(
     style = "width:100%",
     if ("DataSet Type" %in% input$fields) {
@@ -114,7 +114,7 @@ output$search_geo_card <- renderUI({
                          choices = c("Organism", "DataSet Type", "Title", "Description"),
                          selected = c("Organism", "DataSet Type", "Title", "Description")),
       uiOutput("Organism"),
-      uiOutput("Fiels"),
+      uiOutput("Fields"),
       fluidRow(
         column(6, actionButton("search_GEO", "Search GEO Data Sets", class = "run-button", width = "100%")),
         column(6, actionButton("skip_search_GEO", "Skip Search GEO", class = "plot-button", width = "100%")),
@@ -207,7 +207,7 @@ output$preview_mat_card <- renderUI({
     conditionalPanel(
       "input.preview_geo",
       box(
-        title = "Data table preview", width = 12, status = "info", collapsible = TRUE,
+        title = "Data table preview", width = 12, status = NULL, solidHeader = TRUE, collapsible = TRUE,
         uiOutput("geo_expr_matrix"),
         uiOutput("filter_geo_text")
         # bsAlert("filter_alert2")
@@ -215,7 +215,7 @@ output$preview_mat_card <- renderUI({
     )
   }else {
     box(
-      title = "Data filtering", width = 12, status = "info", collapsible = TRUE,
+      title = "Data filtering", width = 12, status = NULL, solidHeader = TRUE, collapsible = TRUE,
       # conditionalPanel("input.upload | input.example", addSpinner(dataTableOutput("rawTable"), spin = "circle")),
       # conditionalPanel("filter_local", addSpinner(plotOutput("filter_density"), spin = "circle"), bsAlert("filter_alert1"))
       uiOutput("local_matrix"),
@@ -351,9 +351,9 @@ observeEvent(input$filter_local,{
 # creat ui output for switch data and filtered data
 output$local_matrix <- renderUI({
   if (show_local_mat$data == "filtered_data") {
-    addSpinner(plotOutput("filter_density"), spin = "circle")
+    withSpinner(plotOutput("filter_density"))
   }else {
-    addSpinner(dataTableOutput("rawTable"), spin = "circle")
+    withSpinner(dataTableOutput("rawTable"))
   }
 })
 

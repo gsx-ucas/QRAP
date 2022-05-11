@@ -1,8 +1,8 @@
 fluidPage(
   style = "margin-left:10px;margin-right:10px;",
   box(
-    title = "PCA Parameters", width = 4, status = NULL,
-    uiOutput("pca_group"),
+    title = "PCA Parameters", width = 4, status = NULL, solidHeader = TRUE,
+    uiOutput("pca_samples"),
     # checkboxInput("pca_plotly", "Use Plotly, Help you confirm the sample position.", value = FALSE, width = "100%"),
     numericInput("pca_size", "Point size:", value = 5, width = "100%"),
     numericInput("pca_fontsize", "Fontsize:", value = 15, width = "100%"),
@@ -14,12 +14,25 @@ fluidPage(
   column(
     6,
     wellPanel(
-      dropdownButton(
-        numericInput('pca_width', 'Figure Width (cm):', min = 1, max = 20, value = 7, width = "100%"),
-        numericInput('pca_height', 'Figure Height (cm):', min = 1, max = 20, value = 5, width = "100%"),
-        downloadButton('pca_Pdf','Download .pdf', class = "btn", width = "100%"),
-        circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
-        tooltip = tooltipOptions(title = "Click to download figures !")
+      style = "padding-top:5px",
+      fluidRow(
+        column(
+          12, style = "padding-left:0px;margin-left:0px;padding-right:0px;margin-right:0px;border-bottom:solid 1px rgb(224,224,224)",
+          column(
+            6, style = "padding-left:10px;",
+            tags$h4("PCA ScatterPlot:")
+          ),
+          column(
+            6, align = "right", style = "padding-top:5px;",
+            dropdownButton(
+              numericInput('pca_width', 'Figure Width (cm):', min = 1, max = 20, value = 7, width = "100%"),
+              numericInput('pca_height', 'Figure Height (cm):', min = 1, max = 20, value = 5, width = "100%"),
+              downloadButton('pca_Pdf','Download .pdf', class = "btn", width = "100%"),
+              circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px", right = TRUE,
+              tooltip = tooltipOptions(title = "Click to download figures !")
+            )
+          )
+        )
       ),
       uiOutput("PCA_plotUI")
     )
@@ -50,8 +63,8 @@ fluidPage(
   ),
   column(
     12, hr(),
-    fluidRow(column(2), column(3, actionLink("pPCA", "<< Previous", style = "font-size: 20px")),
-             column(4, p("You are in PCA analysis page ...", style = "color: grey; font-size: 20px")),
-             column(3, actionLink("nPCA", "Next >>", style = "font-size: 20px")))
+    fluidRow(column(3, align = "right", actionLink("pPCA", "<< Previous", style = "font-size: 20px")),
+             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
+             column(3, align = "left", actionLink("nPCA", "Next >>", style = "font-size: 20px")))
   )
 )

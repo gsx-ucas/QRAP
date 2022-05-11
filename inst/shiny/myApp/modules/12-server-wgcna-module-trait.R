@@ -1,6 +1,6 @@
 observe({
-  if (input$nWGCNA_2 | input$pGprofiler) {
-    updateTabsetPanel(session = session, inputId = 'mainMenu', selected = "wgcna-3")
+  if (input$nWGCNA_3 | input$pGprofiler) {
+    updateTabsetPanel(session = session, inputId = 'mainMenu', selected = "wgcna-4")
   }
 })
 
@@ -64,7 +64,7 @@ LabeledHeatmap <- eventReactive(input$plot_mtrs, {
   col_idx <- seq(1, length(names(traitDataTab)))
   showCols <- col_idx[names(traitDataTab) %in% input$module_showCols]
 
-  par(mar=c(5,10,1,1))
+  par(mar=c(10,10,1,1))
 
   # Display the correlation values within a heatmap plot
   labeledHeatmap(Matrix = moduleTraitCor(), xLabels = names(traitDataTab), yLabels = names(MEs),
@@ -98,7 +98,7 @@ output$mtrs_heatmap_Pdf <- downloadHandler(
     col_idx <- seq(1, length(names(traitDataTab)))
     showCols <- col_idx[names(traitDataTab) %in% input$module_showCols]
 
-    par(mar=c(5,10,1,1))
+    par(mar=c(10,10,1,1))
     # Display the correlation values within a heatmap plot
     labeledHeatmap(Matrix = moduleTraitCor(), xLabels = names(traitDataTab), yLabels = names(MEs),
                    ySymbols = names(MEs), textMatrix = textMatrix(), colorLabels = FALSE, colors = color,

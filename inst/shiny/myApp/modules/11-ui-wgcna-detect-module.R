@@ -1,10 +1,11 @@
 fluidRow(
   style = "margin-left: 10px; margin-right:10px;",
   box(
-    title = "blockwiseModules:", width = 4, collapsible = TRUE,
+    title = "blockwiseModules:", width = 4, collapsible = TRUE, solidHeader = TRUE,
     switchInput("wgcna_cache", "Use Cache", value = F,
                 onStatus = "success", offStatus = "danger", inline = T,labelWidth = "100px"),
-    numericInput("maxBlockSize", "Maximum block size for module detection:", value = 5000, width = "100%"),
+    numericInput("soft_power", "soft-thresholding power value:", value = 10, width = "100%"),
+    # numericInput("maxBlockSize", "Maximum block size for module detection:", value = 5000, width = "100%"),
     numericInput("minModuleSize", "Minimum module size for module detection:", value = 30, width = "100%"),
     selectInput("blockwise_networkType", "networkType:", choices = c("unsigned", "signed", "signed hybrid"), width = "100%"),
     actionButton("blockwise_modal_but", "Additional Parameters for Normalization ...", width = "100%",
@@ -15,19 +16,39 @@ fluidRow(
   column(
     6,
     wellPanel(
+      style = "padding-top:5px",
       fluidRow(
-        column(6, uiOutput("block_id")),
         column(
-          6, align = "right", style = "padding-top: 10px;",
-          dropdownButton(
-            numericInput('plotDendro_width', 'Figure Width:', value = 10, width = "100%"),
-            numericInput('plotDendro_height', 'Figure Height:', value = 5, width = "100%"),
-            downloadButton('plotDendro_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
-            circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
-            right = TRUE, tooltip = tooltipOptions(title = "Click to download figures !")
+          12, style = "padding-left:0px;margin-left:0px;padding-right:0px;margin-right:0px;border-bottom:solid 1px rgb(224,224,224)",
+          column(
+            6, style = "padding-left:10px;",
+            tags$h4("Cluster Dendrogram:")
+          ),
+          column(
+            6, align = "right", style = "padding-top:5px;",
+            dropdownButton(
+              numericInput('plotDendro_width', 'Figure Width:', value = 10, width = "100%"),
+              numericInput('plotDendro_height', 'Figure Height:', value = 5, width = "100%"),
+              downloadButton('plotDendro_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
+              circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
+              right = TRUE, tooltip = tooltipOptions(title = "Click to download figures !")
+            )
           )
         )
       ),
+      # fluidRow(
+      #   column(6, uiOutput("block_id")),
+      #   column(
+      #     6, align = "right", style = "padding-top: 10px;",
+      #     dropdownButton(
+      #       numericInput('plotDendro_width', 'Figure Width:', value = 10, width = "100%"),
+      #       numericInput('plotDendro_height', 'Figure Height:', value = 5, width = "100%"),
+      #       downloadButton('plotDendro_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
+      #       circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
+      #       right = TRUE, tooltip = tooltipOptions(title = "Click to download figures !")
+      #     )
+      #   )
+      # )
       uiOutput("wgcna_dendroUI")
     )
   ),
@@ -82,8 +103,8 @@ fluidRow(
   column(
     12,
     hr(),
-    fluidRow(column(2), column(3, actionLink("pWGCNA_2", "<< Previous", style = "font-size: 20px")),
-             column(4, p("You are in WGCNA module detection page ...", style = "color: grey; font-size: 20px")),
-             column(3, actionLink("nWGCNA_2", "Next >>", style = "font-size: 20px")))
+    fluidRow(column(3, align = "right", actionLink("pWGCNA_3", "<< Previous", style = "font-size: 20px")),
+             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
+             column(3, align = "left", actionLink("nWGCNA_3", "Next >>", style = "font-size: 20px")))
   )
 )

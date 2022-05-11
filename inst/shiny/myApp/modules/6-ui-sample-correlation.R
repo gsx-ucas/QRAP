@@ -1,13 +1,15 @@
 fluidPage(
   style = "margin-left: 10px; margin-right:10px;",
   box(
-    title = "Correlation Plot Parameters:", width = 4, status = NULL,
-    radioButtons(
-      inputId = "corr_type",
-      label = "Pairwise or multiple:",
-      choices = c("pairwise (scatter)", "multiple (heatmap)", "multiple (scatter)"),
-      inline = TRUE, width = "100%"
-    ),
+    title = "Correlation Plot Parameters:", width = 4, status = NULL, solidHeader = TRUE,
+    # radioButtons(
+    #   inputId = "corr_type",
+    #   label = "Pairwise or multiple:",
+    #   choices = c("pairwise (scatter)", "multiple (heatmap)", "multiple (scatter)"),
+    #   inline = TRUE, width = "100%"
+    # ),
+    prettyRadioButtons(inputId = "corr_type", label = "Pairwise or multiple:", animation = "jelly", inline = TRUE,
+                       choices = c("pairwise (scatter)", "multiple (heatmap)", "multiple (scatter)"), icon = icon("check"), status = "info"),
     conditionalPanel(
       "input.corr_type=='pairwise (scatter)'",
       uiOutput('Corr_group1'),
@@ -85,13 +87,25 @@ fluidPage(
   column(
     6,
     wellPanel(
-      dropdownButton(
-        numericInput('corrPlot_width', 'Figure Width:', min = 1, max = 20, value = 10, width = "100%"),
-        numericInput('corrPlot_height', 'Figure Height:', min = 1, max = 20, value = 8, width = "100%"),
-        downloadButton('corrPlot_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
-        circle = FALSE, status = "danger", size = "sm",
-        icon = icon("save"), width = "200px",
-        tooltip = tooltipOptions(title = "Click to download figures !")
+      style = "padding-top:5px",
+      fluidRow(
+        column(
+          12, style = "padding-left:0px;margin-left:0px;padding-right:0px;margin-right:0px;border-bottom:solid 1px rgb(224,224,224)",
+          column(
+            6, style = "padding-left:10px;",
+            tags$h4("Sample Correlation Plots:")
+          ),
+          column(
+            6, align = "right", style = "padding-top:5px;",
+            dropdownButton(
+              numericInput('corrPlot_width', 'Figure Width:', min = 1, max = 20, value = 10, width = "100%"),
+              numericInput('corrPlot_height', 'Figure Height:', min = 1, max = 20, value = 8, width = "100%"),
+              downloadButton('corrPlot_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
+              circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px", right = TRUE,
+              tooltip = tooltipOptions(title = "Click to download figures !")
+            )
+          )
+        )
       ),
       uiOutput("corr_plotUI")
     )
@@ -105,8 +119,8 @@ fluidPage(
   ),
   column(
     12, hr(),
-    fluidRow(column(2), column(3, actionLink("pCorr", "<< Previous", style = "font-size: 20px")),
-             column(4, p("You are in sample correlation page ...", style = "color: grey; font-size: 20px")),
-             column(3, actionLink("nCorr", "Next >>", style = "font-size: 20px")))
+    fluidRow(column(3, align = "right", actionLink("pCorr", "<< Previous", style = "font-size: 20px")),
+             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
+             column(3, align = "left", actionLink("nCorr", "Next >>", style = "font-size: 20px")))
   )
 )

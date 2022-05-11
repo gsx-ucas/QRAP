@@ -6,11 +6,15 @@ observe({
 
 output$genie3_group <- renderUI({
   if (input$genie3_genes=="Differential Genes") {
-    pickerInput(inputId = "genie3_group", "Groups Of Differential Expressed Genes:", choices = dir("DEGs") %>% stringr::str_remove_all(".csv"),
+    pickerInput(inputId = "genie3_group", "Groups Of Differential Expressed Genes:",
+                choices = dir("DEGs") %>% stringr::str_remove_all(".csv"),
+                selected = (dir("DEGs") %>% stringr::str_remove_all(".csv"))[1],
                 width = "100%", multiple = T, options = list(`actions-box` = TRUE, `live-search` = TRUE, size = 5))
   }else if (input$genie3_genes=="Pattern Genes") {
-    if (input$run_expp != 0) {
-      pickerInput(inputId = "genie3_patterns", label = "Select Patterns ID:", choices = expp_object()$normalized$cluster %>% unique %>% as.character,
+    if (input$run_degsp != 0) {
+      pickerInput(inputId = "genie3_patterns", label = "Select Patterns ID:",
+                  choices = degsp_object()$normalized$cluster %>% unique %>% as.character,
+                  selected = (degsp_object()$normalized$cluster %>% unique %>% as.character)[1],
                   width = "100%", multiple = T, options = list(`actions-box` = TRUE, `live-search` = TRUE, size = 5) )
     }else {
       p("*Please Run Expression Patterns First!", style = "color: red")
@@ -19,8 +23,9 @@ output$genie3_group <- renderUI({
     if (input$plot_mtrs !=0) {
       MEs0 = moduleEigengenes(datExpr(), moduleColors())$eigengenes
       MEs = orderMEs(MEs0)
-      pickerInput(inputId = "genie3_modules", label = "Select WGCNA Modules ID:", choices = substring(names(MEs), first = 3), width = "100%",
-                  multiple = T, options = list(`actions-box` = TRUE, `live-search` = TRUE, size = 5) )
+      pickerInput(inputId = "genie3_modules", label = "Select WGCNA Modules ID:",
+                  choices = substring(names(MEs), first = 3), selected = (substring(names(MEs), first = 3))[1],
+                  width = "100%", multiple = T, options = list(`actions-box` = TRUE, `live-search` = TRUE, size = 5) )
     }else {
       p("*Please Run WGCNA First!", style = "color: red")
     }
@@ -59,7 +64,7 @@ genie3_object <- eventReactive(input$run_genie, {
     }else if (input$genie3_genes=="Pattern Genes") {
       incProgress(0.2, detail = "Extract expression pattern genes ...")
       GeneList <- lapply(input$genie3_patterns, function(x){
-        expp_object()$df[expp_object()$df$cluster == x, "genes"]
+        degsp_object()$df[degsp_object()$df$cluster == x, "genes"]
       }) %>% unlist %>% unique
     }else {
       incProgress(0.2, detail = "Extract WGCNA module genes ...")

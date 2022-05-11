@@ -3,7 +3,7 @@ fluidPage(
   column(
     4,
     box(
-      title = "Running parameters:", id = "run_genie_card", width = 12,collapsible = TRUE,
+      title = "Running parameters:", id = "run_genie_card", width = 12, collapsible = TRUE, solidHeader = TRUE,
       selectInput("genie3_genes", "What genes to used:", width = "100%",
                   c("Differential Genes", "Pattern Genes", "WGCNA Module Genes")),
       uiOutput("genie3_ref"),
@@ -13,7 +13,7 @@ fluidPage(
     conditionalPanel(
       "input.run_genie",
       box(
-        title = "Plot parameters:", width = 12, collapsible = TRUE,
+        title = "Plot parameters:", width = 12, collapsible = TRUE, solidHeader = TRUE,
         radioButtons("genie3_plotTypes", "Plot types:", c("visNetwork", "edgebundle"), inline = T, width = "100%"),
         uiOutput("genie3_Intgenes"),
         sliderInput("top_genie3_genes", "Top n most significant genes:", min = 0, max = 400, value = 100, step = 20, width = "100%"),
@@ -77,9 +77,9 @@ fluidPage(
   column(
     12,
     hr(),
-    fluidRow(column(2), column(3, actionLink("pgenie3", "<< Previous", style = "font-size: 20px")),
-             column(4, p("You are in GENIE3 notwork page ...", style = "color: grey; font-size: 20px")),
-             column(3, actionLink("ngenie3", "Next >>", style = "font-size: 20px")))
+    fluidRow(column(3, align = "right", actionLink("pgenie3", "<< Previous", style = "font-size: 20px")),
+             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
+             column(3, align = "left", actionLink("ngenie3", "Next >>", style = "font-size: 20px")))
   )
 )
 

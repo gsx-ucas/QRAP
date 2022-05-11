@@ -10,11 +10,11 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
 Depends: R (>= 4.0)
-biocViews:
 Imports: 
     DT,
     venn,
     shiny,
+    vroom,
     gplots,
     stringr,
     fdrtool,
@@ -46,20 +46,22 @@ Imports:
     tidyr,
     ggplotify,
     ggnewscale,
-    rmarkdown,
-    sva,
-    limma,
-    DESeq2,
-    GENIE3,
-    pathview,
-    GEOquery,
-    DEGreport,
-    ReactomePA,
-    genefilter,
-    geneplotter,
-    SummarizedExperiment,
-    DOSE (>= 3.16.0),
-    fgsea (>= 1.16.0),
-    STRINGdb (>= 2.3.0),
-    enrichplot (>= 1.10.0),
-    clusterProfiler (>= 3.18.0)
+    rmarkdown
+biocViews:
+  sva,
+  limma,
+  DESeq2,
+  GENIE3,
+  pathview,
+  GEOquery,
+  DEGreport,
+  ReactomePA,
+  genefilter,
+  geneplotter,
+  SummarizedExperiment,
+  DOSE (>= 3.16.0),
+  fgsea (>= 1.16.0),
+  STRINGdb (>= 2.3.0),
+  enrichplot (>= 1.10.0),
+  clusterProfiler (>= 3.18.0),
+Remotes:

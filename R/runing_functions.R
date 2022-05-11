@@ -26,7 +26,7 @@ Run.DESeq2 <- function(expr.data, sample.data, formula, test, fitType, sfType,
 
   if (test == "LRT") {
     dds <- DESeq(object = dds, test = test, fitType = fitType, sfType = sfType, betaPrior = as.logical(betaPrior),
-                 reduced = reduced, minReplicatesForReplace = minReplicatesForReplace, modelMatrixType = modelMatrixType,
+                 reduced = as.formula(reduced), minReplicatesForReplace = minReplicatesForReplace, modelMatrixType = modelMatrixType,
                  useT = as.logical(useT), minmu = minmu)
   }else {
     dds <- DESeq(object = dds, test = test, fitType = fitType, sfType = sfType, betaPrior = as.logical(betaPrior),
@@ -46,7 +46,7 @@ Run.DESeq2 <- function(expr.data, sample.data, formula, test, fitType, sfType,
 #'
 #' @param expr.data expression data matrix
 #' @param designTable experiment design table
-#' @param key_words key words for batch factors
+#' @param batch key words for batch factors
 #' @param design unknown, conditions ?
 #' @param method methods used to correct batch effects
 #' @importFrom sva ComBat
@@ -54,15 +54,19 @@ Run.DESeq2 <- function(expr.data, sample.data, formula, test, fitType, sfType,
 #' @importFrom stats model.matrix
 #' @export
 
-remove.Batch <- function(expr.data, designTable, key_words = "batch", design = "condition", method = 'ComBat') {
-  if (!key_words %in% colnames(designTable)) {
-    stop("Can not find '", key_words ,"' in the sampleTable colnames, please check your input ...", call. = FALSE)
+remove.Batch <- function(expr.data, designTable, batch = "batch", batch2 = NULL, design = "condition", method = 'ComBat') {
+  if (!batch %in% colnames(designTable)) {
+    stop("Can not find '", batch ,"' in the sampleTable colnames, please check your input ...", call. = FALSE)
   }
+  mod = model.matrix(~as.factor(designTable[, design]), data = designTable)
   if (method == "ComBat") {
-    mod = model.matrix(~as.factor(designTable[, design]), data = designTable)
-    corrected.expr <- ComBat(dat = expr.data, batch = designTable[, key_words], mod = mod)
+    corrected.expr <- ComBat(dat = expr.data, batch = designTable[, batch], mod = mod)
   }else {
-    corrected.expr <- removeBatchEffect(x = expr.data, batch = designTable[, key_words], covariates = designTable)
+    if (is.null(batch2)) {
+      corrected.expr <- removeBatchEffect(x = expr.data, batch = as.factor(designTable[, batch]), design = mod)
+    }else {
+      corrected.expr <- removeBatchEffect(x = expr.data, batch = as.factor(designTable[, batch]), batch2 = as.factor(designTable[, batch2]), design = mod)
+    }
   }
   return(corrected.expr)
 }
@@ -75,11 +79,11 @@ remove.Batch <- function(expr.data, designTable, key_words = "batch", design = "
 #' @param nsub the number of genes to subset to (default 1000)
 #' @param trans.method method for transforming data, 'rlog' or 'vst'
 #' @param batch.method method for remove batch effects, 'ComBat', 'removeBatchEffect' or NULL
-#' @param key_words a column name will treated as batch effector
+#' @param batch a column name will treated as batch effector
 #' @importFrom DESeq2 rlog vst
 #' @export
 #'
-transform_value <- function(object, blind, fitType, nsub, trans.method, batch.method = 'NULL', key_words = NULL) {
+transform_value <- function(object, blind, fitType, nsub, trans.method, batch.method = 'NULL', batch = NULL, batch2 = NULL) {
   if (trans.method == "rlog") {
     trans_data <- rlog(object, blind = as.logical(blind), fitType = fitType)
   }else {
@@ -88,7 +92,7 @@ transform_value <- function(object, blind, fitType, nsub, trans.method, batch.me
 
   if (batch.method != 'NULL') {
     cor.expr <- remove.Batch(expr.data = assay(trans_data), designTable = subset(trans_data@colData, select = -sizeFactor),
-                                 key_words = key_words, design = "condition", method = batch.method)
+                                 batch = batch, batch2 = batch2, design = "condition", method = batch.method)
 
     assay(trans_data) <- cor.expr
   }

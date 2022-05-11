@@ -1,5 +1,5 @@
 observe({
-  if (input$nWGCNA_3 | input$pORA) {
+  if (input$nWGCNA_4 | input$pORA) {
     updateTabsetPanel(session = session, inputId = 'mainMenu', selected = "gprofiler2")
   }
 })
@@ -60,24 +60,24 @@ gprofiler_object <- eventReactive(input$runGprofiler,{
 
     if (length(GeneList) > 1) {
       incProgress(0.6, detail = "Running gProfiler ...")
-      gostres <- gost(query = GeneList,
+      gostres <- try(gost(query = GeneList,
                       sources = input$gprofiler_sources,
                       organism = species()$id[species()$display_name == input$gprofiler_species],
                       user_threshold = input$gprofiler_pval,
                       correction_method = input$gprofiler_cor_method,
                       evcodes = as.logical(input$gprofiler_evcodes),
                       exclude_iea = as.logical(input$gprofiler_excludeIEA),
-                      significant = as.logical(input$gprofiler_significant))
+                      significant = as.logical(input$gprofiler_significant)), silent = TRUE)
     }else {
       incProgress(0.6, detail = "Running gProfiler ...")
-      gostres <- gost(query = GeneList %>% unlist,
+      gostres <- try(gost(query = GeneList %>% unlist,
                       sources = input$gprofiler_sources,
                       organism = species()$id[species()$display_name == input$gprofiler_species],
                       user_threshold = input$gprofiler_pval,
                       correction_method = input$gprofiler_cor_method,
                       evcodes = as.logical(input$gprofiler_evcodes),
                       exclude_iea = as.logical(input$gprofiler_excludeIEA),
-                      significant = as.logical(input$gprofiler_significant))
+                      significant = as.logical(input$gprofiler_significant)), silent = TRUE)
     }
   })
   return(gostres)
@@ -87,18 +87,26 @@ gprofiler_object <- eventReactive(input$runGprofiler,{
 observeEvent(input$runGprofiler,{
   js$collapse("gprofiler_tab")
   gprofiler_object()
-  if (dim(gprofiler_object()$result)[1] != 0) {
-    shinyjs::enable("Plot_gprofiler")
-    shinyalert(title = "Run of gProfiler finished!", type = "success")
+  if ('try-error' %in% class(gprofiler_object())) {
+    shinyalert(title = "error", text = paste0(gprofiler_object()[1], "Please try again later!"), type = "error", confirmButtonText = "Close")
   }else {
-    shinyjs::disable("Plot_gprofiler")
-    shinyalert(title = "warning", text = "No Tems Was Enriched !!!", type = "warning")
+    if (dim(gprofiler_object()$result)[1] != 0) {
+      shinyjs::enable("Plot_gprofiler")
+      shinyalert(title = "Run of gProfiler finished!", type = "success")
+    }else {
+      shinyjs::disable("Plot_gprofiler")
+      shinyalert(title = "warning", text = "No Tems Was Enriched !!!", type = "warning")
+    }
   }
 })
 
 ##-----------------------------------------------------------
 ## Visualize Enrichment results
 output$sourceTypes <- renderUI({
+  if(is.null(gprofiler_object()))
+    return(NULL)
+  if ('try-error' %in% class(gprofiler_object()))
+    return(NULL)
   if (input$gprofiler_type=='dotplot' | input$gprofiler_type=='exprs_heatmap') {
     result_data <- gprofiler_object()$result
     source <- result_data$source %>% unique()
@@ -107,6 +115,10 @@ output$sourceTypes <- renderUI({
 })
 
 output$gprofiler_termID <- renderUI({
+  if(is.null(gprofiler_object()))
+    return(NULL)
+  if ('try-error' %in% class(gprofiler_object()))
+    return(NULL)
   if (input$gprofiler_type=='gostplot' | input$gprofiler_type=='gosttable') {
     result_data <- gprofiler_object()$result
     id <- result_data$term_id
@@ -130,10 +142,14 @@ output$gprofiler_termID <- renderUI({
 # })
 #
 output$gprofiler_termID2 <- renderUI({
+  if(is.null(gprofiler_object()))
+    return(NULL)
+  if ('try-error' %in% class(gprofiler_object()))
+    return(NULL)
   result_data <- gprofiler_object()$result[gprofiler_object()$result$source == input$sourceTypes, ]
   id <- result_data$term_name
   if (length(id) != 0) {
-    selectInput("gprofiler_termID2","Terms to Plot",choices = id, multiple = F,width = "100%")
+    selectInput("gprofiler_termID2","Terms to Plot", choices = id, multiple = F,width = "100%")
   }
 })
 
@@ -144,14 +160,24 @@ output$gprofiler_exprs_group <- renderUI({
 })
 
 gprofilerPlot <- eventReactive(input$Plot_gprofiler,{
+  if (input$gprofiler_genes=="DEGs") {
+    Level_groups <- input$gprofiler_degs
+  }else if (input$gprofiler_genes=="DEG Patterns") {
+    Level_groups <- input$gprofiler_patterns
+  }else if (input$gprofiler_genes=="WGCNA Modules") {
+    Level_groups <- input$gprofiler_modules
+  }
+  gostres <- gprofiler_object()
+  gostres$results$query <- factor(gostres$results$query, levels = Level_groups)
+
   par(mar=c(2,2,2,2))
   if (input$gprofiler_type == "gostplot") {
-    p <- gostplot(gprofiler_object(), capped = FALSE, interactive = FALSE)
+    p <- gostplot(gostres, capped = FALSE, interactive = FALSE)
     pp <- publish_gostplot2(p, highlight_terms = input$gprofiler_termID, filename = NULL,
                             fontsize = input$gprofiler_tbfontsize, show_link = input$gprofiler_showLink  %>% as.logical,
                             show_columns = input$gprofiler_showColumns)
   }else if (input$gprofiler_type == "gosttable") {
-    pp <- publish_gosttable2(gprofiler_object(), highlight_terms = input$gprofiler_termID, use_colors = TRUE,filename = NULL,
+    pp <- publish_gosttable2(gostres, highlight_terms = input$gprofiler_termID, use_colors = TRUE,filename = NULL,
                             fontsize = input$gprofiler_tbfontsize, show_link = input$gprofiler_showLink %>% as.logical,
                             show_columns = input$gprofiler_showColumns)
   }else if (input$gprofiler_type == "dotplot") {
@@ -160,11 +186,11 @@ gprofilerPlot <- eventReactive(input$Plot_gprofiler,{
     } else {
       plot_terms <- NULL
     }
-    pp <- publish_gostdot(object = gprofiler_object(), by = input$gprofiler_orderBy, terms = plot_terms,
+    pp <- publish_gostdot(object = gostres, by = input$gprofiler_orderBy, terms = plot_terms,
                              source = input$sourceTypes, showCategory = input$gprofiler_n_terms, font.size = input$gprofiler_fontsize)
   }else {
-    if (dim(gprofiler_object()$result)[1] != 0) {
-      geneID <- gprofiler_object()$result[gprofiler_object()$result$term_name %in% input$gprofiler_termID2, "intersection"]
+    if (dim(gostres$result)[1] != 0) {
+      geneID <- gostres$result[gostres$result$term_name %in% input$gprofiler_termID2, "intersection"]
       genes <- str_split(geneID, pattern = ",")[[1]]
 
       sampleTable <- as.data.frame(colData(dds()))[dds()$condition %in% input$gprofiler_exprs_group, ]

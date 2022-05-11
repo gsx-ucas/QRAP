@@ -42,6 +42,8 @@ output$pathview_id <- renderUI({
       shinyalert(title = "warning", text = "Please run enrich KEGG using gProfiler2 first !!!", type = "warning")
       return(NULL)
     }else {
+      if ('try-error' %in% class(gprofiler_object()))
+        return(NULL)
       shinyjs::enable("show_pathview")
       id <- (gprofiler_object()$result %>% filter(source == "KEGG") %>% select(term_id))[,1] %>% str_remove_all(pattern = "KEGG:")
       names(id) <- (gprofiler_object()$result %>% filter(source == "KEGG") %>% select(term_name))[, 1]
@@ -90,7 +92,7 @@ observeEvent(input$show_pathview, {
       if (file.exists(paste0("www/Kegg_dir/", kegg_id, input$pathview_id, ".pathview.png"))) {
         tags$image(style = paste0("width:", input$pathview_plot_width, "%;",
                                   "height:", input$pathview_plot_height, "px;scrolling=no"),
-                   alt = "Oops, please click the `show pathway graph` button first and then the picture will be show",
+                   alt = "Oops, something wrong...",
                    src = paste0("Kegg_dir/", kegg_id, input$pathview_id, ".pathview.png"))
       }
     })

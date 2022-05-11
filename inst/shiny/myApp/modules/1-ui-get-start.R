@@ -29,9 +29,10 @@ fluidPage(
   column(
     12,
     hr(),
-    fluidRow(column(2), column(3, actionLink("pStart", "<< Home", style = "font-size: 20px")),
-             column(4, p("You are in get start page ...", style = "color: grey; font-size: 20px")),
-             column(3, actionLink("nStart", "Next >>", style = "font-size: 20px"))),
-    br()
+    fluidRow(
+      column(3, align = "right", actionLink("pStart", "<< Home", style = "font-size: 20px")),
+      column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
+      column(3, align = "left", actionLink("nStart", "Next >>", style = "font-size: 20px"))
+    ),
   )
 )

@@ -1,7 +1,7 @@
 fluidPage(
   style = "margin-left: 10px; margin-right:10px;",
   box(
-    title = "Runing gProfiler:", id = "gprofiler_tab", width = 12, collapsible = TRUE,
+    title = "Runing gProfiler:", id = "gprofiler_tab", width = 12, collapsible = TRUE, solidHeader = TRUE,
     fluidRow(
       column(3, selectInput("gprofiler_genes", "What genes to used:",  c("DEGs", "DEG Patterns", "WGCNA Modules"),width = "100%")),
       column(3, uiOutput('gprofiler_gsets')),
@@ -25,8 +25,10 @@ fluidPage(
         fluidPage(
           style = "padding-top: 5px; padding-left: 0px; padding-right: 0px;margin-left: 0px; margin-right: 0px;",
           box(
-            title = "Enrichment Results Visualiztion", width = 4, collapsible = T,
-            radioButtons("gprofiler_type", "Plot types:", c("gostplot", "gosttable", "dotplot", "exprs_heatmap"), inline = T, width = "100%"),
+            title = "Enrichment Results Visualiztion", width = 4, collapsible = T, solidHeader = TRUE,
+            # radioButtons("gprofiler_type", "Plot types:", c("dotplot", "gostplot", "gosttable", "exprs_heatmap"), inline = T, width = "100%"),
+            prettyRadioButtons(inputId = "gprofiler_type", label = "Plot types:", animation = "jelly", inline = TRUE,
+                               choices = c("dotplot", "gostplot", "gosttable", "exprs_heatmap"), icon = icon("check"), status = "info"),
             uiOutput("sourceTypes"),
             conditionalPanel(
               "input.gprofiler_type != 'exprs_heatmap'",
@@ -71,13 +73,25 @@ fluidPage(
           column(
             6,
             wellPanel(
-              dropdownButton(
-                numericInput('gprofiler_width', 'Figure Width:', min = 1, max = 20, value = 12, width = "100%"),
-                numericInput('gprofiler_height', 'Figure Height:', min = 1, max = 20, value = 6, width = "100%"),
-                downloadButton('gprofiler_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
-                circle = FALSE, status = "danger", size = "sm",
-                icon = icon("save"), width = "200px",
-                tooltip = tooltipOptions(title = "Click to download figures !")
+              style = "padding-top:5px",
+              fluidRow(
+                column(
+                  12, style = "padding-left:0px;margin-left:0px;padding-right:0px;margin-right:0px;border-bottom:solid 1px rgb(224,224,224)",
+                  column(
+                    6, style = "padding-left:10px;",
+                    tags$h4("Enrichment Results Visualization:")
+                  ),
+                  column(
+                    6, align = "right", style = "padding-top:5px;",
+                    dropdownButton(
+                      numericInput('gprofiler_width', 'Figure Width:', min = 1, max = 20, value = 12, width = "100%"),
+                      numericInput('gprofiler_height', 'Figure Height:', min = 1, max = 20, value = 6, width = "100%"),
+                      downloadButton('gprofiler_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
+                      circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
+                      right = TRUE, tooltip = tooltipOptions(title = "Click to download figures !")
+                    )
+                  )
+                )
               ),
               uiOutput("gprofilerPlotUI")
               # withSpinner(plotOutput("gprofilerPlot", height = "550px", width = "100%"))
@@ -106,8 +120,8 @@ fluidPage(
   column(
     12,
     hr(),
-    fluidRow(column(2), column(3, actionLink("pGprofiler", "<< Previous", style = "font-size: 20px")),
-             column(4, p("You are in gProfiler page ...", style = "color: grey; font-size: 20px")),
-             column(3, actionLink("nGprofiler", "Next >>", style = "font-size: 20px")))
+    fluidRow(column(3, align = "right", actionLink("pGprofiler", "<< Previous", style = "font-size: 20px")),
+             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
+             column(3, align = "left", actionLink("nGprofiler", "Next >>", style = "font-size: 20px")))
   )
 )

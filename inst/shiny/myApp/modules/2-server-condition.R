@@ -12,7 +12,12 @@ sampleTable <- reactive({
     if(is.null(inFile))
       return(NULL)
     df <- read.table(inFile$datapath, header = T, sep = ',', stringsAsFactors = F)
-    df$condition <- factor(df$condition, levels = unique(df$condition))
+    for (i in colnames(df)[!colnames(df) %in% "samples"]) {
+      if (is.character(df[,i])) {
+        df[,i] <- factor(df[,i], levels = unique(df[,i]))
+      }
+    }
+    # df$condition <- factor(df$condition, levels = unique(df$condition))
   }else {
     conditions <- data() %>% colnames %>% str_replace(replacement = '', pattern = '-.*')
     df <- data.frame(samples = colnames(data()), condition=factor(conditions, levels = unique(conditions)))
@@ -44,9 +49,27 @@ output$batch_col <- renderUI({
   )
 })
 
+output$batch_col2 <- renderUI({
+  if (input$batch_methods == "removeBatchEffect") {
+    selectInput(
+      inputId = "batch_col2",
+      label = "Group as batch factor:",
+      choices = c("NULL", sampleTable()[, !colnames(sampleTable()) %in% c("samples", "condition", input$batch_col)] %>% colnames),
+      selected = "NULL",
+      width = "100%"
+    )
+  }
+})
+
 output$formula <- renderUI({
   if (input$batch_methods == 'NULL') {
     textInput("formula", "Design formula:", value = "~ condition", width = "100%")
+  }else if (input$batch_methods == "removeBatchEffect") {
+    if (input$batch_col2 != "NULL") {
+      textInput("formula", "Design formula:", value = paste0('~ ', input$batch_col, " + ", input$batch_col2, " + condition"), width = "100%")
+    }else {
+      textInput("formula", "Design formula:", value = paste0('~ ', input$batch_col, " + condition"), width = "100%")
+    }
   }else {
     textInput("formula", "Design formula:", value = paste0('~ ', input$batch_col, " + condition"), width = "100%")
   }
@@ -72,11 +95,20 @@ dds <- eventReactive(input$runDESeq,{
 ##-----------------Extracting transformed values----------------------------##
 trans_value <- eventReactive(input$runDESeq,{
   withProgress(message = "", min = 0, max = 1, value = 0,{
+
+    if (input$batch_methods == "removeBatchEffect") {
+      if (input$batch_col2 != "NULL") {
+        batch_col2 <- input$batch_col2
+      }
+    }else {
+      batch_col2 <- NULL
+    }
+
     if (input$trans_method=="rlog") {
       if (input$run_cache != T | !file.exists("./Cache/Deseq_rlog.rds")) {
         incProgress(0.5, detail = paste("transforming values by rlog, this will take a while ..."))
         trans_data <- try(transform_value(object = dds(), blind = as.logical(input$trans_blind), fitType = input$trans_fitType,
-                                          nsub = input$trans_nsub, trans.method = "rlog", batch.method = input$batch_methods, key_words = input$batch_col))
+                                          nsub = input$trans_nsub, trans.method = "rlog", batch.method = input$batch_methods, batch = input$batch_col, batch2 = batch_col2))
       }else {
         incProgress(0.5, detail = paste("Loading Existed Object from Cache..."))
         trans_data <- readRDS("Cache/Deseq_rlog.rds")
@@ -85,7 +117,7 @@ trans_value <- eventReactive(input$runDESeq,{
       if (input$run_cache != T | !file.exists("./Cache/Deseq_vst.rds")) {
         incProgress(0.5, detail = paste("transforming values by vst, this will take a while ..."))
         trans_data <- try(transform_value(object = dds(), blind = as.logical(input$trans_blind), fitType = input$trans_fitType,
-                                          nsub = input$trans_nsub, trans.method = "vst", batch.method = input$batch_methods, key_words = input$batch_col))
+                                          nsub = input$trans_nsub, trans.method = "vst", batch.method = input$batch_methods, batch = input$batch_col, batch2 = batch_col2))
       }else {
         incProgress(0.5, detail = paste("Loading Existed Object from Cache..."))
         trans_data <- readRDS("./Cache/Deseq_vst.rds")
@@ -98,12 +130,19 @@ trans_value <- eventReactive(input$runDESeq,{
 norm_value <- eventReactive(input$runDESeq,{
   withProgress(message = "", min = 0, max = 1, value = 0,{
     if (input$run_cache != T | !file.exists("./Cache/Normalized_Values.rds")) {
-      data <- counts(dds(), normalized=TRUE) %>% as.data.frame()
+      data <- log2(counts(dds(), normalized=TRUE) %>% as.data.frame() + 1)
 
       incProgress(0.5, detail = paste("Removing batch effects of Normalized values ..."))
       if (input$batch_methods != 'NULL') {
-        data <- remove.Batch(expr.data = data, designTable = subset(dds()@colData, select = -sizeFactor),
-                             key_words = input$batch_col, design = "condition", method = input$batch_methods)
+        if (input$batch_methods == "removeBatchEffect") {
+          if (input$batch_col2 != "NULL") {
+            batch_col2 <- input$batch_col2
+          }
+        }else {
+          batch_col2 <- NULL
+        }
+        data <- remove.Batch(expr.data = data, designTable = dds()@colData,
+                             batch = input$batch_col, batch2 = batch_col2, design = "condition", method = input$batch_methods)
       }
       saveRDS(data, "./Cache/Normalized_Values.rds")
     }else {

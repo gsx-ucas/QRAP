@@ -3,7 +3,7 @@ fluidPage(
   column(
     4,
     box(
-      id = "degsp_run", title = "Run parameters:", width = 12, collapsible = TRUE,
+      id = "degsp_run", title = "Run parameters:", width = 12, collapsible = TRUE, solidHeader = TRUE,
       switchInput(inputId = "degsp_switch", label = "Use Cache", onStatus = "success", offStatus = "danger", inline = T, labelWidth = "100px"),
       uiOutput('degsp_group'),
       numericInput("degsp_minc","Minimum number of genes in a group that will be return:", value = 30, width = "100%"),
@@ -16,7 +16,7 @@ fluidPage(
     conditionalPanel(
       "input.run_degsp",
       box(
-        title = "Plot parameters:", width = 12, collapsible = TRUE,
+        title = "Plot parameters:", width = 12, collapsible = TRUE, solidHeader = TRUE,
         radioButtons("degsp_type", "visualize type:", c("BoxPlot", "HeatMap"), width = "100%", inline = T),
         uiOutput("degsp_cluster"),
         uiOutput("degsp_order"),
@@ -69,12 +69,25 @@ fluidPage(
   column(
     6,
     wellPanel(
-      dropdownButton(
-        numericInput('degsp_width', 'Figure Width:', min = 1, max = 20, value = 7, width = "100%"),
-        numericInput('degsp_height', 'Figure Height:', min = 1, max = 20, value = 5, width = "100%"),
-        downloadButton('degsp_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
-        circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
-        tooltip = tooltipOptions(title = "Click to download figures !")
+      style = "padding-top:5px",
+      fluidRow(
+        column(
+          12, style = "padding-left:0px;margin-left:0px;padding-right:0px;margin-right:0px;border-bottom:solid 1px rgb(224,224,224)",
+          column(
+            6, style = "padding-left:10px;",
+            tags$h4("Plots of DEG Patterns:")
+          ),
+          column(
+            6, align = "right", style = "padding-top:5px;",
+            dropdownButton(
+              numericInput('degsp_width', 'Figure Width:', min = 1, max = 20, value = 7, width = "100%"),
+              numericInput('degsp_height', 'Figure Height:', min = 1, max = 20, value = 5, width = "100%"),
+              downloadButton('degsp_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
+              circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px", right = TRUE,
+              tooltip = tooltipOptions(title = "Click to download figures !")
+            )
+          )
+        )
       ),
       uiOutput("degsp_plotUI")
     )
@@ -89,7 +102,7 @@ fluidPage(
   conditionalPanel(
     "input.plot_degsp", style = "margin-left: 10px;",
     box(
-      title = "DEGs pattern table:", width = 12,
+      title = "DEGs pattern table:", width = 12, solidHeader = TRUE,
       fluidRow(
         column(
           12,
@@ -102,8 +115,8 @@ fluidPage(
   column(
     12,
     hr(),
-    fluidRow(column(2), column(3, actionLink("pDegsp", "<< Previous", style = "font-size: 20px")),
-             column(4, p("You are in DEG pattern page ...", style = "color: grey; font-size: 20px")),
-             column(3, actionLink("nDegsp", "Next >>", style = "font-size: 20px")))
+    fluidRow(column(3, align = "right", actionLink("pDegsp", "<< Previous", style = "font-size: 20px")),
+             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
+             column(3, align = "left", actionLink("nDegsp", "Next >>", style = "font-size: 20px")))
   )
 )

@@ -4,240 +4,184 @@ observe({
   }
 })
 
-# STRING_species <- reactive({
-#   species <- readRDS(system.file("shiny", "myApp/www/Species/stringDB_species.rds", package = "QRseq"))
-# })
-#
-# output$STRING_species <- renderUI({
-#   selectizeInput("string_species", "Select species:", choices = c("", STRING_species()$official_name), width = "100%")
-# })
-
 output$ppi_group <- renderUI({
-  selectInput(
-    inputId = "ppi_group", "Groups Of Differential Expressed Genes:", choices = dir("DEGs") %>% stringr::str_remove_all(".csv"),width = "100%")
+  if (input$ppi_genes == "DEGs") {
+    if (length(dir("DEGs")) == 0) {
+      shinyjs::disable("Init_STRINGdb")
+      selectInput(inputId = "ppi_group", label = "Groups Of Differential Expressed Genes:", width = "100%",
+                  choices = "*Please Run DEGs First !!!", selected = "*Please Run DEGs Patterns First !!!")
+    }else {
+      shinyjs::enable("Init_STRINGdb")
+      selectInput(
+        inputId = "ppi_group", "Groups Of Differential Expressed Genes:", width = "100%",
+        choices = dir("DEGs") %>% stringr::str_remove_all(".csv"), selected = stringr::str_remove_all(dir("DEGs"), ".csv")[1])
+    }
+  }else if (input$ppi_genes == "DEG Patterns") {
+    if (input$run_degsp == 0) {
+      shinyjs::disable("Init_STRINGdb")
+      selectInput(inputId = "ppi_patterns", label = "Select Patterns ID:", width = "100%",
+                  choices = "*Please Run DEGs Patterns First !!!", selected = "*Please Run DEGs Patterns First !!!")
+      # p("*Please Run DEGs Patterns First!", style = "color: red; padding-top: 30px; padding-bttom: 30px; font-weight: 700px; width: 100%")
+    }else {
+      shinyjs::enable("Init_STRINGdb")
+      selectInput(inputId = "ppi_patterns", label = "Select Patterns ID:", width = "100%",
+                  choices = degsp_object()$normalized$cluster %>% unique %>% as.character)
+    }
+  }else if (input$ppi_genes=="WGCNA Modules") {
+    if (input$moldue_detect == 0) {
+      shinyjs::disable("Init_STRINGdb")
+      selectInput(inputId = "ppi_modules", label = "Select WGCNA Modules ID:", width = "100%",
+                  choices = "*Please Run WGCNA First !!!", selected = "*Please Run WGCNA First !!!")
+      # p("*Please Run WGCNA First!", style = "color: red; padding-top: 30px; padding-bttom: 30px; font-weight: 700px; width: 100%")
+    }else {
+      shinyjs::enable("Init_STRINGdb")
+      MEs0 = moduleEigengenes(datExpr(), moduleColors())$eigengenes
+      MEs = orderMEs(MEs0)
+      selectInput(inputId = "ppi_modules", label = "Select WGCNA Modules ID:",
+                  choices = substring(names(MEs), first = 3), width = "100%")
+    }
+  }
 })
 
 observeEvent(input$get_DEGs,{
-  updatePickerInput(
+  updateSelectInput(
     session = session, inputId = "ppi_group",
     choices = dir("DEGs") %>% stringr::str_remove_all(".csv")
   )
 })
 
-# output$ppi_degenes <- renderUI({
-#   pickerInput(
-#     inputId = "ppi_degenes", "Select DEGs to plot:", choices = rownames(load.DEGs(input$ppi_group)[[1]]),
-#     width = "100%", multiple = T, options = list(`actions-box` = TRUE, `live-search` = TRUE, size = 5))
-# })
+output$ppi_subGene <- renderUI({
+  if (input$ppi_genes=="DEGs") {
+    if (is.null(input$ppi_group))
+      return(NULL)
+    identifiers <- load.DEGs(input$ppi_group)[[1]] %>% rownames()
+  }else if (input$ppi_genes=="WGCNA Modules") {
+    if (is.null(input$ppi_modules))
+      return(NULL)
+    identifiers <- names(moduleColors())[moduleColors() == input$ppi_modules]
+  }else if (input$ppi_genes=="DEG Patterns") {
+    if (is.null(input$ppi_patterns))
+      return(NULL)
+    identifiers <- degsp_object()$df[degsp_object()$df$cluster == as.integer(input$ppi_patterns), "genes"]
+  }
 
-string_db <- eventReactive(input$Init_STRINGdb, {
-  withProgress(message = "",{
-    string_species <- species()$taxon_id[species()$display_name == input$gprofiler_species] %>% as.integer
-    if (input$score_threshold <= 400) {
-      score <- input$score_threshold
-    }else {
-      score <- 400
-    }
-    incProgress(0.5, detail = "Initializing & downloading data, please wait...")
-    string_dir <- system.file("stringDB", package = "QRseq")
-    string_db <- STRINGdb$new(version = "11", species=string_species, score_threshold=score, input_directory = string_dir)
-  })
-  return(string_db)
-})
-
-diff_exp <- eventReactive(input$Init_STRINGdb, {
-  withProgress(message = "",{
-    incProgress(0.2, detail = "extract differential expression genes...")
-    Des <- load.DEGs(input$ppi_group)[[1]]
-    diff_exp <- data.frame(pvalue=Des$padj, logFC=Des$log2FoldChange, gene=rownames(Des))
-  })
-  return(diff_exp)
-})
-
-PPI_hits <- eventReactive(input$Init_STRINGdb, {
-  withProgress(message = "",{
-    string_db <- string_db()
-    string_species <- species()$taxon_id[species()$display_name == input$gprofiler_species]
-
-    incProgress(0.6, detail = "mapping genes to protein, please wait a while...")
-
-    diff_mapped <- try(string_db$map(diff_exp(), "gene", removeUnmappedRows = TRUE))
-
-    if ('try-error' %in% class(diff_mapped)) {
-      string_dir <- system.file("stringDB", package = "QRseq")
-      file.remove(dir(string_dir, pattern = paste0(string_species, ".protein.aliases"), full.names = T))
-      file.remove(dir(string_dir, pattern = paste0(string_species, ".protein.info"), full.names = T))
-      shinyalert(title = "error", text = paste0(diff_mapped[1], ", Please check your network or try again!"), type = "error", confirmButtonText = "Close")
-      hits <- NULL
-    }else {
-      hits <- diff_mapped$STRING_id
-
-      if (input$ppi_cluster == "TRUE") {
-        incProgress(0.2, detail = "clustering proteins, please wait a while...")
-        hits <- try(string_db$get_clusters(hits))
-
-        if ('try-error' %in% class(hits)) {
-          string_dir <- system.file("stringDB", package = "QRseq")
-          file.remove(dir(string_dir, pattern = paste0(string_species, ".protein.links"), full.names = T))
-
-          shinyalert(title = "error", text = paste0(diff_mapped[1], ", Please check your network or try again!"), type = "error", confirmButtonText = "Close")
-          hits <- NULL
-        }
-      }
-    }
-  })
-  return(hits)
-})
-
-observeEvent(input$Init_STRINGdb, {
-  js$collapse("run_ppi_card")
-})
-
-output$string_cluster <- renderUI({
-  if (input$ppi_cluster == "TRUE" & !is.null(PPI_hits())) {
-    selectInput("ppi_cluster_id", "Protein cluster ID:", choices = 1:length(PPI_hits()), selected = 1, width = "100%")
+  if (length(identifiers) > 400) {
+    fluidPage(
+      style = "padding-top:0px; padding-left:0px; padding-right:0px; padding-bottom:10px; margin-top:0px; margin-left:0px; margin-right:0px",
+      strong(paste("Selected", length(identifiers), "genes, but only first 400
+                 highest connective genes will be used to perform PPI analysis."), style = "text-align:justify; color:orange;")
+    )
   }
 })
 
-observeEvent(input$plot_STRINGdb, {
-  withProgress(message = "",{
-    if(is.null(PPI_hits()))
+output$required_score <- renderUI({
+  if (input$ppi_genes=="DEGs") {
+    if (is.null(input$ppi_group))
       return(NULL)
-    string_db <- string_db()
-    if (is.list(PPI_hits())) {
-      hits <- PPI_hits()[[as.numeric(input$ppi_cluster_id)]]
-      ppiview_name <- paste0(input$ppi_group, "_", input$ppi_cluster_id, "_ppi_network.pdf")
-    }else {
-      hits <- PPI_hits()
-      ppiview_name <- paste0(input$ppi_group, "_ppi_network.pdf")
-    }
-
-    if (!dir.exists("www/PPI_network")) {
-      dir.create("www/PPI_network", recursive = T)
-    }
-
-    incProgress(0.6, detail = "plotting, please wait a while...")
-    pdf(paste0("www/PPI_network/", ppiview_name), width = input$ppi_pdfsize[1], height = input$ppi_pdfsize[2])
-    string_db$plot_network( hits )
-    dev.off()
-
-    output$PPI_iframe <- renderUI({
-      if(is.null(PPI_hits()))
-        return(NULL)
-      if (is.list(PPI_hits())) {
-        if (file.exists(paste0("www/PPI_network/", input$ppi_group, "_", input$ppi_cluster_id, "_ppi_network.pdf"))) {
-          tags$object(type="application/pdf",
-                      width = "100%",
-                      height = "1000px",
-                      alt = "Oops, please click the `plot_STRINGdb` button first and then the picture will be show",
-                      data = paste0("PPI_network/", input$ppi_group, "_", input$ppi_cluster_id, "_ppi_network.pdf"))
-        }
-      }else {
-        if (file.exists(paste0("www/PPI_network/", input$ppi_group,"_ppi_network.pdf"))) {
-          tags$object(type="application/pdf",
-                      width = "100%",
-                      height = "1000px",
-                      alt = "Oops, please click the `plot_STRINGdb` button first and then the picture will be show",
-                      data = paste0("PPI_network/", input$ppi_group,"_ppi_network.pdf"))
-        }
-      }
-    })
-
-    # output$PPI_iframe <- renderUI({
-    #   if(is.null(PPI_hits()))
-    #     return(NULL)
-    #   if (is.list(PPI_hits())) {
-    #     tags$object(type="application/pdf",
-    #                 width = "100%",
-    #                 height = "1000px",
-    #                 alt = "Oops, please click the `plot_STRINGdb` button first and then the picture will be show",
-    #                 data = paste0("PPI_network/", input$ppi_group, "_", input$ppi_cluster_id, "_ppi_network.pdf"))
-    #   }else {
-    #     tags$object(type="application/pdf",
-    #                 width = "100%",
-    #                 height = "1000px",
-    #                 alt = "Oops, please click the `plot_STRINGdb` button first and then the picture will be show",
-    #                 data = paste0("PPI_network/", input$ppi_group,"_ppi_network.pdf"))
-    #   }
-    # })
-  })
+    identifiers <- load.DEGs(input$ppi_group)[[1]] %>% rownames()
+  }else if (input$ppi_genes=="WGCNA Modules") {
+    if (is.null(input$ppi_modules))
+      return(NULL)
+    identifiers <- names(moduleColors())[moduleColors() == input$ppi_modules]
+  }else if (input$ppi_genes=="DEG Patterns") {
+    if (is.null(input$ppi_patterns))
+      return(NULL)
+    identifiers <- degsp_object()$df[degsp_object()$df$cluster == as.integer(input$ppi_patterns), "genes"]
+  }
+  numericInput("required_score", "Threshold of significance to include an interaction:", value = 400, width = "100%")
 })
 
-# output$PPI_iframe <- renderUI({
-#   if(is.null(PPI_hits()))
-#     return(NULL)
-#   if (is.list(PPI_hits())) {
-#     if (file.exists(paste0("PPI_network/", input$ppi_group, "_", input$ppi_cluster_id, "_ppi_network.pdf"))) {
-#       tags$object(type="application/pdf",
-#                   width = "100%",
-#                   height = "1000px",
-#                   alt = "Oops, please click the `plot_STRINGdb` button first and then the picture will be show",
-#                   data = paste0("PPI_network/", input$ppi_group, "_", input$ppi_cluster_id, "_ppi_network.pdf"))
-#     }
-#   }else {
-#     if (file.exists(paste0("PPI_network/", input$ppi_group,"_ppi_network.pdf"))) {
-#       tags$object(type="application/pdf",
-#                   width = "100%",
-#                   height = "1000px",
-#                   alt = "Oops, please click the `plot_STRINGdb` button first and then the picture will be show",
-#                   data = paste0("PPI_network/", input$ppi_group,"_ppi_network.pdf"))
-#     }
-#   }
-# })
+string_db <- eventReactive(input$Init_STRINGdb, {
+  withProgress(message = "", {
+    string_species <- species()$taxon_id[species()$display_name == input$gprofiler_species] %>% as.integer
+    # if (input$required_score <= 400) {
+    #   score <- input$required_score
+    # }else {
+    #   score <- 400
+    # }
 
-# output$ppi_Pdf <- downloadHandler(
-#   filename = function()  {paste0("Protein_to_protein_network",".pdf")},
-#   content = function(file) {
-#     file.copy("www/PPI_network.pdf", file)
-#   }
-# )
+    incProgress(0.1, detail = "Initializing, please wait...")
+    if (input$ppi_genes=="DEGs") {
+      incProgress(0.1, detail = "Loading differential genes ...")
+      df <- load.DEGs(input$ppi_group)[[1]]
+      identifiers <- df[order(df$padj, decreasing = F), ] %>% rownames()
+      if (length(identifiers) > 400) {
+        identifiers <- identifiers[1:400]
+      }
+    }else if (input$ppi_genes=="WGCNA Modules") {
+      incProgress(0.1, detail = "Loading WGCNA module genes ...")
+      identifiers <- names(moduleColors())[moduleColors() == input$ppi_modules]
+      if (length(identifiers) > 400) {
+        IMConn = softConnectivity(datExpr()[, identifiers])
+        identifiers <- identifiers[rank(-IMConn) <= 400]
+      }
+    }else if (input$ppi_genes=="DEG Patterns") {
+      incProgress(0.1, detail = "Loading expression pattern genes ...")
+      identifiers <- degsp_object()$df[degsp_object()$df$cluster == as.integer(input$ppi_patterns), "genes"]
+      if (length(identifiers) > 400) {
+        IMConn = softConnectivity(t(assay(trans_value()))[ ,rownames(trans_value()) %in% identifiers])
+        identifiers <- identifiers[rank(-IMConn) <= 400]
+      }
+    }
 
+    incProgress(0.1, detail = "preparing identifiers for analysis ...")
 
-# PPI_plot <- eventReactive(input$plot_STRINGdb, {
-#   # withProgress(message = "",{
-#     string_db <- string_db()
-#     hits <- PPI_hits()
-#     # incProgress(0.6, detail = "plotting, please wait a while...")
-#     string_db$plot_network( hits )
-#   # })
-#   # return(p)
-# })
+    ppi_identifiers <- paste(identifiers, collapse = "%0d")
 
-# observeEvent(input$plot_STRINGdb, {
-#   string_db()
-#   PPI_hits()
-#   # PPI_plot()
-#   # if ('try-error' %in% class(PPI_plot())) {
-#   #   shinyalert(title = "error", text = PPI_plot()[1], type = "error", confirmButtonText = "Close")
-#   # }else {
-#   #   shinyalert(title = "success", text = "PPI Network Analysis has completed !", type = "success")
-#   # }
-# })
+    incProgress(0.1, detail = "getting image results ...")
 
-# output$PPI_Plot <- renderPlot({
-#   withProgress(message = "",{
-#     string_db <- string_db()
-#     hits <- PPI_hits()
-#     incProgress(0.6, detail = "plotting, please wait a while...")
-#     string_db$plot_network( hits )
-#   })
-#   # PPI_plot()
-# })
-#
-# output$PPI_PlotUI <- renderUI({
-#   withSpinner(plotOutput("PPI_Plot", height = paste0(input$ppi_plot_height, "px"), width = paste0(input$ppi_plot_width, "%")))
-# })
+    image_url <- paste0("https://string-db.org/api/svg/network?identifiers=", ppi_identifiers,
+                        "&species=", string_species, "&add_color_nodes=0&add_white_nodes=0&required_score=", input$required_score,
+                        "&network_type=", input$network_type, "&hide_disconnected_nodes=", input$hide_disconnected_nodes,
+                        "&show_query_node_labels=", input$show_query_node_labels, "&block_structure_pics_in_bubbles=", input$block_structure_pics_in_bubbles)
 
-# output$ppi_Pdf <- downloadHandler(
-#   filename = function()  {paste0("Protein_to_protein_network_plot",".pdf")},
-#   content = function(file) {
-#     withProgress(message = "",{
-#       pdf(file, width = input$ppi_width, height = input$ppi_height)
-#       string_db <- string_db()
-#       hits <- PPI_hits()
-#       incProgress(0.6, detail = "plotting, please wait a while...")
-#       p <- string_db$plot_network( hits )
-#       dev.off()
-#     })
-#   }
-# )
+    string_url <- try(paste0("https://string-db.org/api/tsv-no-header/get_link?identifiers=",
+                             ppi_identifiers, "&species=", string_species) %>% url() %>% read.table(colClasses = "character"))
+
+    if ('try-error' %in% class(string_url)) {
+      shinyalert(title = "error", text = "Failed to connect to stringdb web, Please try again !", type = "error", confirmButtonText = "Close")
+    }
+
+    string_list <- list(image_url = image_url, string_url = string_url)
+  })
+  return(string_list)
+})
+
+output$PPI_Image <- renderUI({
+  wellPanel(
+    fluidRow(
+      column(
+        12,
+        tags$image(type="text/html",
+                   width = paste0(input$ppi_plot_width, "%"),
+                   height = paste0(input$ppi_plot_height, "px"),
+                   alt = "Oops, something wrong!",
+                   src = string_db()$image_url),
+      )
+    )
+  )
+})
+
+output$PPI_weblink <- renderUI({
+  fluidRow(
+    p(tags$strong("Note:"), "Just a images of network may be not enough informative, if you want to get more detail about this protein network,
+        here we provide you an prepared weblink to the stringdb website, just click",
+      actionLink('ppi_weblink', label = tags$a('this link',
+                                               href = string_db()$string_url, target = "_blank"), icon = icon("link"), width = "100%"),
+      "to find more information ...", style = "text-align:justify; padding:5px"),
+    br(),
+    p(tags$strong("Download:"), "Dragging the image to where you want to store to download .svg format picture,
+        or you can download a high-resolution .png format picture using the download button bellow.", style = "text-align:justify; padding:5px"),
+    downloadButton('ppi_png','Download .png', class = "btn btn-warning", width = "100%")
+  )
+})
+
+output$ppi_png <- downloadHandler(
+  filename = function()  {paste0("Protein_to_protein_network",".png")},
+  content = function(file) {
+    download_url <- stringr::str_replace(string_db()$image_url, "api/svg", "api/highres_image")
+    download.file(download_url, "ppi_network.png", quiet = T)
+    file.copy("ppi_network.png", file)
+    file.remove("ppi_network.png")
+  }
+)
