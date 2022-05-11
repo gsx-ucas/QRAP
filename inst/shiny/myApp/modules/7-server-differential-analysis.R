@@ -73,7 +73,8 @@ VolPlot <- eventReactive(input$plot_volcano,{
     # geom_point(aes(x=Plot_data$log2FoldChange, y=-log10(Plot_data$padj)), size = input$vol_size, alpha=input$vol_alpha)+
     geom_vline(xintercept = c(-input$vol_threasholds[2], input$vol_threasholds[2]), lty=3)+
     geom_hline(yintercept = -log10(input$vol_threasholds[1]), lty=3)+
-    xlim(input$vol_xlimits[1], input$vol_xlimits[2])+ ylim(-0.5, input$vol_ylimit)+
+    coord_cartesian(xlim = c(input$vol_xlimits[1], input$vol_xlimits[2]), ylim = c(-0.5, input$vol_ylimit), clip = 'off')+
+    # xlim(input$vol_xlimits[1], input$vol_xlimits[2])+ ylim(-0.5, input$vol_ylimit)+
     labs(x = 'Log2FoldChange', y = '-Log10 adjusted P-value', colour = "DEGs group")+
     theme_classic()
 
@@ -85,14 +86,14 @@ VolPlot <- eventReactive(input$plot_volcano,{
     up <- subset(Res_list[[1]], padj < input$vol_threasholds[1] & log2FoldChange > input$dea_lfc)
     down <- subset(Res_list[[1]], padj < input$vol_threasholds[1] & log2FoldChange < -input$dea_lfc)
     if (input$show_topn > 0) {
-      up_topn <- up[order(up$padj), ] %>% head(input$show_topn)
-      down_topn <- down[order(down$padj), ] %>% head(input$show_topn)
+      up_topn <- up[order(up$padj, -up$log2FoldChange), ] %>% head(input$show_topn)
+      down_topn <- down[order(down$padj, -down$log2FoldChange), ] %>% head(input$show_topn)
       p <- p + geom_point(aes(x=up$log2FoldChange, y = -log10(up$padj)), color='red', size = input$vol_size, alpha=input$vol_alpha)+
         geom_point(aes(x=down$log2FoldChange, y = -log10(down$padj)), color='blue', size = input$vol_size, alpha=input$vol_alpha)+
         geom_text(x=input$vol_xlimits[1]*0.8, y=input$vol_ylimit*0.8, aes(label=paste0('down: ', dim(down)[1])), col='blue', data=NULL)+
         geom_text(x=input$vol_xlimits[2]*0.8, y=input$vol_ylimit*0.8, aes(label=paste0('up: ', dim(up)[1])), col='red', data=NULL)+
-        geom_label_repel(data = up_topn, aes(x = log2FoldChange, y = -log10(padj), label = rownames(up_topn)), size = 3, color = "red")+
-        geom_label_repel(data = down_topn, aes(x = log2FoldChange, y = -log10(padj), label = rownames(down_topn)), size = 3, color = "blue")
+        geom_label_repel(data = up_topn, aes(x = log2FoldChange, y = -log10(padj), label = rownames(up_topn)), size = 3, color = "red", max.overlaps = 100)+
+        geom_label_repel(data = down_topn, aes(x = log2FoldChange, y = -log10(padj), label = rownames(down_topn)), size = 3, color = "blue", max.overlaps = 100)
     }else {
       p <- p + geom_point(aes(x=up$log2FoldChange, y = -log10(up$padj)), color='red', size = input$vol_size, alpha=input$vol_alpha)+
         geom_point(aes(x=down$log2FoldChange, y = -log10(down$padj)), color='blue', size = input$vol_size, alpha=input$vol_alpha)+
@@ -245,6 +246,7 @@ DeGene_barPlot <- eventReactive(input$plot_debar,{
     down_df <- data.frame(dea_group = names(DesList), dea_number = Down_GeneList %>% unlist, Reg_Groups = "Down Reg")
     De_number <- rbind(up_df, down_df)
     De_number$dea_group <- factor(De_number$dea_group, levels = names(DesList))
+    De_number$Reg_Groups <- factor(De_number$Reg_Groups, levels = c("Up Reg", "Down Reg"))
 
     p <- ggplot(data = De_number, aes(x = dea_group, y = dea_number, fill = Reg_Groups))
   }else {
@@ -252,6 +254,7 @@ DeGene_barPlot <- eventReactive(input$plot_debar,{
       dim(x)[1]
     })
     De_number <- data.frame(dea_group = names(DesList), dea_number = DEG_list %>% unlist)
+    De_number$dea_group <- factor(De_number$dea_group, levels = names(DesList))
 
     p <- ggplot(data = De_number, aes(x = dea_group, y = dea_number))
   }
@@ -291,50 +294,144 @@ output$debarPlot_Pdf <- downloadHandler(
 ## renderUI of DEGs Plots
 output$dea_plotUI <- renderUI({
   if (input$dePlot=='Volcano') {
-    fluidPage(
-      dropdownButton(
-        numericInput('VolPlot_width', 'Figure Width:', min = 1, max = 20, value = 7, width = "100%"),
-        numericInput('VolPlot_height', 'Figure Height:', min = 1, max = 20, value = 5, width = "100%"),
-        downloadButton('VolPlot_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
-        circle = FALSE, status = "danger", size = "sm",
-        icon = icon("save"), width = "200px",
-        tooltip = tooltipOptions(title = "Click to download figures !")
+    wellPanel(
+      style = "padding-top:5px; background-color: white",
+      fluidRow(
+        column(
+          12, style = "padding-left:0px;margin-left:0px;padding-right:0px;margin-right:0px;border-bottom:solid 1px rgb(224,224,224)",
+          column(
+            6, style = "padding-left:10px;",
+            tags$h4("Volcano Plot of DEGs:")
+          ),
+          column(
+            6, align = "right", style = "padding-top:5px;",
+            dropdownButton(
+              numericInput('VolPlot_width', 'Figure Width:', min = 1, max = 20, value = 7, width = "100%"),
+              numericInput('VolPlot_height', 'Figure Height:', min = 1, max = 20, value = 5, width = "100%"),
+              downloadButton('VolPlot_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
+              circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px", right = TRUE,
+              tooltip = tooltipOptions(title = "Click to download figures !")
+            )
+          )
+        )
       ),
       withSpinner(plotOutput("VolPlot", width = paste0(input$dea_plot_width, "%"), height = paste0(input$dea_plot_height, "px")))
     )
+    # fluidPage(
+    #   dropdownButton(
+    #     numericInput('VolPlot_width', 'Figure Width:', min = 1, max = 20, value = 7, width = "100%"),
+    #     numericInput('VolPlot_height', 'Figure Height:', min = 1, max = 20, value = 5, width = "100%"),
+    #     downloadButton('VolPlot_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
+    #     circle = FALSE, status = "danger", size = "sm",
+    #     icon = icon("save"), width = "200px",
+    #     tooltip = tooltipOptions(title = "Click to download figures !")
+    #   ),
+    #   withSpinner(plotOutput("VolPlot", width = paste0(input$dea_plot_width, "%"), height = paste0(input$dea_plot_height, "px")))
+    # )
   }else if (input$dePlot=='Heatmap') {
-    fluidPage(
-      dropdownButton(
-        numericInput('DeHeatmap_width', 'Figure Width:', min = 1, max = 20, value = 7, width = "100%"),
-        numericInput('DeHeatmap_height', 'Figure Height:', min = 1, max = 20, value = 5, width = "100%"),
-        downloadButton('DeHeatmap_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
-        circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
-        tooltip = tooltipOptions(title = "Click to download figures !")
+    wellPanel(
+      style = "padding-top:5px; background-color: white",
+      fluidRow(
+        column(
+          12, style = "padding-left:0px;margin-left:0px;padding-right:0px;margin-right:0px;border-bottom:solid 1px rgb(224,224,224)",
+          column(
+            6, style = "padding-left:10px;",
+            tags$h4("DEG Heatmap:")
+          ),
+          column(
+            6, align = "right", style = "padding-top:5px;",
+            dropdownButton(
+              numericInput('DeHeatmap_width', 'Figure Width:', min = 1, max = 20, value = 7, width = "100%"),
+              numericInput('DeHeatmap_height', 'Figure Height:', min = 1, max = 20, value = 5, width = "100%"),
+              downloadButton('DeHeatmap_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
+              circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px", right = TRUE,
+              tooltip = tooltipOptions(title = "Click to download figures !")
+            )
+          )
+        )
       ),
       withSpinner(plotOutput("DeHeatmap", width = paste0(input$dea_plot_width, "%"), height = paste0(input$dea_plot_height, "px")))
     )
+    #
+    # fluidPage(
+    #   dropdownButton(
+    #     numericInput('DeHeatmap_width', 'Figure Width:', min = 1, max = 20, value = 7, width = "100%"),
+    #     numericInput('DeHeatmap_height', 'Figure Height:', min = 1, max = 20, value = 5, width = "100%"),
+    #     downloadButton('DeHeatmap_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
+    #     circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
+    #     tooltip = tooltipOptions(title = "Click to download figures !")
+    #   ),
+    #   withSpinner(plotOutput("DeHeatmap", width = paste0(input$dea_plot_width, "%"), height = paste0(input$dea_plot_height, "px")))
+    # )
   }else if (input$dePlot=='Venn') {
-    fluidPage(
-      dropdownButton(
-        numericInput('VennPlot_width', 'Figure Width:', min = 1, max = 20, value = 7, width = "100%"),
-        numericInput('VennPlot_height', 'Figure Height:', min = 1, max = 20, value = 5, width = "100%"),
-        downloadButton('VennPlot_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
-        circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
-        tooltip = tooltipOptions(title = "Click to download figures !")
+    wellPanel(
+      style = "padding-top:5px; background-color: white",
+      fluidRow(
+        column(
+          12, style = "padding-left:0px;margin-left:0px;padding-right:0px;margin-right:0px;border-bottom:solid 1px rgb(224,224,224)",
+          column(
+            6, style = "padding-left:10px;",
+            tags$h4("vennDiagram of DEGs:")
+          ),
+          column(
+            6, align = "right", style = "padding-top:5px;",
+            dropdownButton(
+              numericInput('VennPlot_width', 'Figure Width:', min = 1, max = 20, value = 7, width = "100%"),
+              numericInput('VennPlot_height', 'Figure Height:', min = 1, max = 20, value = 5, width = "100%"),
+              downloadButton('VennPlot_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
+              circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px", right = TRUE,
+              tooltip = tooltipOptions(title = "Click to download figures !")
+            )
+          )
+        )
       ),
       withSpinner(plotOutput("VennPlot", width = paste0(input$dea_plot_width, "%"), height = paste0(input$dea_plot_height, "px")))
     )
+    #
+    # fluidPage(
+    #   dropdownButton(
+    #     numericInput('VennPlot_width', 'Figure Width:', min = 1, max = 20, value = 7, width = "100%"),
+    #     numericInput('VennPlot_height', 'Figure Height:', min = 1, max = 20, value = 5, width = "100%"),
+    #     downloadButton('VennPlot_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
+    #     circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
+    #     tooltip = tooltipOptions(title = "Click to download figures !")
+    #   ),
+    #   withSpinner(plotOutput("VennPlot", width = paste0(input$dea_plot_width, "%"), height = paste0(input$dea_plot_height, "px")))
+    # )
   }else if (input$dePlot=='BarPlot') {
-    fluidPage(
-      dropdownButton(
-        numericInput('debarPlot_width', 'Figure Width:', min = 1, max = 20, value = 7, width = "100%"),
-        numericInput('debarPlot_height', 'Figure Height:', min = 1, max = 20, value = 5, width = "100%"),
-        downloadButton('debarPlot_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
-        circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
-        tooltip = tooltipOptions(title = "Click to download figures !")
+    wellPanel(
+      style = "padding-top:5px; background-color: white",
+      fluidRow(
+        column(
+          12, style = "padding-left:0px;margin-left:0px;padding-right:0px;margin-right:0px;border-bottom:solid 1px rgb(224,224,224)",
+          column(
+            6, style = "padding-left:10px;",
+            tags$h4("BarPlot of DEG Numbers:")
+          ),
+          column(
+            6, align = "right", style = "padding-top:5px;",
+            dropdownButton(
+              numericInput('debarPlot_width', 'Figure Width:', min = 1, max = 20, value = 7, width = "100%"),
+              numericInput('debarPlot_height', 'Figure Height:', min = 1, max = 20, value = 5, width = "100%"),
+              downloadButton('debarPlot_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
+              circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px", right = TRUE,
+              tooltip = tooltipOptions(title = "Click to download figures !")
+            )
+          )
+        )
       ),
       withSpinner(plotOutput("De_barPlot", width = paste0(input$dea_plot_width, "%"), height = paste0(input$dea_plot_height, "px")))
     )
+    # fluidPage(
+    #   dropdownButton(
+    #     numericInput('debarPlot_width', 'Figure Width:', min = 1, max = 20, value = 7, width = "100%"),
+    #     numericInput('debarPlot_height', 'Figure Height:', min = 1, max = 20, value = 5, width = "100%"),
+    #     downloadButton('debarPlot_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
+    #     circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
+    #     tooltip = tooltipOptions(title = "Click to download figures !")
+    #   ),
+    #   withSpinner(plotOutput("De_barPlot", width = paste0(input$dea_plot_width, "%"), height = paste0(input$dea_plot_height, "px")))
+    # )
   }
 })
 

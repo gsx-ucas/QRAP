@@ -75,9 +75,12 @@ mainUI <- function() {
 
         navbarMenu(
           title = "WGCNA",
-          tabPanel("1. Creat Data", value = "wgcna-1", source(system.file("shiny", "myApp/modules/10-ui-wgcna-prepare-data.R", package = "QRseq"), local = T)$value),
-          tabPanel("2. Module Detection", value = "wgcna-2", source(system.file("shiny", "myApp/modules/11-ui-wgcna-detect-module.R", package = "QRseq"), local = T)$value),
-          tabPanel("3. Module-Traits Relationship", value = "wgcna-3", source(system.file("shiny", "myApp/modules/12-ui-wgcna-module-trait.R", package = "QRseq"), local = T)$value)
+          tabPanel("1. Data Preparation", value = "wgcna-1", source(system.file("shiny", "myApp/modules/10-ui-wgcna-prepare-data.R", package = "QRseq"), local = T)$value),
+          tabPanel("2. SoftThreshold Detection", value = "wgcna-2", source(system.file("shiny", "myApp/modules/CopyOf11-ui-wgcna-detect-module.R", package = "QRseq"), local = T)$value),
+          tabPanel("3. Gene Module Detection", value = "wgcna-3", source(system.file("shiny", "myApp/modules/11-ui-wgcna-detect-module.R", package = "QRseq"), local = T)$value),
+          tabPanel("4. Module-Traits Relationship", value = "wgcna-4", source(system.file("shiny", "myApp/modules/12-ui-wgcna-module-trait.R", package = "QRseq"), local = T)$value),
+          tabPanel("5. Module membership vs. gene significanc", value = "wgcna-5", source(system.file("shiny", "myApp/modules/12.1-ui-wgcna-scatter.R", package = "QRseq"), local = T)$value),
+          tabPanel("6. Module gene expression visualization", value = "wgcna-6", source(system.file("shiny", "myApp/modules/12.2-ui-wgcna-expression.R", package = "QRseq"), local = T)$value)
         ),
 
         navbarMenu(

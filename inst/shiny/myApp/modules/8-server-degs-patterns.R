@@ -8,14 +8,17 @@ observe({
 ## running DEGs Pattern
 
 output$degsp_group <- renderUI({
-  pickerInput("degsp_group", "Groups Of Differential Expressed Genes:", choices = dir("DEGs") %>% stringr::str_remove_all(".csv"),
+  pickerInput("degsp_group", "Groups Of Differential Expressed Genes:",
+              choices = dir("DEGs") %>% stringr::str_remove_all(".csv"),
+              selected = dir("DEGs") %>% stringr::str_remove_all(".csv"),
               width = "100%", multiple = T, options = list(`actions-box` = TRUE, `live-search` = TRUE, size = 5))
 })
 
 observeEvent(input$get_DEGs,{
   updatePickerInput(
     session = session, inputId = "degsp_group",
-    choices = dir("DEGs") %>% stringr::str_remove_all(".csv")
+    choices = dir("DEGs") %>% stringr::str_remove_all(".csv"),
+    selected = dir("DEGs") %>% stringr::str_remove_all(".csv")
   )
 })
 
@@ -83,11 +86,12 @@ output$degsp_order <- renderUI({
 degsp_plot <- eventReactive(input$plot_degsp, {
   if (input$degsp_type == "BoxPlot") {
     data <- degsp_object()$normalized
+    data <- data[data$condition %in% input$degsp_order, ]
     data$condition <- factor(data$condition, levels = input$degsp_order)
     data <- data[data$cluster %in% as.numeric(input$degsp_cluster), ]
     p <- QRseq::degPlotCluster(table = data, time = "condition", color = "colored", angle = 45,
                          points = input$degsp_points, boxes = input$degsp_boxes, lines = input$degsp_lines,
-                         facet_col = input$degsp_cols, facet_scales = input$degsp_scales)
+                         facet_col = input$degsp_cols, facet_scales = input$degsp_scales, cluster_order = input$degsp_cluster)
     if (nchar(input$degsp_ggText != 0)) {
       add_funcs <- strsplit(input$degsp_ggText, "\\+")[[1]]
       p <- p + lapply(add_funcs, function(x){

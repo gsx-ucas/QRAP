@@ -32,6 +32,7 @@ shinyUI(
       id = "mainMenu",
       title = "QRSeq",
       theme = "style/style.css",
+      # theme = "style/layui.css",
       # footer = includeHTML("footer.html"),
       fluid = TRUE,
       collapsible = TRUE,
@@ -41,10 +42,17 @@ shinyUI(
       # tab panel 1 - Home
       tabPanel(
         "Home", value = "home", icon = icon("home"),
-        # style = "margin-left:100px;",
         includeHTML("home.html"),
         source("modules/ui-home-introduction.R", local = T)$value,
-        br(),hr()
+        column(
+          12, style = "margin-left:0px;margin-right:0px;",
+          hr(),
+          HTML(
+            paste0(
+              '<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>'
+            )
+          )
+        )
       ),
 
       # ----------------------------------
@@ -75,8 +83,11 @@ shinyUI(
       navbarMenu(
         title = "WGCNA",
         tabPanel("1. Creat Data", value = "wgcna-1", source("modules/10-ui-wgcna-prepare-data.R", local = T)$value),
-        tabPanel("2. Module Detection", value = "wgcna-2", source("modules/11-ui-wgcna-detect-module.R", local = T)$value),
-        tabPanel("3. Module-Traits Relationship", value = "wgcna-3", source("modules/12-ui-wgcna-module-trait.R", local = T)$value)
+        tabPanel("2. Power Detection", value = "wgcna-2", source("modules/CopyOf11-ui-wgcna-detect-module.R", local = T)$value),
+        tabPanel("3. Module Detection", value = "wgcna-3", source("modules/11-ui-wgcna-detect-module.R", local = T)$value),
+        tabPanel("4. Module-Traits Relationship", value = "wgcna-4", source("modules/12-ui-wgcna-module-trait.R", local = T)$value),
+        tabPanel("5. Module membership vs. gene significanc", value = "wgcna-5", source("modules/12.1-ui-wgcna-scatter.R", local = T)$value),
+        tabPanel("6. Module gene expression visualization", value = "wgcna-6", source("modules/12.2-ui-wgcna-expression.R", local = T)$value)
       ),
 
       navbarMenu(
@@ -88,9 +99,9 @@ shinyUI(
 
       navbarMenu(
         title = "Network Analysis",
-        tabPanel("KEGG Pathview (pathview)", value = "gprofiler2", source(system.file("shiny", "myApp/modules/16-ui-kegg-pathview.R", package = "QRseq"), local = T)$value),
-        tabPanel("Protein-Protein interaction (stringDB)", value = "ppi", source(system.file("shiny", "myApp/modules/17-ui-ppi-network.R", package = "QRseq"), local = T)$value),
-        tabPanel("Inferred Regulation network (GENIE3)", value = "genie3", source(system.file("shiny", "myApp/modules/18-ui-genie3-network.R", package = "QRseq"), local = T)$value)
+        tabPanel("KEGG Pathview (pathview)", value = "gprofiler2", source("modules/16-ui-kegg-pathview.R", local = T)$value),
+        tabPanel("Protein-Protein interaction (stringDB)", value = "ppi", source("modules/17-ui-ppi-network.R", local = T)$value),
+        tabPanel("Inferred Regulation network (GENIE3)", value = "genie3", source("modules/18-ui-genie3-network.R", local = T)$value)
       ),
       navbarMenu(
         title = "Summarize",

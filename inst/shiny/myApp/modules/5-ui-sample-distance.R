@@ -1,7 +1,7 @@
 fluidPage(
   style = "margin-left:10px;margin-right:10px;",
   box(
-    title = "disrchical clustering Parameters", width = 4, status = NULL,
+    title = "disrchical clustering Parameters", width = 4, status = NULL, solidHeader = TRUE,
     uiOutput("dis_group"),
     selectInput("dis_color", "color:", choices = c('Blues', 'BuGn', 'BuPu', 'GnBu', 'Greens', 'Greys', 'Oranges',
                                                    'OrRd', 'PuBu', 'PuBuGn', 'PuRd', 'Purples', 'RdPu', 'Reds', 'YlGn',
@@ -18,12 +18,25 @@ fluidPage(
   column(
     6,
     wellPanel(
-      dropdownButton(
-        numericInput('dis_width', 'Figure Width (cm):', min = 1, max = 20, value = 7, width = "100%"),
-        numericInput('dis_height', 'Figure Height (cm):', min = 1, max = 20, value = 5, width = "100%"),
-        downloadButton('dis_Pdf','Download .pdf', class = "btn", width = "100%"),
-        circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
-        tooltip = tooltipOptions(title = "Click to download figures !")
+      style = "padding-top:5px",
+      fluidRow(
+        column(
+          12, style = "padding-left:0px;margin-left:0px;padding-right:0px;margin-right:0px;border-bottom:solid 1px rgb(224,224,224)",
+          column(
+            6, style = "padding-left:10px;",
+            tags$h4("Sample-to-Sample Distance Heatmap:")
+          ),
+          column(
+            6, align = "right", style = "padding-top:5px;",
+            dropdownButton(
+              numericInput('dis_width', 'Figure Width (cm):', min = 1, max = 20, value = 7, width = "100%"),
+              numericInput('dis_height', 'Figure Height (cm):', min = 1, max = 20, value = 5, width = "100%"),
+              downloadButton('dis_Pdf','Download .pdf', class = "btn", width = "100%"),
+              circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px", right = TRUE,
+              tooltip = tooltipOptions(title = "Click to download figures !")
+            )
+          )
+        )
       ),
       uiOutput("dis_plotUI")
     )
@@ -50,8 +63,8 @@ fluidPage(
   # ),
   column(
     12, hr(),
-    fluidRow(column(2), column(3, actionLink("pdis", "<< Previous", style = "font-size: 20px")),
-             column(4, p("You are in sample distances page ...", style = "color: grey; font-size: 20px")),
-             column(3, actionLink("ndis", "Next >>", style = "font-size: 20px")))
+    fluidRow(column(3, align = "right", actionLink("pdis", "<< Previous", style = "font-size: 20px")),
+             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
+             column(3, align = "left", actionLink("ndis", "Next >>", style = "font-size: 20px")))
   )
 )

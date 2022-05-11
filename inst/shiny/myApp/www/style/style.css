@@ -1,299 +1,274 @@
-.navbar{
-  top: 0;
-  width: 100%;
+
+/*-----主页--------*/
+
+/* 设置导航栏背景*/
+.navbar-static-top {
+  background-color: rgb(36, 41, 47);
+  color: rgb(140, 146, 153);
+  height: 60px;
   position: fixed;
-  background-color: #131416;
-}
-
-.navbar-default .navbar-brand{color: white !important;}
-
-.container-fluid > .tab-content{
-  margin-top: 60px;
-  background-color: rgb(241,246,247) !important;
-}
-
-.navbar-nav li a:hover {
-color: white !important;
-background-color: #131416 !important;
-background-image: #131416 !important;
-}
-
-.navbar-nav > .active > a {
-color: white !important;
-background-color: #131416 !important;
-background-image: #131416 !important;
-}
-
-.container {
-  padding: 0px;
-  margin-top: 0px;
-  height: 2000px;
-}
-
-body {
-  font-size: 16px;
-  background-color: rgb(241,246,247) !important;
-  font-family:"Times New Roman", Times, serif;
-}
-
-.form-group > .checkbox > label > span {
-  font-weight: 700;
-  font-size: 16px;
-  font-family:"Times New Roman", Times, serif;
-}
-
-.selectize-input { white-space: nowrap !important; }
-
-/*
- * Component: buttons
- * --------------
- */
-.start-button {
-  width: 50%;
-  display: inline-block;
-  padding: 15px 25px;
-  font-size: 24px;
-  cursor: pointer;
-  text-align: center;
-  text-decoration: none;
-  outline: none;
-  color: #fff;
-  background-color: #FF6A6A;
-  border: none;
-  border-radius: 15px;
-  box-shadow: 0 6px #999;
-}
-
-.start-button:hover {
-  color: #fff;
-  background-color: #CD5555
-}
-
-.start-button:active {
-  background-color: #CD5555;
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
-}
-
-.run-button {
   width: 100%;
-  display: inline-block;
-  padding: 10px;
-  font-size: 15px;
-  cursor: pointer;
-  text-align: center;
-  text-decoration: none;
-  outline: none;
-  color: #fff;
-  background-color: rgba(53,143,240, 0.8);
-  border: none;
-  border-radius: 25px;
 }
-
-.run-button:hover {
-  color: #fff;
-  background-color: rgba(53,143,240, 1);
+/* 设置导航栏属性*/
+#mainMenu > li > a {
+  background-color: rgb(36, 41, 47);
+  /*background-color: grey;*/
+  color: rgb(140, 146, 153);
+  height: 58px;
 }
-
-.plot-button {
-  width: 100%;
-  display: inline-block;
-  padding: 10px;
-  font-size: 15px;
-  cursor: pointer;
-  text-align: center;
-  text-decoration: none;
-  outline: none;
-  color: #fff;
-  background-color: rgba(255,87,35, 0.8);
-  border: none;
-  border-radius: 25px;
-}
-
-.plot-button:hover {
-  color: #fff;
-  background-color: rgba(255,87,35, 1);
-}
-
-/*
- * Component: box
- * --------------
- */
-/* box-default */
-.box {
-  border-top-width:0px;
-  box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.5),
-                0 1px 4px rgba(0, 0, 0, 0.3),
-                0 0 10px rgba(0, 0, 0, 0.1) inset;
-}
-
-.box .box-title{
-  font-size: 18px;
-  font-family:"Times New Roman", Times, serif;
-}
-
-.box .box-header{
-  background-color: rgba(190,200,230,0.3);
-  border-radius:5px;
-  border:1px inset rgba(190,200,230,0.3);
-}
-
-.box .box-body{
-  background-color: rgba(236,236,236,0.5);
-}
-
-/* Info box */
-.box.box-info {
-  border-top-width:0px;
-  box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.5),
-                0 1px 4px rgba(0, 0, 0, 0.3),
-                0 0 10px rgba(0, 0, 0, 0.1) inset;
-}
-
-.box.box-info .box-title{
-  font-size: 18px;
-  font-family:"Times New Roman", Times, serif;
-}
-
-.box.box-info .box-header{
-  background-color: rgba(190,200,230,0.3);
-  border-radius:5px;
-  border:1px inset rgba(190,200,230,0.3);
-}
-
-.box.box-info .box-body{
-  background-color: rgb(241,246,247);
-}
-
-/* CUSTOMIZE THE CAROUSEL
--------------------------------------------------- */
-
-/* Carousel base class */
- .carousel {
-  height: 350px;
-  margin-bottom: 10px;
-}
-
-/* Since positioning the image, we need to help out the caption */
-.carousel:hover > .carousel-inner > .item > .container > .carousel-caption {
-  z-index: 10;
-  font-weight: normal;
-  background-color: transparent;
-  text-shadow: 1px 4px 5px rgba(0,0,0,.1);
-}
-
-.carousel-inner > .item > .container > .carousel-caption:hover {
-  z-index: 10;
-  font-weight: normal;
-  background-color: transparent;
-  text-shadow: 1px 4px 5px rgba(0,0,0,.1);
-}
-
-.carousel-caption {
-  z-index: 10;
-  font-weight: normal;
-  background-color: transparent;
-  text-shadow: 1px 4px 5px rgba(0,0,0,.1);
-}
-/*
-.carousel-caption p {
-  z-index: 10;
-  font-weight: normal;
-  text-shadow: 0 1px 3px rgba(0,0,0,1);
+/* 设置激活的导航栏属性*/
+#mainMenu > li.active > a {
+  background-color: rgb(36, 41, 47);
+  /*background-color: grey;*/
   color: white;
-  font-size: 28px;
+  font-weight: 900;
+  height: 58px;
 }
-*/
-
-.carousel-caption h1 {
-	z-index: 10;
-  font-weight: normal;
+/* 设置鼠标停留时的导航栏属性*/
+#mainMenu > li.dropdown > a:hover {
+  background-color: rgb(36, 41, 47);
+  /*background-color: orange;*/
   color: white;
-  font-size: 30px;
-  text-shadow: 0 1px 3px rgba(0,0,0,1);
+  height: 58px;
+}
+/* 设置打开下拉菜单时子菜单属性*/
+#mainMenu > li.dropdown.open > ul > li > a {
+  background-color: rgb(255, 255, 255);
+  /*background-color: orange;*/
+  color: black;
+}
+#mainMenu > li.dropdown.open > ul > li > a:hover {
+  background-color: rgb(36, 41, 47);
+  /*background-color: orange;*/
+  color: white;
+}
+/* 设置打开下拉菜单时母菜单属性*/
+#mainMenu > li.dropdown.open > a {
+  background-color: rgb(36, 41, 47);
+  /*background-color: orange;*/
+  color: rgb(140, 146, 153);
 }
 
-
-/* Declare heights because of positioning of img element */
-.carousel .item {
-  height: 350px;
-  background-color: transparent;
-}
-.carousel-inner > .item > img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  min-width: 100%;
-  height: 350px;
-  background-color: transparent;
-}
-
-.carousel input {
-    max-width: 400px;
-    display: inline;
-    padding: 24px 14px;
-    font-size: 21px;
-}
-
+/* 设置 Carousel*/
 #myCarousel {
   margin-top: -20px;
   width: 103%;
   margin-left: -20px;
 }
-
 @media (max-width: 400px) {
   #myCarousel {
     width: 110%;
   }
 }
-
-
-/*
-CSS codes from monocle website
-*/
-
-/*!
- * Bootstrap Table of Contents v0.4.1 (http://afeld.github.io/bootstrap-toc/)
- * Copyright 2015 Aidan Feldman
- * Licensed under MIT (https://github.com/afeld/bootstrap-toc/blob/gh-pages/LICENSE.md) */
-#home_nav .nav > li > a {
-    display: block;
-    padding: 4px 20px;
-    font-size: 18px;
-    font-weight: 500;
-    color: black;
-    background-color: transparent;
+/* 设置 Carousel widht*/
+.carousel-inner > .item > img {
+  width: 100%;
+  height: 400px;
+  background-color: transparent;
 }
 
-#home_nav .nav > li > a:focus, #home_nav .nav > li > a:hover {
-    padding-left: 15px;
-    color: #7C3D56;
-    text-decoration: none;
-    background-color: transparent;
-    border-left: 1px solid #7C3D56
+.carousel-caption, .container > .carousel-caption, .container > .carousel-caption:hover, .carousel:hover > .carousel-inner > .item > .container > .carousel-caption, .carousel-inner > .item > .container > .carousel-caption:hover {
+  background-color: transparent;
+}
+/* 设置 caption 字体*/
+#myCarousel > div > div > div > div > h1 {
+  z-index: 10;
+  font-weight: normal;
+  color: white;
+  font-size: 30px;
+  text-shadow: 0 6px 12px rgba(1,1,1,1);
+  font-family:"Times New Roman", Times, serif;
 }
 
-#home_nav .nav > .active:focus > a, #home_nav .nav > .active:hover > a,
-#home_nav .nav > .active > a {
-    padding-left: 15px;
-    font-weight: 700;
-    color: #7C3D56;
-    background-color: transparent;
-    border-left: 2px solid #7C3D56
+/* 设置内容页面*/
+body > div > div.container-fluid > .tab-content {
+  margin-top: 65px;
 }
 
-#home_nav .nav .nav > li > a:focus, #home_nav .nav .nav > li > a:hover {
-  display: block;
-  padding-left: 29px
+/* 设置主页左侧导航栏格式*/
+#home_nav {
+  position: fixed;
+  width: auto;
+  text-align: right;
 }
 
-#home_nav .nav .nav > li > a {
-    padding-top: 1px;
-    padding-bottom: 1px;
-    padding-left: 30px;
-    font-size: 16px;
-    font-weight: 400;
-    color: #696969;
-    background-color: transparent;
+#home_nav > ul > li > a:hover {
+  text-align: right;
+  background-color: rgb(140, 146, 153);
+  color: purple;
+  border-radius: 5px;
 }
 
+/*-------------------footer-----------------------*/
+.footer {
+  position:relative;
+  bottom:0;
+  width:100%;
+  height:50px; /* Height of the footer */
+  color: white;
+  background-color: black;
+  flex: 0 0 auto;
+}
+/*----------------box-------------------------*/
+.box {
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.box > div.box-header {
+  background-color: white;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  border-left: 1px solid rgb(224,224,224);
+  border-right: 1px solid rgb(224,224,224);
+  border-top: 1px solid rgb(224,224,224);
+  border-bottom: 1px solid rgb(224,224,224);
+}
+
+.box > div.box-header > h3 {
+  color: black;
+  font-size: 900;
+}
+
+/*#preview_mat_card > div > div > div.box-header > h3 {
+  color: white;
+}*/
+
+.box > div.box-body {
+  border-left: 1px solid rgb(224,224,224);
+  border-right: 1px solid rgb(224,224,224);
+  border-bottom: 1px solid rgb(224,224,224);
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  /*
+  box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.5),
+                0 1px 4px rgba(0, 0, 0, 0.3),
+                0 0 10px rgba(0, 0, 0, 0.1) inset;
+                */
+}
+
+.box-header > div > button {
+  color: rgb(87, 96, 106);
+  /*background-color: rgb(87, 96, 106);*/
+}
+
+/*---------------div column margin-----------------*/
+.container-fluid > div.col-sm-2, .container-fluid > div.col-sm-4, .container-fluid > div.col-sm-5, .container-fluid > div.col-sm-6, .container-fluid > div.col-sm-7, .container-fluid > div.col-sm-8, .container-fluid > div.col-sm-12{
+  padding-left: 3px;
+  padding-right: 3px;
+}
+.tab-pane > .row > div.col-sm-2, .tab-pane > .row > div.col-sm-4, .tab-pane > .row > div.col-sm-5, .tab-pane > .row > div.col-sm-6, .tab-pane > .row > div.col-sm-7, .tab-pane > .row > div.col-sm-8, .tab-pane > .row > div.col-sm-12{
+  padding-left: 3px;
+  padding-right: 3px;
+}
+div.col-sm-4 > div.col-sm-12, div.col-sm-4 > div > div.col-sm-12 {
+  padding-left: 3px;
+  padding-right: 3px;
+}
+.tab-content > .tab-pane > div.col-sm-4, .tab-content > .tab-pane > div.col-sm-6, .tab-content > .tab-pane > div.col-sm-2 {
+  padding-left: 3px;
+  padding-right: 3px;
+}
+/*---------------action link-----------------*/
+div.col-sm-3 a.action-button {
+  color: black;
+}
+
+div.col-sm-3 a.action-button:hover {
+  color: blue;
+}
+
+/*---------------action-button------------*/
+.run-button {
+  background: -webkit-linear-gradient(90deg,rgb(222,222,222) 50%,rgb(245,245,245) 100%);
+  /*-webkit-gradient(linear, left top, right bottom, from(rgb(222,222,222)), to(rgb(245,245,245)));*/
+  /*background-color: rgb(148, 172, 206);*/
+  border-radius: 10px;
+  transition-duration: 0.4s;
+  height: 40px;
+  color: rgb(63,138,198);
+  font-size: 20px;
+  font-weight: 800;
+  font-family: Times New Roman;
+}
+.run-button:hover {
+  /*background-color: rgb(130, 182, 226);*/
+  color: rgb(63,138,198);
+  border-radius: 5px;
+  height: 40px;
+}
+.run-button:active:after {
+  /*background-color: rgb(130, 182, 226);*/
+  color: rgb(63,138,198);
+  border-radius: 5px;
+  height: 40px;
+}
+
+.plot-button {
+  background: -webkit-linear-gradient(90deg,rgb(222,222,222) 50%,rgb(245,245,245) 100%);
+  border-radius: 5px;
+  transition-duration: 0.4s;
+  height: 40px;
+  color: rgba(234,87,79,0.8);
+  font-size: 20px;
+  font-weight: 800;
+  font-family: Times New Roman;
+}
+.plot-button:hover {
+  /*background-color: rgb(234, 87, 79);*/
+  border-radius: 5px;
+  color: rgba(234,87,79,0.8);
+}
+.plot-button:active:after {
+  /*background-color: rgb(234, 87, 79);*/
+  border-radius: 5px;
+  color: rgba(234,87,79,0.8);
+}
+
+/*-------------------plotOutput well---------------------*/
+div.col-sm-6 > div.well {
+  background-color: white;
+  border: 1px solid rgb(224,224,224);
+}
+
+/*-------------------form-group---------------------*/
+.selectize-input {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+select ~ button.dropdown-toggle {
+  background: white;
+  background-color: white;
+}
+
+/*-------------------tabpanel-----------------------*/
+.tabbable > .nav-tabs {
+  background-color: white;
+  color: black;
+  font-size: 400;
+  padding-bottom: 1px;
+}
+.tabbable > .nav-tabs > li > a {
+  background-color: white;
+  color: black;
+  font-size: 400;
+}
+.tabbable > .nav-tabs > li.active > a {
+  /*background-color: rgb(196, 196, 196);*/
+  background-color: white;
+  color: black;
+  font-size: 900;
+  border-left: 1px solid rgb(224,224,224);
+  border-right: 1px solid rgb(224,224,224);
+  border-bottom: 1px solid rgb(224,224,224);
+}
+
+/*-------------------download dropdown button-----------------*/
+button ~ ul.dropdown-menu {
+  text-align: right;
+  align-content: right;
+  align-items: right;
+}

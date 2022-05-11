@@ -160,23 +160,30 @@ output$oraPlot_type <- renderUI({
     fluidRow(
       column(
         12,
-        radioButtons(
-          "oraPlot_type", "Methods to visualize:", c("dotplot", "barplot", "ggtable", "exprs_heatmap"), inline = T, width = "100%"
-        ),
+        # radioButtons(
+        #   "oraPlot_type", "Methods to visualize:", c("dotplot", "barplot", "ggtable", "exprs_heatmap"), inline = T, width = "100%"
+        # ),
+        prettyRadioButtons(inputId = "oraPlot_type", label = "Methods to visualize:", animation = "jelly", inline = TRUE,
+                           choices = c("dotplot", "barplot", "ggtable", "exprs_heatmap"), icon = icon("check"), status = "info"),
         tags$em("cnetplot and emapplot currently do not support multi-group comparison enrich analysis !", style = "color:brown")
       )
     )
   }else {
-    radioButtons(
-      "oraPlot_type", "Methods to visualize:", c("dotplot", "barplot", "ggtable", "cnetplot", "emapplot", "exprs_heatmap"),
-      inline = T, width = "100%"
-    )
+    # radioButtons(
+    #   "oraPlot_type", "Methods to visualize:", c("dotplot", "barplot", "ggtable", "cnetplot", "emapplot", "exprs_heatmap"),
+    #   inline = T, width = "100%"
+    # )
+    prettyRadioButtons(inputId = "oraPlot_type", label = "Methods to visualize:", animation = "jelly", inline = TRUE,
+                       choices = c("dotplot", "barplot", "ggtable", "cnetplot", "emapplot", "exprs_heatmap"), icon = icon("check"), status = "info")
   }
 })
 
 output$ora_termID <- renderUI({
   if (dim(as.data.frame(clp_ora_object()))[1] != 0) {
-    selectInput("ora_termID", "Select terms from results:", choices = as.data.frame(clp_ora_object())$Description, width = "100%", multiple = T)
+    pickerInput("ora_termID", "Select terms from results:",
+                choices = as.data.frame(clp_ora_object())$Description,
+                selected = as.data.frame(clp_ora_object())$Description[1:10],
+                options = list(`actions-box` = TRUE), width = "100%", multiple = T)
   }else {
     p("no terms enriched ...", style = "color:red")
   }

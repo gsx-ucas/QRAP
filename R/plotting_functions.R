@@ -17,33 +17,39 @@
 #'
 #' @export
 #'
-degPlotCluster <- function (table, time, color = NULL, points = TRUE, boxes = TRUE,
+degPlotCluster <- function (table, time, cluster_order = NULL, color = NULL, points = FALSE, boxes = FALSE,
                              smooth = TRUE, lines = TRUE, facet = TRUE, facet_col = 4, facet_scales = "free_x", angle = 45)
 {
   stopifnot(class(table) == "data.frame")
   if ("cluster" %in% colnames(table)) {
     counts <- table(distinct(table, genes, cluster)[["cluster"]])
     table <- inner_join(table, data.frame(cluster = as.integer(names(counts)),
-                                          tittle = paste(names(counts), "- genes:", counts),
+                                          tittle = paste0("cluster", names(counts), " - genes: ", counts),
                                           stringsAsFactors = FALSE), by = "cluster")
   }
   table[["line_group"]] = paste(table[["genes"]], table[[color]])
   splan <- length(unique(table[[time]])) - 1L
+
+  if (!is.null(cluster_order)) {
+    table$tittle <- factor(table$tittle, levels = paste0("cluster", cluster_order, " - genes: ", counts))
+  }else {
+    table$tittle <- factor(table$tittle, levels = paste0("cluster", names(counts), " - genes: ", counts))
+  }
+
   if (is.null(color))
     table[[color]] = NULL
   p <- ggplot(table, aes_string(x = time, y = "value", fill = color,
                                 color = color))
-  if (boxes)
-    p <- p + geom_boxplot(alpha = 0, outlier.size = 0, outlier.shape = NA)
-  if (points)
-    p <- p + geom_point(alpha = 0.4, size = 1, position = position_jitterdodge(dodge.width = 0.9))
+  if (lines)
+    p <- p + geom_line(aes_string(group = "line_group"), color = "grey", alpha = 0.1)
   if (smooth)
     p <- p + stat_smooth(aes_string(x = time, y = "value",
                                     group = color, color = color), se = FALSE, method = "lm",
                          formula = y ~ poly(x, splan))
-  if (lines)
-    p <- p + geom_line(aes_string(group = "line_group"),
-                       alpha = 0.1)
+  if (boxes)
+    p <- p + geom_boxplot(alpha = 0, outlier.size = 0, outlier.shape = NA)
+  if (points)
+    p <- p + geom_point(alpha = 0.4, size = 1, position = position_jitterdodge(dodge.width = 0.9))
   if (facet)
     p <- p + facet_wrap(~tittle, ncol = facet_col, scales = facet_scales)
   p <- p + theme_bw() +
@@ -367,15 +373,17 @@ publish_gostdot <- function(object, by = "precision", color = "p_value", source 
     results_df$term_name <- factor(results_df$term_name, levels = results_df$term_name %>% unique %>% rev)
 
     if (object$result$query %>% unique %>% length == 1) {
-      plots <- ggplot(results_df, aes_string(x = by, y = "term_name", size = by, color = color))+
+      plots <- ggplot(results_df, aes_string(x = by, y = "term_name", size = "intersection_size", color = color))+
         geom_point()+
+        labs(x = "GeneRatio", y = NULL, size = "Gene Count", color = "P-value")+
         scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE))+
         ylab(NULL)+
         theme_bw()+
         theme(axis.text = element_text(size = font.size), text = element_text(size = font.size))
     }else {
-      plots <- ggplot(results_df, aes_string(x = "query", y = "term_name", size = by, color = color))+
+      plots <- ggplot(results_df, aes_string(x = "query", y = "term_name", size = "intersection_size", color = color))+
         geom_point()+
+        labs(x = "GeneRatio", y = NULL, size = "Gene Count", color = "P-value")+
         scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE))+
         theme_bw()+
         xlab(NULL) + ylab(NULL)+

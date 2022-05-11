@@ -4,7 +4,7 @@
 \alias{startQRseq}
 \title{Start the QRseq shiny App}
 \usage{
-startQRseq()
+startQRseq(launch.browser = TRUE)
 }
 \description{
 Start the QRseq shiny App

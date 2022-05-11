@@ -1,7 +1,7 @@
 fluidPage(
   style = "margin-left: 10px; margin-right:10px;",
   box(
-    title = "Plot parameters:", width = 4, collapsible = TRUE,
+    title = "Plot parameters:", width = 4, collapsible = TRUE, solidHeader = TRUE,
     selectInput("pathview_inherit","inherit KEGG results from:", choices = c("gProfiler2", "clusterProfiler"), width = "100%"),
     # uiOutput("pathview_orgnism"),
     uiOutput("pathview_group"),
@@ -46,8 +46,8 @@ fluidPage(
   column(
     12,
     hr(),
-    fluidRow(column(2), column(3, actionLink("pPathview", "<< Previous", style = "font-size: 20px")),
-             column(4, p("You are in PPI notwork page ...", style = "color: grey; font-size: 20px")),
-             column(3, actionLink("nPathview", "Next >>", style = "font-size: 20px")))
+    fluidRow(column(3, align = "right", actionLink("pPathview", "<< Previous", style = "font-size: 20px")),
+             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
+             column(3, align = "left", actionLink("nPathview", "Next >>", style = "font-size: 20px")))
   )
 )

@@ -1,7 +1,7 @@
 fluidPage(
   style = "margin-left: 10px; margin-right:10px;",
   box(
-    title = "Runing Over-Represented Analysis (ORA) by clusterProfiler:", id = "clp_ora_tab", width = 12, collapsible = TRUE,
+    title = "Runing Over-Represented Analysis (ORA) by clusterProfiler:", id = "clp_ora_tab", width = 12, collapsible = TRUE, solidHeader = TRUE,
     fluidRow(
       column(3,selectInput("clp_ora_source", "Function Source:",
                            c("Gene Ontology"="GO", "KEGG Pathway"="KEGG", "Reactome Pathway"="Reactome"),width = "100%")),
@@ -35,7 +35,7 @@ fluidPage(
         # fluidPage(
         style = "padding-top: 5px; padding-left: 0px; padding-right: 0px;margin-left: 0px; margin-right: 0px;",
         box(
-          title = "Visualization of Results", width = 4,
+          title = "Visualization of Results", width = 4, solidHeader = TRUE,
           uiOutput("oraPlot_type"),
           conditionalPanel(
             "input.oraPlot_type != 'exprs_heatmap'",
@@ -84,12 +84,25 @@ fluidPage(
         column(
           6,
           wellPanel(
-            dropdownButton(
-              numericInput('ora_width', 'Figure Width:', value = 10, width = "100%"),
-              numericInput('ora_height', 'Figure Height:', value = 10, width = "100%"),
-              downloadButton('ora_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
-              circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
-              tooltip = tooltipOptions(title = "Click to download figures !")
+            style = "padding-top:5px",
+            fluidRow(
+              column(
+                12, style = "padding-left:0px;margin-left:0px;padding-right:0px;margin-right:0px;border-bottom:solid 1px rgb(224,224,224)",
+                column(
+                  6, style = "padding-left:10px;",
+                  tags$h4("Enrichment Results Visualization:")
+                ),
+                column(
+                  6, align = "right", style = "padding-top:5px;",
+                  dropdownButton(
+                    numericInput('ora_width', 'Figure Width:', value = 10, width = "100%"),
+                    numericInput('ora_height', 'Figure Height:', value = 10, width = "100%"),
+                    downloadButton('ora_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
+                    circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
+                    right = TRUE, tooltip = tooltipOptions(title = "Click to download figures !")
+                  )
+                )
+              )
             ),
             uiOutput("oraPlotsUI")
           )
@@ -116,8 +129,8 @@ fluidPage(
   column(
     12,
     hr(),
-    fluidRow(column(2), column(3, actionLink("pORA", "<< Previous", style = "font-size: 20px")),
-             column(4, p("You are in clusterProfiler page ...", style = "color: grey; font-size: 20px")),
-             column(3, actionLink("nORA", "Next >>", style = "font-size: 20px")))
+    fluidRow(column(3, align = "right", actionLink("pORA", "<< Previous", style = "font-size: 20px")),
+             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
+             column(3, align = "left", actionLink("nORA", "Next >>", style = "font-size: 20px")))
   )
 )

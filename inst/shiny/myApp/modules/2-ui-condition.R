@@ -1,7 +1,7 @@
 fluidPage(
   style = "margin-left:10px;margin-right:10px;",
   box(
-    title = "Experiment Design Table", width = 7, status = "info",
+    title = "Experiment Design Table", width = 7, status = NULL, solidHeader = TRUE,
     # checkboxInput(inputId = "reset_condition", label = "upload a experiment design tab !",
     #               value = F, width = "100%"),
     # conditionalPanel("!input.reset_condition", p("The design table was produced automatically, you can also change it and reupload!",
@@ -13,7 +13,7 @@ fluidPage(
     downloadButton('ConditionTab','Download CSV', class = "btn")
   ),
   box(
-    title = "DESeq2 Running Table", width = 5, status = NULL, collapsible = TRUE,
+    title = "DESeq2 Running Table", width = 5, status = NULL, solidHeader = TRUE, collapsible = TRUE,
     switchInput("run_cache", "Use Cache", value = F,
                 onStatus = "success", offStatus = "danger", inline = T,labelWidth = "100px"),
     checkboxInput(inputId = "reset_condition", label = "upload a experiment design tab !",
@@ -63,7 +63,7 @@ fluidPage(
             12, style = "text-align:justify;color:black;background-color:#BFF7BB;border-radius:10px;border:1px solid black;", br(),
             h5("Additional Parameters of 'batch remove':"), hr(),
             selectInput("batch_methods", "Mehtods to remove batch:", choices = c("NULL", "ComBat", "removeBatchEffect"), width = "100%"),
-            conditionalPanel("input.batch_methods != 'NULL'", uiOutput("batch_col"))
+            conditionalPanel("input.batch_methods != 'NULL'", uiOutput("batch_col"), uiOutput("batch_col2"))
           )
         )
       )
@@ -99,9 +99,9 @@ fluidPage(
   column(
     12,
     hr(),
-    fluidRow(column(2), column(3, actionLink("pCondition", "<< Previous", style = "font-size: 20px")),
-             column(4, p("You are in Design & Run page ...", style = "color: grey; font-size: 20px")),
-             column(3, actionLink("nCondition", "Next >>", style = "font-size: 20px"))),
+    fluidRow(column(3, align = "right", actionLink("pCondition", "<< Previous", style = "font-size: 20px")),
+             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
+             column(3, align = "left", actionLink("nCondition", "Next >>", style = "font-size: 20px"))),
     br()
   )
 )

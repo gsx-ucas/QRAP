@@ -1,7 +1,7 @@
 fluidRow(
   style = "margin-left: 10px; margin-right:10px;",
   box(
-    title = "Module-Traits Relationship:", width = 4, collapsible = TRUE,
+    title = "Module-Traits Relationship:", width = 4, collapsible = TRUE, solidHeader = TRUE,
     # numericInput("xLabelsAngle", "xLabelsAngle:", value = 45, width = "100%"),
     numericInput("cex_text", "cex.text:", value = 1, width = "100%"),
     numericInput("yColorWidth", "yColorWidth:", value = 0.05, width = "100%"),
@@ -14,12 +14,25 @@ fluidRow(
   column(
     6,
     wellPanel(
-      dropdownButton(
-        numericInput('mtrs_heatmap_width', 'Figure Width:', value = 10, width = "100%"),
-        numericInput('mtrs_heatmap_height', 'Figure Height:', value = 10, width = "100%"),
-        downloadButton('mtrs_heatmap_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
-        circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
-        tooltip = tooltipOptions(title = "Click to download figures !")
+      style = "padding-top:5px",
+      fluidRow(
+        column(
+          12, style = "padding-left:0px;margin-left:0px;padding-right:0px;margin-right:0px;border-bottom:solid 1px rgb(224,224,224)",
+          column(
+            6, style = "padding-left:10px;",
+            tags$h4("Module-Trait Relationshipes Heatmap:")
+          ),
+          column(
+            6, align = "right", style = "padding-top:5px;",
+            dropdownButton(
+              numericInput('mtrs_heatmap_width', 'Figure Width:', value = 10, width = "100%"),
+              numericInput('mtrs_heatmap_height', 'Figure Height:', value = 10, width = "100%"),
+              downloadButton('mtrs_heatmap_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
+              circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
+              right = TRUE, tooltip = tooltipOptions(title = "Click to download figures !")
+            )
+          )
+        )
       ),
       uiOutput("mtrs_heatmapUI")
     )
@@ -34,8 +47,8 @@ fluidRow(
   column(
     12,
     hr(),
-    fluidRow(column(2), column(3, actionLink("pWGCNA_3", "<< Previous", style = "font-size: 20px")),
-             column(4, p("You are in WGCNA module-trait associations page ...", style = "color: grey; font-size: 20px")),
-             column(3, actionLink("nWGCNA_3", "Next >>", style = "font-size: 20px")))
+    fluidRow(column(3, align = "right", actionLink("pWGCNA_4", "<< Previous", style = "font-size: 20px")),
+             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
+             column(3, align = "left", actionLink("nWGCNA_4", "Next >>", style = "font-size: 20px")))
   )
 )
