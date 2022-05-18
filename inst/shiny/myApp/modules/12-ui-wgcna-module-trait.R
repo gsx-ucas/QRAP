@@ -2,11 +2,23 @@ fluidRow(
   style = "margin-left: 10px; margin-right:10px;",
   box(
     title = "Module-Traits Relationship:", width = 4, collapsible = TRUE, solidHeader = TRUE,
-    # numericInput("xLabelsAngle", "xLabelsAngle:", value = 45, width = "100%"),
-    numericInput("cex_text", "cex.text:", value = 1, width = "100%"),
-    numericInput("yColorWidth", "yColorWidth:", value = 0.05, width = "100%"),
+    prettyRadioButtons(inputId = "WGCNA_Heatmap_method", label = "Visualize methods:",icon = icon("check"), status = "info",
+                       choices = c("pheatmap (external function)", "labeledHeatmap (WGCNA function)"), animation = "jelly", inline = TRUE),
+    conditionalPanel(
+      "input.WGCNA_Heatmap_method == 'labeledHeatmap (WGCNA function)'",
+      numericInput("cex_text", "cex.text:", value = 1, width = "100%"),
+      numericInput("yColorWidth", "yColorWidth:", value = 0.05, width = "100%"),
+      selectInput("font_lab", "font.labs:", choices = c("1", "2", "3", "4"), selected = "2", width = "100%")
+    ),
+    conditionalPanel(
+      "input.WGCNA_Heatmap_method == 'pheatmap (external function)'",
+      numericInput("WGCNA_heatmap_fontsize", "Fontsize for legends:", value = 15, width = "100%"),
+      numericInput("WGCNA_heatmap_fontsize_col", "Fontsize  for colnames:", value = 15, width = "100%"),
+      numericInput("WGCNA_heatmap_fontsize_num", "Fontsize  for fill text:", value = 8, width = "100%"),
+      checkboxInput("WGCNA_heatmap_cluster_cols", "Specifying if columns should be clustered.", value = TRUE, width = "100%"),
+      checkboxInput("WGCNA_heatmap_cluster_rows", "Specifying if rows should be clustered.", value = TRUE, width = "100%")
+    ),
     textInput("module_colors", "Colors:", width = "100%", value = "blue,white,red"),
-    selectInput("font_lab", "font.labs:", choices = c("1", "2", "3", "4"), selected = "2", width = "100%"),
     uiOutput("module_showRows"),
     uiOutput("module_showCols"),
     actionButton("plot_mtrs", "Plot Module-Traits Relationship Heatmap", width = "100%", class = "plot-button")

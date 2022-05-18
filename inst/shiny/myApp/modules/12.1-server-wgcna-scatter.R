@@ -42,14 +42,59 @@ verboseScatter <- eventReactive(input$plot_wgcna_scatter, {
   column = match(module, modNames);
   moduleGenes = moduleColors() == module;
 
-  par(mar=c(5,5,5,5))
-  verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
-                     abs(geneTraitSignificance[moduleGenes, 1]),
-                     xlab = paste("Module Membership in", module, "module"),
-                     ylab = paste("Gene significance for ", input$trait),
-                     main = paste("Module membership vs. gene significance\n"),
-                     cex = input$wgcna_scatter_cex, cex.main = input$wgcna_scatter_main,
-                     cex.lab = input$wgcna_scatter_lab, cex.axis = input$wgcna_scatter_axis, col = module)
+  if (input$WGCNA_scatter_method=='verboseScatterplot (WGCNA function)') {
+    par(mar=c(5,5,5,5))
+    verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
+                       abs(geneTraitSignificance[moduleGenes, 1]),
+                       xlab = paste("Module Membership in", module, "module"),
+                       ylab = paste("Gene significance for ", input$trait),
+                       main = paste("Module membership vs. gene significance\n"),
+                       cex = input$wgcna_scatter_cex, cex.main = input$wgcna_scatter_main,
+                       cex.lab = input$wgcna_scatter_lab, cex.axis = input$wgcna_scatter_axis, col = module)
+  }else {
+    x = abs(geneModuleMembership[moduleGenes, column])
+    y = abs(geneTraitSignificance[moduleGenes, 1])
+    corFnc = "cor"
+    corOptions = "use = 'p'"
+    displayAsZero = 1e-05
+    corLabel = corFnc
+    main = paste("Module membership vs. gene significance\n")
+
+    x = as.numeric(as.character(x))
+    y = as.numeric(as.character(y))
+    corExpr = parse(text = paste(corFnc, "(x, y ", prepComma(corOptions), ")"))
+
+    cor = signif(eval(corExpr), 2)
+    if (is.finite(cor))
+      if (abs(cor) < displayAsZero)
+        cor = 0
+    corp = signif(corPvalueStudent(cor, sum(is.finite(x) & is.finite(y))), 2)
+
+    if (is.finite(corp) && corp < 10^(-200)) {
+      corp = "<1e-200"
+    }else{
+      corp = paste("=", corp, sep = "")
+    }
+    if (!is.na(corLabel)) {
+      mainX = paste(main, " ", corLabel, "=", cor, if (is.finite(cor)) {spaste(", p", corp)} else {""}, sep = "")
+    }else {
+      mainX = main
+    }
+
+    if (grepl("white", module)) {
+      pch <- 1
+      cols <- "black"
+    }else {
+      pch <- 16
+      cols <- module
+    }
+    ggplot()+
+      geom_point(aes(x = x, y = y), color = cols, size = input$wgcna_scatter_size, alpha = input$wgcna_scatter_alpha, pch = pch)+
+      labs(x = paste("Module Membership in", module, "module"),
+           y = paste("Gene significance for", input$trait), title = mainX)+
+      theme_bw()+
+      theme(plot.title = element_text(hjust = 0.5), text = element_text(size = input$wgcna_scatter_fontsize))
+  }
 })
 
 output$verboseScatter <- renderPlot({
@@ -90,15 +135,59 @@ output$verboseScatter_Pdf <- downloadHandler(
     column = match(module, modNames);
     moduleGenes = moduleColors() == module;
 
-    par(mar=c(5,5,5,5))
-    verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
-                       abs(geneTraitSignificance[moduleGenes, 1]),
-                       xlab = paste("Module Membership in", module, "module"),
-                       ylab = "Gene significance for body weight",
-                       main = paste("Module membership vs. gene significance\n"),
-                       cex = input$wgcna_scatter_cex, cex.main = input$wgcna_scatter_main,
-                       cex.lab = input$wgcna_scatter_lab, cex.axis = input$wgcna_scatter_axis, col = module)
+    if (input$WGCNA_scatter_method=='verboseScatterplot (WGCNA function)') {
+      par(mar=c(5,5,5,5))
+      verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
+                         abs(geneTraitSignificance[moduleGenes, 1]),
+                         xlab = paste("Module Membership in", module, "module"),
+                         ylab = paste("Gene significance for ", input$trait),
+                         main = paste("Module membership vs. gene significance\n"),
+                         cex = input$wgcna_scatter_cex, cex.main = input$wgcna_scatter_main,
+                         cex.lab = input$wgcna_scatter_lab, cex.axis = input$wgcna_scatter_axis, col = module)
+    }else {
+      x = abs(geneModuleMembership[moduleGenes, column])
+      y = abs(geneTraitSignificance[moduleGenes, 1])
+      corFnc = "cor"
+      corOptions = "use = 'p'"
+      displayAsZero = 1e-05
+      corLabel = corFnc
+      main = paste("Module membership vs. gene significance\n")
 
+      x = as.numeric(as.character(x))
+      y = as.numeric(as.character(y))
+      corExpr = parse(text = paste(corFnc, "(x, y ", prepComma(corOptions), ")"))
+
+      cor = signif(eval(corExpr), 2)
+      if (is.finite(cor))
+        if (abs(cor) < displayAsZero)
+          cor = 0
+      corp = signif(corPvalueStudent(cor, sum(is.finite(x) & is.finite(y))), 2)
+
+      if (is.finite(corp) && corp < 10^(-200)) {
+        corp = "<1e-200"
+      }else{
+        corp = paste("=", corp, sep = "")
+      }
+      if (!is.na(corLabel)) {
+        mainX = paste(main, " ", corLabel, "=", cor, if (is.finite(cor)) {spaste(", p", corp)} else {""}, sep = "")
+      }else {
+        mainX = main
+      }
+
+      if (grepl("white", module)) {
+        pch <- 1
+        cols <- "black"
+      }else {
+        pch <- 16
+        cols <- module
+      }
+      ggplot()+
+        geom_point(aes(x = x, y = y), color = cols, size = input$wgcna_scatter_size, alpha = input$wgcna_scatter_alpha, pch = pch)+
+        labs(x = paste("Module Membership in", module, "module"),
+             y = paste("Gene significance for", input$trait), title = mainX)+
+        theme_bw()+
+        theme(plot.title = element_text(hjust = 0.5), text = element_text(size = input$wgcna_scatter_fontsize))
+    }
     dev.off()
   }
 )

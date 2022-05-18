@@ -710,3 +710,4 @@ publish_gostplot2 <- function(p, highlight_terms = NULL, filename = NULL, width 
     }
   }
 }
+

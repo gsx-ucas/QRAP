@@ -11,7 +11,8 @@ transform_value(
   nsub,
   trans.method,
   batch.method = "NULL",
-  key_words = NULL
+  batch = NULL,
+  batch2 = NULL
 )
 }
 \arguments{
@@ -27,7 +28,7 @@ transform_value(
 
 \item{batch.method}{method for remove batch effects, 'ComBat', 'removeBatchEffect' or NULL}
 
-\item{key_words}{a column name will treated as batch effector}
+\item{batch}{a column name will treated as batch effector}
 }
 \description{
 Transform normalized expression matrix by vst or rlog

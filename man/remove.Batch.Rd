@@ -7,7 +7,8 @@
 remove.Batch(
   expr.data,
   designTable,
-  key_words = "batch",
+  batch = "batch",
+  batch2 = NULL,
   design = "condition",
   method = "ComBat"
 )
@@ -17,7 +18,7 @@ remove.Batch(
 
 \item{designTable}{experiment design table}
 
-\item{key_words}{key words for batch factors}
+\item{batch}{key words for batch factors}
 
 \item{design}{unknown, conditions ?}
 
