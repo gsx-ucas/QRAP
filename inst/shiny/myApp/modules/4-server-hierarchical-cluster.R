@@ -25,11 +25,7 @@ output$hiera_ancol <- renderUI({
 topVarGene_heatmap <- eventReactive(input$plot_hiera, {
   topVarGenes <- trans_value()[, input$hiera_samples] %>% assay %>% rowVars %>% order(decreasing=TRUE) %>% head(input$hiera_topn)
   topVarAssay <- assay(trans_value())[topVarGenes, input$hiera_samples]
-  # print(topVarAssay %>% head(2))
-  # print(topVarAssay %>% dim())
-  # sub_colData <- colData(trans_value()[, input$hiera_samples])
-  # print(input$hiera_samples)
-  # print(input$hiera_ancol)
+
   annotation_col = as.data.frame(row.names = input$hiera_samples, colData(trans_value())[input$hiera_samples, input$hiera_ancol])
   colnames(annotation_col) <- input$hiera_ancol
   color = colorRampPalette(strsplit(input$hiera_color, ",")[[1]])(100)
@@ -40,7 +36,7 @@ topVarGene_heatmap <- eventReactive(input$plot_hiera, {
     annotation_col <- NA
     annotation_colors <- NA
   }
-  print(annotation_colors)
+
   pheatmap(topVarAssay, col=color,
            annotation_col=annotation_col,
            annotation_colors = annotation_colors,
@@ -50,6 +46,9 @@ topVarGene_heatmap <- eventReactive(input$plot_hiera, {
            fontsize_col = input$hiera_fontsize_col,
            scale = "row", fontsize = input$hiera_fontsize,
            show_rownames = F, show_colnames=input$hiera_colname,
+           clustering_distance_rows = input$hiera_dist_method,
+           clustering_distance_cols = input$hiera_dist_method,
+           clustering_method = input$hiera_hclust_method,
            treeheight_row = input$hiera_treeheight_row,
            treeheight_col = input$hiera_treeheight_col,
            angle_col = input$hiera_angle %>% as.integer)

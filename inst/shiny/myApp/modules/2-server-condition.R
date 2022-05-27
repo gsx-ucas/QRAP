@@ -7,7 +7,7 @@ observe({
 
 ##-----------------Create the condition table----------------------------##
 sampleTable <- reactive({
-  if (isTRUE(input$reset_condition)) {
+  if (input$reset_condition == "Re-upload") {
     inFile <- input$ds_file
     if(is.null(inFile))
       return(NULL)
@@ -17,8 +17,9 @@ sampleTable <- reactive({
         df[,i] <- factor(df[,i], levels = unique(df[,i]))
       }
     }
-    # df$condition <- factor(df$condition, levels = unique(df$condition))
   }else {
+    if(is.null(data()))
+      return(NULL)
     conditions <- data() %>% colnames %>% str_replace(replacement = '', pattern = '-.*')
     df <- data.frame(samples = colnames(data()), condition=factor(conditions, levels = unique(conditions)))
   }
@@ -156,14 +157,10 @@ observeEvent(input$runDESeq,{
   dds()
   if ('try-error' %in% class(dds())) {
     shinyalert(title = "error", text = dds()[1], type = "error", confirmButtonText = "Close")
-    # shinyalert(title = "An error occurred when runing DESeq, please check your input!", type = "error")
-    # stop(message(dds()))
   }else {
     trans_value()
     if ('try-error' %in% class(trans_value())) {
       shinyalert(title = "error", text = trans_value()[1], type = "error", confirmButtonText = "Close")
-      # shinyalert(title = "An error occurred when transforming data, please check your input!", type = "error")
-      # stop(message(trans_value()))
     }else {
       shinyalert(title = "success", text = "Data normalization and transformation completed !", type = "success")
     }

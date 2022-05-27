@@ -51,123 +51,42 @@ observe({
 })
 
 ##===============================================Local RenderUI===============================================##
-# # output the ui of Organism
-output$Organism <- renderUI({
-  if ("Organism" %in% input$fields) {
-    textInput("geo_organism", "Organism:", placeholder = "Enter the Organism you want to search", width = "100%")
-  }
-})
-
-# # output the ui of other search fields
-output$Fields <- renderUI({
-  tags$table(
-    style = "width:100%",
-    if ("DataSet Type" %in% input$fields) {
-      tags$tr(
-        tags$td(
-          selectInput("geo_dataset_lg", "Logical:",
-                      choices = c("AND","OR"),
-                      width = "100%")
-        ),
-        tags$td(
-          selectInput("geo_dataset", "DataSet Type:",
-                      choices = c("Expression profiling by HTS" = "Expression profiling by high throughput sequencing",
-                                  "Expression profiling by array" = "Expression profiling by array"),
-                      width = "100%")
-        )
-      )
-    },
-    if ("Title" %in% input$fields) {
-      tags$tr(
-        tags$td(
-          selectInput("geo_title_lg", "Logical:",
-                      choices = c("AND","OR"),
-                      width = "100%")
-        ),
-        tags$td(
-          style = "padding-bottom: 1px",
-          textInput("geo_title", "Title:", placeholder = "Enter the words contained in the title", width = "100%")
-        )
-      )
-    },
-    if ("Description" %in% input$fields) {
-      tags$tr(
-        tags$td(
-          selectInput("geo_description_lg", "Logical:",
-                      choices = c("AND","OR"),
-                      width = "100%")
-        ),
-        tags$td(
-          style = "padding-bottom: 1px",
-          textInput("geo_description", "Description:", placeholder = "Enter the words contained in the description", width = "100%")
-        )
-      )
-    }
-  )
-})
-
-output$search_geo_card <- renderUI({
-  if (input_data$values == "geo") {
-    box(
-      id = "geo_search_card", title = "Search GEO Data", width = 12, status = NULL, solidHeader = TRUE, collapsible = TRUE,
-      checkboxGroupInput("fields", "Search Fields:", inline = T, width = "100%",
-                         choices = c("Organism", "DataSet Type", "Title", "Description"),
-                         selected = c("Organism", "DataSet Type", "Title", "Description")),
-      uiOutput("Organism"),
-      uiOutput("Fields"),
-      fluidRow(
-        column(6, actionButton("search_GEO", "Search GEO Data Sets", class = "run-button", width = "100%")),
-        column(6, actionButton("skip_search_GEO", "Skip Search GEO", class = "plot-button", width = "100%")),
-        column(12, align = "center", p("*(skip this step if you know the geo accession ID.)"))
-      )
-    )
-  }
-})
-
 output$preview_card <- renderUI({
   if (input_data$values == "geo") {
-    conditionalPanel(
-      "input.search_GEO | input.skip_search_GEO",
-      box(
-        id = "geo_fetch_card", title = "Search GEO Data", closable = F, width = 12, status = NULL, solidHeader = TRUE, collapsible = TRUE,
-        tags$table(
-          style = "width:100%",
-          tags$tr(
-            tags$td(
-              textInput("geoID", "GEO Series Accession:", placeholder = "eg. GSE140466", width = "100%")
-            ),
-            tags$td(
-              style = "padding-bottom: 5px",
-              actionButton("fetch_geo", "fetch data", width='100%', style = "margin-top:17px")
-            )
-          )
-        ),
-        conditionalPanel("input.fetch_geo", uiOutput("geo_results"))
-      )
+    box(
+      id = "geo_fetch_card", title = "Search GEO Data", closable = F, width = 12, status = NULL, solidHeader = TRUE, collapsible = TRUE,
+      tags$table(
+        style = "width:100%",
+        tags$tr(
+          tags$td(textInput("geoID", "GEO Series Accession:", value = "GSE147507", placeholder = "eg. GSE147507", width = "100%")),
+          tags$td(style = "padding-bottom: 6px", actionButton("fetch_geo", "Download matrix", width='100%', style = "margin-top:16px", icon = icon("download")))
+        )
+      ),
+      conditionalPanel(
+        "!input.fetch_geo",
+        column(
+          12, style = "border: 1px solid rgb(218,219,220); padding: 5px; margin:0px; border-radius: 8px; background-color: rgb(255, 228, 181)",
+          p(style = "text-align: justify;",
+            strong("Note:"), "please make sure that the Accession Number you enter belongs to an RNA-seq assay.
+          Before starting the analysis, we recommend that you check the data format in the ",
+            a(href = "https://www.ncbi.nlm.nih.gov/geo/", "GEO Website", target = "_blank"))
+        )
+      ),
+      conditionalPanel("input.fetch_geo", uiOutput("geo_results"))
     )
   }else {
     box(
       id = "upload_box", title = "Upload local file", width = 12, status = NULL, solidHeader = TRUE, collapsible = T,
       fileInput("file", "Choose input File:", accept = c("text/csv", "text/comma-separated-values,text/plain",
                                                          ".csv"), placeholder = "*(.csv/.txt reads counts file)", width = "100%"),
-      checkboxInput(inputId = "header", label = "First row as header !", value = TRUE, width = "100%"),
-      checkboxInput(inputId = "row_names", label = "First column as rownames !", value = TRUE, width = "100%"),
+      checkboxInput(inputId = "header", label = "First row as header ?", value = TRUE, width = "100%"),
+      checkboxInput(inputId = "row_names", label = "First column as rownames ?", value = TRUE, width = "100%"),
       fluidRow(
         column(width = 6,actionButton("upload", "Upload >>", class = "run-button",  width='100%')),
         column(width = 6,actionButton("example", "Example >>", class = "run-button",  width='100%'))
       )
     )
   }
-})
-
-output$geo_search_res_card <- renderUI({
-  conditionalPanel(
-    "input.search_GEO",
-    box(
-      id = "dataset_preview_card", title = "Data Sets preview", width = 12, status = NULL, solidHeader = TRUE, collapsible = TRUE,
-      withSpinner(dataTableOutput("geo_datasets"))
-    )
-  )
 })
 
 output$filter_data_card <- renderUI({
@@ -178,7 +97,6 @@ output$filter_data_card <- renderUI({
         id = "filter_geo_box", title = "Pre-filtering", width = 12, status = NULL, solidHeader = TRUE, collapsible = TRUE,
         uiOutput("gprofiler_species"),
         uiOutput("species_warnning"),
-        # bsAlert("species_alert1"),
         selectInput("keyType", "Gene Types:", choices = c("SYMBOL", "ENSEMBL",
                                                           "ENTREZID"), width = "100%"),
         numericInput("genes_n", "Filter out genes that total counts less than:", value = 1, width = "100%"),
@@ -192,7 +110,6 @@ output$filter_data_card <- renderUI({
         inputId = "filter_local_box", title = "Pre-filtering", width = 12, status = NULL, solidHeader = TRUE, collapsible = TRUE,
         uiOutput("gprofiler_species"),
         uiOutput("species_warnning"),
-        # bsAlert("species_alert1"),
         selectInput("keyType", "Gene Types:", choices = c("SYMBOL", "ENSEMBL",
                                                           "ENTREZID"), width = "100%"),
         numericInput("genes_n", "Filter out genes that total counts less than:", value = 1, width = "100%"),
@@ -208,19 +125,14 @@ output$preview_mat_card <- renderUI({
       "input.preview_geo",
       box(
         title = "Data table preview", width = 12, status = NULL, solidHeader = TRUE, collapsible = TRUE,
-        uiOutput("geo_expr_matrix"),
-        uiOutput("filter_geo_text")
-        # bsAlert("filter_alert2")
+        uiOutput("geo_expr_matrix")
+        # uiOutput("filter_geo_text")
       )
     )
   }else {
     box(
       title = "Data filtering", width = 12, status = NULL, solidHeader = TRUE, collapsible = TRUE,
-      # conditionalPanel("input.upload | input.example", addSpinner(dataTableOutput("rawTable"), spin = "circle")),
-      # conditionalPanel("filter_local", addSpinner(plotOutput("filter_density"), spin = "circle"), bsAlert("filter_alert1"))
-      uiOutput("local_matrix"),
-      uiOutput("filter_local_text")
-      # bsAlert("filter_alert1")
+      uiOutput("local_matrix")
     )
   }
 })
@@ -248,8 +160,6 @@ upload_data <- eventReactive(input$upload,{
 # read example data
 example <- eventReactive(input$example,{
   data <- readRDS(system.file("extdata", "example.rds", package = "QRseq"))
-  # data <- data[order(colnames(data))]
-  # data <- round(data, digits = 0)
 })
 
 # collapse upload_local_data_card
@@ -258,6 +168,19 @@ observe({
     return(NULL)
   if (input$example | input$upload) {
     js$collapse("upload_box")
+
+    if (isTRUE(use.example$use)) {
+      data <- example()
+    }else {
+      data <- upload_data()
+    }
+
+    output$loadingBox1 <- renderInfoBox({
+      infoBox("Samples:", ncol(data), width = 12, color = "light-blue", icon = icon("vials"), fill = TRUE)
+    })
+    output$loadingBox2 <- renderInfoBox({
+      infoBox("Genes:", nrow(data), width = 12, color = "olive", icon = icon("dna"), fill = TRUE)
+    })
   }
 })
 
@@ -271,10 +194,9 @@ observeEvent(input$filter_local, {
   filtered_genes <- dim(data[rowSums(data) < input$genes_n, ])[1]
   left_genes <- dim(data[rowSums(data) >= input$genes_n, ])[1]
 
-  output$filter_local_text <- renderUI({
-    p(paste0("Filtering out ", filtered_genes, " low expression genes; ", left_genes," were left for subsequent analysis."), style = "font-weight: 800; padding-top: 3px;")
+  output$fiteringBox <- renderInfoBox({
+    infoBox("Filter Out:", filtered_genes, width = 12, color = "yellow", icon = icon("dna"), fill = TRUE)
   })
-
 })
 
 # filter out low expression genes
@@ -320,7 +242,10 @@ filter_density <- eventReactive(input$filter_local, {
     geom_vline(xintercept = log2(input$genes_n + 1), col = "red", lty = 2)+
     labs(x = "log2(Total counts + 1) Per genes", y = "Density", fill = "")+
     theme_classic()+
-    theme(axis.title = element_text(size = 15), axis.text = element_text(size = 12), legend.text = element_text(size = 15))
+    theme_bw()+
+    theme(axis.text = element_text(size = 16, family = "Times", color = "black"),
+          axis.title = element_text(size = 18, family = "Times", color = "black"),
+          legend.text = element_text(size = 18, family = "Times", color = "black"))
 
   return(p)
 })
@@ -351,7 +276,7 @@ observeEvent(input$filter_local,{
 # creat ui output for switch data and filtered data
 output$local_matrix <- renderUI({
   if (show_local_mat$data == "filtered_data") {
-    withSpinner(plotOutput("filter_density"))
+    withSpinner(plotOutput("filter_density", height = "355px"))
   }else {
     withSpinner(dataTableOutput("rawTable"))
   }
@@ -381,54 +306,10 @@ observe({
 })
 
 ##===============================================GEO Part===============================================##
-# # the function to search geo datasets
-datasets <- eventReactive(input$search_GEO,{
-  withProgress(message = "", value = 0, {
-    incProgress(0.5, detail = "searching geo datasets, this will take a while ...")
-    results_df <- Search.GEO(organism = input$geo_organism,
-                             title = input$geo_title, title_lg = input$geo_title_lg,
-                             description = input$geo_description, description_lg = input$geo_description_lg,
-                             datasetType = input$geo_dataset, datasetType_lg = input$geo_dataset_lg)
-  })
-  return(results_df)
-})
-
-# # output the datatable of searching results, return an empty info if results is empty
-output$geo_datasets <- renderDataTable({
-  datasets_tab <<- datasets()
-  if (dim(datasets())[2] > 1) {
-    datasets_tab$Series_Accession <<- lapply(datasets()$Series_Accession, function(x){
-      paste0("<a href='", "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=", x, "' target='_blank'>", x,"</a>")
-    }) %>% unlist
-    datasets_tab$FTP_download <<- lapply(datasets()$FTP_download, function(x){
-      paste0("<a href='", gsub(x = x,pattern = "GEO \\(.*\\)",  replacement = ""), "' target='_blank'>", x,"</a>")
-    }) %>% unlist
-  }
-  return(datasets_tab)
-}, escape = FALSE,rownames = T,
-options = if (dim(datasets())[2] > 1) {
-  list(pageLength = 3, autoWidth = T, scrollX=TRUE,
-       columnDefs = list(list(width = '400px',
-                              targets = c(3, 4)
-       )))
-}else {
-  list(pageLength = 5, autoWidth = F, scrollX=TRUE)
-}
-)
-
-# collapse this card after click search button
-observe({
-  if (is.null(input$search_GEO) | is.null(input$skip_search_GEO))
-    return(NULL)
-  if (input$search_GEO | input$skip_search_GEO) {
-    js$collapse("geo_search_card")
-  }
-})
-
 # # download geofiles using GEOquery package
 geo_results <- eventReactive(input$fetch_geo, {
   withProgress(message = "", min = 0, max = 1, value = 0, {
-    incProgress(0.6, detail = "Try downloading filess ...")
+    incProgress(0.6, detail = "Try downloading files ...")
     GEO.File <- download.GEO(input$geoID, out_dir = paste0("./GEO_Download/"))
   })
   return(GEO.File)
@@ -458,22 +339,20 @@ output$geo_results <- renderUI({
       12,
       pickerInput("geofile", "Select the results:", choices = results_select(),
                   selected = results_select()[1], width = "100%", multiple = T, options = list(`actions-box` = TRUE)),
-      checkboxInput(
-        inputId = "geo_header",
-        label = "First row as header !",
-        value = TRUE,
-        width = "100%"
-      ),
+      checkboxInput(inputId = "geo_header", label = "First row as header ?", value = TRUE, width = "100%"),
       uiOutput("geo_rownames"),
       uiOutput("geo_columns"),
       fluidRow(
         column(
           6,
-          actionButton("preview_geo", "Preview GEO >>", class = "run-button",  width='100%')
+          actionButton("preview_geo", "Loading GEO >>", class = "run-button",  width='100%')
         ),
         column(
           6,
-          actionButton("go_geo_filter", "GO NEXT >>", class = "run-button",  width='100%')
+          conditionalPanel(
+            "input.preview_geo",
+            actionButton("go_geo_filter", "GO NEXT >>", class = "run-button",  width='100%')
+          )
         )
       )
     )
@@ -482,12 +361,7 @@ output$geo_results <- renderUI({
 
 output$geo_rownames <- renderUI({
   if (input$geofile %>% length <= 1) {
-    checkboxInput(
-      inputId = "geo_rownames",
-      label = "First column as rownames !",
-      value = FALSE,
-      width = "100%"
-    )
+    checkboxInput(inputId = "geo_rownames", label = "First column as rownames ?", value = TRUE, width = "100%")
   }
 })
 
@@ -499,12 +373,8 @@ output$geo_columns <- renderUI({
         tags$table(
           style = "width: 100%",
           tags$tr(
-            tags$td(
-              numericInput("genes_column", "Column number of geneID:", value = NULL, width = "100%")
-            ),
-            tags$td(
-              numericInput("reads_column", "Column number of readCounts:", value = NULL, width = "100%")
-            )
+            tags$td(numericInput("genes_column", "Column number of geneID:", value = NULL, width = "100%")),
+            tags$td(numericInput("reads_column", "Column number of readCounts:", value = NULL, width = "100%"))
           )
         )
       )
@@ -515,8 +385,15 @@ output$geo_columns <- renderUI({
 observe({
   if(is.null(input$preview_geo))
     return(NULL)
-  if (input$preview_geo == 1) {
-    js$collapse("dataset_preview_card")
+  if (input$preview_geo) {
+    data <- geo_matrix()
+
+    output$geo_loadingBox1 <- renderInfoBox({
+      infoBox("Samples:", ncol(data), width = 12, color = "light-blue", icon = icon("vials"), fill = TRUE)
+    })
+    output$geo_loadingBox2 <- renderInfoBox({
+      infoBox("Genes:", nrow(data), width = 12, color = "olive", icon = icon("dna"), fill = TRUE)
+    })
   }
 })
 
@@ -530,7 +407,7 @@ geo_matrix <- eventReactive(input$preview_geo, {
 output$geo_matrix <- renderDataTable({
   geo_matrix()
 },rownames = T,
-options = list(pageLength = 5, autoWidth = F, scrollX=TRUE, scrollY=TRUE)
+options = list(pageLength = 3, autoWidth = F, scrollX=TRUE, scrollY=TRUE)
 )
 
 # # collapse dataset_preview_card
@@ -538,19 +415,12 @@ observeEvent(input$go_geo_filter, {
   js$collapse("geo_fetch_card")
 })
 
-# # # collapse dataset_preview_card
-# observeEvent(input$filter_local, {
-#   js$collapse("geo_data_preview_card")
-# })
-
 observeEvent(input$filter_local, {
   filtered_genes <- dim(geo_matrix()[rowSums(geo_matrix()) < input$genes_n, ])[1]
   left_genes <- dim(geo_matrix()[rowSums(geo_matrix()) >= input$genes_n, ])[1]
-  # createAlert(session, "filter_alert2", "Filter_Alert2", title = NULL,
-  #             content = paste0("Filtering out ", filtered_genes, " low expression genes; ", left_genes," were left for subsequent analysis."),
-  #             append = FALSE, style = "success")
-  output$filter_geo_text <- renderUI({
-    p(paste0("Filtering out ", filtered_genes, " low expression genes; ", left_genes," were left for subsequent analysis."), style = "font-weight: 800; padding-top: 3px;")
+
+  output$geo_fiteringBox <- renderInfoBox({
+    infoBox("Filter Out:", filtered_genes, width = 12, color = "yellow", icon = icon("dna"), fill = TRUE)
   })
 })
 
@@ -558,12 +428,6 @@ GEO_data <- eventReactive(input$filter_local, {
   # filter data
   geo_matrix()[rowSums(geo_matrix()) >= input$genes_n, ]
 })
-
-# output$geo_data <- renderDataTable({
-#   GEO_data()
-# },rownames = T,
-# options = list(pageLength = 5, autoWidth = F, scrollX=TRUE, scrollY=TRUE)
-# )
 
 GEO_density <- eventReactive(input$filter_local, {
   data <- geo_matrix()
@@ -577,7 +441,10 @@ GEO_density <- eventReactive(input$filter_local, {
     geom_density(aes(x = log2(sum_row0 + 1), fill = "After Filter"), alpha = 0.3, show.legend = T)+
     geom_vline(xintercept = log2(input$genes_n + 1), col = "red", lty = 2)+
     labs(x = "log2(RowSum + 1)", y = "Density", fill = "")+
-    theme_classic()
+    theme_bw()+
+    theme(axis.text = element_text(size = 16, family = "Times", color = "black"),
+          axis.title = element_text(size = 18, family = "Times", color = "black"),
+          legend.text = element_text(size = 18, family = "Times", color = "black"))
 
   return(p)
 })
@@ -585,13 +452,6 @@ GEO_density <- eventReactive(input$filter_local, {
 output$GEO_density <- renderPlot({
   GEO_density()
 })
-# # show filtered expression matrix
-# output$filter_Table <- renderDataTable({
-#   local_data()
-# },
-# rownames = T,
-# options = list(pageLength = 5, autoWidth = F, scrollX=TRUE, scrollY=TRUE)
-# )
 
 # decied which matrix to show
 show_geo_mat <- reactiveValues(data = 'org_data') # define a reactiveValues for show_local_mat
@@ -609,52 +469,23 @@ observeEvent(input$filter_local,{
 # creat ui output for switch data and filtered data
 output$geo_expr_matrix <- renderUI({
   if (show_geo_mat$data == "filtered_data") {
-    addSpinner(plotOutput("GEO_density"), spin = "circle")
+    addSpinner(plotOutput("GEO_density", height = "355px"), spin = "circle")
   }else {
     addSpinner(dataTableOutput("geo_matrix"), spin = "circle")
   }
 })
 
-# ui output species selections
-# output$gprofiler_species2 <- renderUI({
-#   selectInput("gprofiler_species2", "Species from ensembl:", choices = get_supported_species(), width = "100%")
-# })
-#
-# observe({
-#   if(is.null(input$gprofiler_species2))
-#     return(NULL)
-#   if (nchar(input$gprofiler_species2) == 0) {
-#     createAlert(session, "species_alert2", "Species_Alert2", title = NULL,
-#                 content = "Note: Please choice a species.", append = FALSE, style = "warning")
-#   }else {
-#     closeAlert(session, "Species_Alert2")
-#   }
-# })
-
 ##===============================================Specify the gene and species===============================================##
 
 # get input value of gene types
-keyType <- reactive({
-  input$keyType
-  # if (input_data$values == "local") {
-  #   print(input$keyType)
-  #   input$keyType
-  # }else {
-  #   print(input$geo_keyType)
-  #   input$geo_keyType
-  # }
-})
+keyType <- reactive({ input$keyType })
 
 # get input value of OrgDb
 OrgDb <- eventReactive(input$filter_local | input$filter_local, {
   if (is.null(input$gprofiler_species))
     return(NULL)
   gprofiler_species <- species()$id[species()$display_name == input$gprofiler_species]
-  # if (input_data$values == "local") {
-  #   gprofiler_species <- input$gprofiler_species
-  # }else {
-  #   gprofiler_species <- input$gprofiler_species2
-  # }
+
   if (gprofiler_species == "hsapiens") {
     db <- "org.Hs.eg.db"
   }else if (gprofiler_species == "mmusculus") {
@@ -692,7 +523,6 @@ OrgDb <- eventReactive(input$filter_local | input$filter_local, {
   }else {
     db <- NULL
   }
-  print(db)
   return(db)
 })
 
@@ -704,14 +534,115 @@ data <- reactive({
     data <- GEO_data()
   }
   data <- round(data, digits = 0)
-  # gsg <- goodSamplesGenes(as.data.frame(t(data)), verbose = 3)
-  #
-  # if (!gsg$allOK) {
-  #   # Optionally, print the gene and sample names that were removed:
-  #   if (sum(!gsg$goodGenes)>0)
-  #     printFlush(paste("Removing", length(rownames(data)[!gsg$goodGenes]), "genes", sep = " "));
-  #   # Remove the offending genes and samples from the data:
-  #   data = data[gsg$goodGenes, ]
-  # }
   return(data)
 })
+
+###----------------------------Info card of local or GEO-------------------
+output$info_boxs <- renderUI({
+  if (input_data$values == "geo") {
+    column(
+      width = 2, style = "padding: 0px; margin:0px",
+      infoBoxOutput("geo_loadingBox1", width = 12),
+      infoBoxOutput("geo_loadingBox2", width = 12),
+      infoBoxOutput("geo_fiteringBox", width = 12)
+    )
+  }else {
+    column(
+      2, style = "padding: 0px; margin:0px",
+      infoBoxOutput("loadingBox1", width = 12),
+      infoBoxOutput("loadingBox2", width = 12),
+      infoBoxOutput("fiteringBox", width = 12)
+    )
+  }
+})
+
+###----------------------------Introduce Local or GEO-----------------------
+output$intro_start <- renderUI({
+  if (input_data$values == "geo") {
+    column(
+      12, style = "padding:0px;",
+      fluidRow(
+        style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
+        column(
+          6, style = "text-align:justify;  border-right: 2px solid white;",
+          h3("What is GEO ?"),
+          p("The Gene Expression Omnibus (GEO) is a public repository that archives and
+            freely distributes comprehensive sets of microarray, next-generation sequencing,
+            and other forms of high-throughput functional genomic data submitted by the scientific
+            community. GEO records that provide gene expression matrix are organized as follows:"),
+          h4("Series"),
+          p("A Series record links together a group of related Samples and provides a focal point and
+            description of the whole study. Series records may also contain tables describing extracted
+            data, summary conclusions, or analyses. Each Series record is assigned a unique and stable
+            GEO accession number (GSExxx). The GEO Series mainly deposits tar archive of original raw data files,
+            or processed sequence data files."),
+          h4("DataSet"),
+          p("A GEO Series record is an original submitter-supplied record that summarizes an experiment.
+            These data are reassembled by GEO staff into GEO Dataset records (GDSxxx). A DataSet represents
+            a curated collection of biologically and statistically comparable GEO Samples.  Samples within
+            a DataSet refer to the same Platform, that is, they share a common set of array elements. Value
+            measurements for each Sample within a DataSet are assumed to be calculated in an equivalent manner,
+            that is, considerations such as background processing and normalization are consistent across the
+            DataSet. Information reflecting experimental factors is provided through DataSet subsets.")
+        ),
+        column(
+          6, style = "text-align:justify;",
+          h3("How can I query and analyze GEO data?"),
+          p("Once you have identified gene expression profiles of interest, there are
+            GEO Series Acession Number (GSExxx) or GEO DataSet Acession Number (GDSxxx)
+            that help download expression matrix. In our platform, we support you query
+            and analysis the value matrix tables within GEO DataSet (GDS) or the Series
+            Matrix File or supplementary files within GEO Series (GSExxx)."),
+          h4("Download the matrix:"),
+          p("After you input the GEO Acession Number and active the 'Download matrix' button,
+            We will download the value matrix tables within GDSxxx or supplementary files within
+            GSExxx, these files will store in the working directory of the R project you created."),
+          h4("Process the matrix:"),
+          p("When the files download accomplished, there will show the download files name in the
+            Parameter setting panel, and you should select file(s) that contain interested gene
+            expression matrix and active the 'Loading GEO' button to preview the matrix."),
+          p("Please Note that if the files are in a tar archive format, such as htseq-count generated
+            results, these files will conatin Gene ID and Gene Expression Value of each sample, respectively.
+            Therefore, you need to provid the column number of the Gene ID and Gene Expression Value to help
+            merge the files to generate an analysis ready gene expression matrix.")
+        )
+      )
+    )
+  }else {
+    column(
+      12, style = "padding:0px;",
+      fluidRow(
+        style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
+        column(
+          4, style = "text-align:center;border-right: 2px solid white;",
+          strong("Input Example", style = "font-size: 20px"),
+          tags$img(src = "images/input_example.jpg",
+                   width = "100%")
+        ),
+        column(
+          8, style = "text-align:justify;",
+          h3("Why un-normalized counts ?"),
+          p("As input, the DESeq2 package expects count data as obtained, e.g.,
+            from RNA-seq or another high-throughput sequencing experiment, in the
+            form of a matrix of integer values. The value in the i-th row and the j-th
+            column of the matrix tells how many reads can be assigned to gene i in sample j.
+            The values in the matrix should be un-normalized counts or estimated counts of
+            sequencing reads (for single-end RNA-seq) or fragments (for paired-end RNA-seq).
+            You can use software like Salmon or Hisat2 + Htseq-count to generate such count matrices.
+            It is important to provide count matrices as input for DESeq2’s statistical model to hold,
+            as only the count values allow assessing the measurement precision correctly.
+            The DESeq2 model internally corrects for library size, so transformed or normalized values such as
+            counts scaled by library size should not be used as input."),
+          h3("Why Pre-filtering ?"),
+          p("While it is not necessary to pre-filter low count genes before running the DESeq2 functions,
+            there are two reasons which make pre-filtering useful: by removing rows in which there are very
+            few reads, we reduce the memory size of the dds data object, and we increase the speed of the
+            transformation and testing functions within DESeq2. Here we perform a minimal pre-filtering to keep
+            only rows that have at least 10 reads total. Note that more strict filtering to increase power is
+            automatically applied via independent filtering on the mean of normalized counts within the results function.")
+        )
+      )
+    )
+  }
+})
+

@@ -92,8 +92,8 @@ VolPlot <- eventReactive(input$plot_volcano,{
         geom_point(aes(x=down$log2FoldChange, y = -log10(down$padj)), color='blue', size = input$vol_size, alpha=input$vol_alpha)+
         geom_text(x=input$vol_xlimits[1]*0.8, y=input$vol_ylimit*0.8, aes(label=paste0('down: ', dim(down)[1])), col='blue', data=NULL)+
         geom_text(x=input$vol_xlimits[2]*0.8, y=input$vol_ylimit*0.8, aes(label=paste0('up: ', dim(up)[1])), col='red', data=NULL)+
-        geom_label_repel(data = up_topn, aes(x = log2FoldChange, y = -log10(padj), label = rownames(up_topn)), size = 3, color = "red", max.overlaps = 100)+
-        geom_label_repel(data = down_topn, aes(x = log2FoldChange, y = -log10(padj), label = rownames(down_topn)), size = 3, color = "blue", max.overlaps = 100)
+        geom_label_repel(data = up_topn, aes(x = log2FoldChange, y = -log10(padj), label = rownames(up_topn)), size = input$vol_text_size, color = "red", max.overlaps = 100)+
+        geom_label_repel(data = down_topn, aes(x = log2FoldChange, y = -log10(padj), label = rownames(down_topn)), size = input$vol_text_size, color = "blue", max.overlaps = 100)
     }else {
       p <- p + geom_point(aes(x=up$log2FoldChange, y = -log10(up$padj)), color='red', size = input$vol_size, alpha=input$vol_alpha)+
         geom_point(aes(x=down$log2FoldChange, y = -log10(down$padj)), color='blue', size = input$vol_size, alpha=input$vol_alpha)+

@@ -9,6 +9,15 @@ output$wgcna_exp_trait <- renderUI({
   )
 })
 
+output$wgcna_exp_anno <- renderUI({
+  pickerInput(
+    inputId = "wgcna_exp_anno", label = "Select more info for column annotation:",
+    choices = colnames(colData(dds()))[!colnames(colData(dds())) %in% c("sizeFactor", "replaceable", "samples", input$wgcna_exp_trait)],
+    selected = colnames(colData(dds()))[!colnames(colData(dds())) %in% c("sizeFactor", "replaceable", "samples", input$wgcna_exp_trait)][1],
+    multiple = T, width = "100%", options = list(`live-search` = TRUE, size = 5)
+  )
+})
+
 output$wgcna_exp_module <- renderUI({
   pickerInput(
     inputId = "wgcna_exp_module", label = "Select interested module:",
@@ -20,24 +29,42 @@ output$wgcna_exp_module <- renderUI({
 wgcna_expression <- eventReactive(input$wgcna_plot_exp, {
   sampleTable <- as.data.frame(colData(dds()))[rownames(datExpr()), ]
 
-  sampleTable <- sampleTable[order(sampleTable[, input$wgcna_exp_trait]), ]
+  sampleTable <- sampleTable[order(sampleTable[, input$wgcna_exp_trait], na.last = FALSE), ]
 
-  sampleTable <- lapply(sampleTable[, input$wgcna_exp_trait] %>% unique, function(x){
-    sampleTable[sampleTable[, input$wgcna_exp_trait] == x, ]
-  }) %>% bind_rows()
+  print(head(sampleTable, 10))
+
+  # sampleTable <- lapply(sampleTable[, input$wgcna_exp_trait] %>% unique, function(x){
+  #   if (is.na(x)) {
+  #     df <- sampleTable[is.na(sampleTable[, input$wgcna_exp_trait]), ]
+  #   }else {
+  #     df <- sampleTable[!is.na(sampleTable[, input$wgcna_exp_trait]), ]
+  #     df <- df[df[, input$wgcna_exp_trait] == x, ]
+  #   }
+  # }) %>% bind_rows()
+
+  # print(head(sampleTable, 10))
 
   module_genes <- names(moduleColors())[moduleColors() == input$wgcna_exp_module]
   expression_df <- as.data.frame(assay(trans_value()))[module_genes, rownames(sampleTable)]
 
+  # print(head(expression_df, 10))
+
   if (input$wgcna_exp_ptype == "Pheatmap") {
-    annotation_col = data.frame(row.names = rownames(sampleTable), V1 = sampleTable[, input$wgcna_exp_trait])
-    colnames(annotation_col) <- input$wgcna_exp_trait
+    if (!is.null(input$wgcna_exp_anno)) {
+      annotation_col = data.frame(row.names = rownames(sampleTable), V1 = sampleTable[, c(input$wgcna_exp_trait, input$wgcna_exp_anno)])
+      colnames(annotation_col) <- c(input$wgcna_exp_trait, input$wgcna_exp_anno)
+    }else {
+      annotation_col = data.frame(row.names = rownames(sampleTable), V1 = sampleTable[, input$wgcna_exp_trait])
+      colnames(annotation_col) <- input$wgcna_exp_trait
+    }
+
+    annotation_colors <- set_anno_color(anno_row = NULL, anno_col = annotation_col)
 
     color = colorRampPalette(strsplit(input$wgcna_hiera_color, ",")[[1]])(100)
-    pheatmap(expression_df,
-             scale = "row", show_rownames = F,treeheight_row = 20,
-             annotation_col = annotation_col, cluster_cols = F, col = color,
-             fontsize_col = input$wgcna_hiera_fontsize_col,
+    pheatmap(expression_df, border_color = NA, scale = "row", show_rownames = F,
+             show_colnames = input$wgcna_hiera_colname, treeheight_row = 20,
+             annotation_col = annotation_col, annotation_colors = annotation_colors,
+             cluster_cols = F, col = color, fontsize_col = input$wgcna_hiera_fontsize_col,
              fontsize = input$wgcna_hiera_fontsize, angle_col = input$wgcna_hiera_angle)
   }else {
     MEs0 = moduleEigengenes(datExpr(), moduleColors())$eigengenes
