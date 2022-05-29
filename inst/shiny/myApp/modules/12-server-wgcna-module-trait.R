@@ -37,8 +37,7 @@ textMatrix <- eventReactive(input$plot_mtrs, {
 output$module_showRows <- renderUI({
   pickerInput(
     inputId = "module_showRows", label = "Select Modules to Show:",
-    choices = paste0("ME", moduleColors() %>% unique),
-    selected = paste0("ME", moduleColors() %>% unique),
+    choices = paste0("ME", moduleColors() %>% unique), selected = paste0("ME", moduleColors() %>% unique),
     multiple = T, width = "100%", options = list(`actions-box` = TRUE, `live-search` = TRUE, size = 5)
   )
 })
@@ -58,20 +57,48 @@ LabeledHeatmap <- eventReactive(input$plot_mtrs, {
 
   color = colorRampPalette(strsplit(input$module_colors, ",")[[1]])(100)
 
-  row_idx <- seq(1, length(names(MEs)))
-  showRows <- row_idx[names(MEs) %in% input$module_showRows]
+  if (input$WGCNA_Heatmap_method == 'labeledHeatmap (WGCNA function)') {
+    row_idx <- seq(1, length(names(MEs)))
+    showRows <- row_idx[names(MEs) %in% input$module_showRows]
 
-  col_idx <- seq(1, length(names(traitDataTab)))
-  showCols <- col_idx[names(traitDataTab) %in% input$module_showCols]
+    col_idx <- seq(1, length(names(traitDataTab)))
+    showCols <- col_idx[names(traitDataTab) %in% input$module_showCols]
 
-  par(mar=c(10,10,1,1))
+    par(mar=c(10,10,1,1))
 
-  # Display the correlation values within a heatmap plot
-  labeledHeatmap(Matrix = moduleTraitCor(), xLabels = names(traitDataTab), yLabels = names(MEs),
-                 ySymbols = names(MEs), textMatrix = textMatrix(), colorLabels = FALSE, colors = color,
-                 setStdMargins = F, cex.text = input$cex_text, xLabelsAngle = 45, yColorWidth = input$yColorWidth,
-                 yColorOffset = 0.005, font.lab.x = input$font_lab %>% as.integer, font.lab.y = input$font_lab  %>% as.integer,
-                 showRows = showRows, showCols = showCols, main = paste("Module-trait relationships"))
+    # Display the correlation values within a heatmap plot
+    labeledHeatmap(Matrix = moduleTraitCor(), xLabels = names(traitDataTab), yLabels = names(MEs),
+                   ySymbols = names(MEs), textMatrix = textMatrix(), colorLabels = FALSE, colors = color,
+                   setStdMargins = F, cex.text = input$cex_text, xLabelsAngle = 45, yColorWidth = input$yColorWidth,
+                   yColorOffset = 0.005, font.lab.x = input$font_lab %>% as.integer, font.lab.y = input$font_lab  %>% as.integer,
+                   showRows = showRows, showCols = showCols, main = paste("Module-trait relationships"))
+  }else {
+    anno_row <- data.frame(row.names = rownames(moduleTraitCor()),
+                           ` ` = rownames(moduleTraitCor()) %>% stringr::str_remove("ME"), check.names = F, fix.empty.names = F)
+    re_color <- eval(parse(text = paste0("c(", paste(paste0(anno_row$` `, " = ", "'", anno_row$` `, "'"), collapse = ","), ")")))
+
+    pheat_map_data <- moduleTraitCor()
+    textMatrix <- textMatrix()
+    colnames(textMatrix) <- colnames(pheat_map_data)
+    rownames(textMatrix) <- rownames(pheat_map_data)
+
+    if (!is.null(input$module_showRows)) {
+      textMatrix <- textMatrix[rownames(pheat_map_data) %in% input$module_showRows, ]
+      pheat_map_data <- pheat_map_data[rownames(pheat_map_data) %in% input$module_showRows, ]
+    }
+    if (!is.null(input$module_showCols)) {
+      textMatrix <- textMatrix[ ,colnames(pheat_map_data) %in% input$module_showCols]
+      pheat_map_data <- pheat_map_data[ ,colnames(pheat_map_data) %in% input$module_showCols]
+    }
+
+    max_col_value <- max(abs(pheat_map_data))
+    pheatmap::pheatmap(pheat_map_data, breaks = seq(-max_col_value, max_col_value, 2 * max_col_value / 100),
+             color = color, display_numbers = textMatrix, annotation_row = anno_row, annotation_legend = F,
+             annotation_colors = list(` ` = re_color), cluster_rows = input$WGCNA_heatmap_cluster_rows,
+             cluster_cols = input$WGCNA_heatmap_cluster_cols, fontsize = input$WGCNA_heatmap_fontsize,
+             fontsize_col = input$WGCNA_heatmap_fontsize_col, fontsize_number = input$WGCNA_heatmap_fontsize_num,
+             angle_col = "315")
+  }
 })
 
 output$mtrs_heatmap <- renderPlot({
@@ -92,19 +119,48 @@ output$mtrs_heatmap_Pdf <- downloadHandler(
 
     color = colorRampPalette(strsplit(input$module_colors, ",")[[1]])(100)
 
-    row_idx <- seq(1, length(names(MEs)))
-    showRows <- row_idx[names(MEs) %in% input$module_showRows]
+    if (input$WGCNA_Heatmap_method == 'labeledHeatmap (WGCNA function)') {
+      row_idx <- seq(1, length(names(MEs)))
+      showRows <- row_idx[names(MEs) %in% input$module_showRows]
 
-    col_idx <- seq(1, length(names(traitDataTab)))
-    showCols <- col_idx[names(traitDataTab) %in% input$module_showCols]
+      col_idx <- seq(1, length(names(traitDataTab)))
+      showCols <- col_idx[names(traitDataTab) %in% input$module_showCols]
 
-    par(mar=c(10,10,1,1))
-    # Display the correlation values within a heatmap plot
-    labeledHeatmap(Matrix = moduleTraitCor(), xLabels = names(traitDataTab), yLabels = names(MEs),
-                   ySymbols = names(MEs), textMatrix = textMatrix(), colorLabels = FALSE, colors = color,
-                   setStdMargins = F, cex.text = input$cex_text, xLabelsAngle = 45, yColorWidth = input$yColorWidth,
-                   yColorOffset = 0.005, font.lab.x = input$font_lab %>% as.integer, font.lab.y = input$font_lab  %>% as.integer,
-                   showRows = showRows, showCols = showCols, zlim = c(-1, 1), main = paste("Module-trait relationships"))
+      par(mar=c(10,10,1,1))
+
+      # Display the correlation values within a heatmap plot
+      labeledHeatmap(Matrix = moduleTraitCor(), xLabels = names(traitDataTab), yLabels = names(MEs),
+                     ySymbols = names(MEs), textMatrix = textMatrix(), colorLabels = FALSE, colors = color,
+                     setStdMargins = F, cex.text = input$cex_text, xLabelsAngle = 45, yColorWidth = input$yColorWidth,
+                     yColorOffset = 0.005, font.lab.x = input$font_lab %>% as.integer, font.lab.y = input$font_lab  %>% as.integer,
+                     showRows = showRows, showCols = showCols, main = paste("Module-trait relationships"))
+    }else {
+      anno_row <- data.frame(row.names = rownames(moduleTraitCor()),
+                             ` ` = rownames(moduleTraitCor()) %>% stringr::str_remove("ME"), check.names = F, fix.empty.names = F)
+      re_color <- eval(parse(text = paste0("c(", paste(paste0(anno_row$` `, " = ", "'", anno_row$` `, "'"), collapse = ","), ")")))
+
+      pheat_map_data <- moduleTraitCor()
+      textMatrix <- textMatrix()
+      colnames(textMatrix) <- colnames(pheat_map_data)
+      rownames(textMatrix) <- rownames(pheat_map_data)
+
+      if (!is.null(input$module_showRows)) {
+        textMatrix <- textMatrix[rownames(pheat_map_data) %in% input$module_showRows, ]
+        pheat_map_data <- pheat_map_data[rownames(pheat_map_data) %in% input$module_showRows, ]
+      }
+      if (!is.null(input$module_showCols)) {
+        textMatrix <- textMatrix[ ,colnames(pheat_map_data) %in% input$module_showCols]
+        pheat_map_data <- pheat_map_data[ ,colnames(pheat_map_data) %in% input$module_showCols]
+      }
+
+      max_col_value <- max(abs(pheat_map_data))
+      pheatmap::pheatmap(pheat_map_data, breaks = seq(-max_col_value, max_col_value, 2 * max_col_value / 100),
+                         color = color, display_numbers = textMatrix, annotation_row = anno_row, annotation_legend = F,
+                         annotation_colors = list(` ` = re_color), cluster_rows = input$WGCNA_heatmap_cluster_rows,
+                         cluster_cols = input$WGCNA_heatmap_cluster_cols, fontsize = input$WGCNA_heatmap_fontsize,
+                         fontsize_col = input$WGCNA_heatmap_fontsize_col, fontsize_number = input$WGCNA_heatmap_fontsize_num,
+                         angle_col = "315")
+    }
     dev.off()
   }
 )

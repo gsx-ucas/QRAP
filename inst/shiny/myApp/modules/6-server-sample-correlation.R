@@ -23,11 +23,12 @@ output$Corr_group2 <- renderUI({
 })
 
 output$Corr_groups <- renderUI({
-  # pickerInput("corr_groups", "Select groups:", choices = dds()$condition %>% unique %>% as.character,
-  #             selected = dds()$condition %>% unique %>% as.character, width = "100%", multiple = T, 
-  #             options = list(`actions-box` = TRUE, `live-search` = TRUE, size = 5))
-  selectInput("corr_groups", "Select groups:", choices = dds()$condition %>% unique %>% as.character,
-              selected = dds()$condition %>% unique %>% as.character, width = "100%", multiple = T)
+  virtualSelectInput(
+    inputId = "corr_groups",  label = "Select groups:",
+    choices = dds()$condition %>% unique %>% as.character,
+    selected = dds()$condition %>% unique %>% as.character,
+    multiple = TRUE, search = TRUE, width = "100%"
+  )
 })
 
 ## ----------------------------- plot colors ----------------------------##
@@ -45,23 +46,24 @@ CorrPlot <- eventReactive(input$plot_corr,{
     data <- counts(dds(), normalized=TRUE)
     data <- log2(data + 1)
   }
-  
+
   if (input$corr_type == "pairwise (scatter)") {
     corr_group1_columns <- dds()$condition %in% input$corr_group1
     corr_group2_columns <- dds()$condition %in% input$corr_group2
-    
-    CorrAssay <- data.frame(V1=data[ ,corr_group1_columns] %>% rowMeans(), V2=data[ ,corr_group2_columns] %>% rowMeans())
-    
+
+    CorrAssay <- data.frame(V1 = data[ ,corr_group1_columns] %>% rowMeans(), V2 = data[ ,corr_group2_columns] %>% rowMeans())
+
     pearsonr <- cor.test(CorrAssay$V1, CorrAssay$V2, method = input$corr_method)
     cor <- pearsonr$estimate %>% round(4)
-    
+
     p <- ggplot(data = NULL)+
       geom_point(aes(CorrAssay$V1, CorrAssay$V2),size=input$corr_size, alpha=input$corr_alpha, col = input$corr_col)+
       geom_label_repel(x=input$corr_limits[2]*0.1, y=input$corr_limits[2]*0.8, aes(label=paste('R =', cor, sep=' ')), cex=5, col='red',data=NULL)+
       xlab(input$corr_group1) + ylab(input$corr_group2)+
-      xlim(input$corr_limits[1], input$corr_limits[2]) + ylim(input$corr_limits[1], input$corr_limits[2])+
-      theme_classic()
-    
+      xlim(input$corr_limits[1], input$corr_limits[2]) + ylim(input$corr_limits[1], input$corr_limits[2])
+
+    p <- p + eval(parse(text = paste0(input$corr_theme, "()")))
+
     if (nchar(input$corr_ggText != 0)) {
       add_funcs <- strsplit(input$corr_ggText, "\\+")[[1]]
       p <- p + lapply(add_funcs, function(x){
@@ -88,10 +90,10 @@ CorrPlot <- eventReactive(input$plot_corr,{
       corr_column <- dds()$condition %in% x
       df <- data.frame(V1=data[ ,corr_column] %>% rowMeans)
     }) %>% bind_cols()
-    
+
     rownames(mtx) <- rownames(dds())
     colnames(mtx) <- input$corr_groups
-    
+
     pairs.panels(mtx,
                  rug = F,
                  method = input$corr_method, # correlation method
@@ -143,15 +145,15 @@ output$corrPlot_Pdf <- downloadHandler(
         data <- counts(dds(), normalized=TRUE)
         data <- log2(data + 1)
       }
-      
+
       mtx <- lapply(input$corr_groups, function(x) {
         corr_column <- dds()$condition %in% x
         df <- data.frame(V1=data[ ,corr_column] %>% rowMeans)
       }) %>% bind_cols()
-      
+
       rownames(mtx) <- rownames(dds())
       colnames(mtx) <- input$corr_groups
-      
+
       pdf(file, width = input$corrPlot_width, height = input$corrPlot_height)
       pairs.panels(mtx,
                    rug = F,

@@ -2,32 +2,32 @@ fluidPage(
   style = "margin-left:10px;margin-right:10px;",
   box(
     title = "Experiment Design Table", width = 7, status = NULL, solidHeader = TRUE,
-    # checkboxInput(inputId = "reset_condition", label = "upload a experiment design tab !",
-    #               value = F, width = "100%"),
-    # conditionalPanel("!input.reset_condition", p("The design table was produced automatically, you can also change it and reupload!",
-    #                                              style = "text-align: justify")),
-    conditionalPanel("input.reset_condition", fileInput("ds_file", "Upload group info tab:",
-                                                        accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv"),
-                                                        placeholder = "upload your design tab ...", width = "100%")),
-    withSpinner(dataTableOutput("conditionTab")),
-    downloadButton('ConditionTab','Download CSV', class = "btn")
+    conditionalPanel(
+      "input.reset_condition == 'Re-upload'",
+      fileInput("ds_file", "Upload group info tab:",
+                accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv"),
+                placeholder = "upload your design tab ...", width = "100%")
+    ),
+    conditionalPanel(
+      "input.reset_condition != 'Re-upload'",
+      withSpinner(dataTableOutput("conditionTab")),
+      downloadButton('ConditionTab','Download CSV', class = "btn")
+    )
   ),
   box(
     title = "DESeq2 Running Table", width = 5, status = NULL, solidHeader = TRUE, collapsible = TRUE,
     switchInput("run_cache", "Use Cache", value = F,
                 onStatus = "success", offStatus = "danger", inline = T,labelWidth = "100px"),
-    checkboxInput(inputId = "reset_condition", label = "upload a experiment design tab !",
-                  value = F, width = "100%"),
+    prettyRadioButtons(
+      inputId = "reset_condition", label = "How to generate design table:",
+      choices = c("Auto produce", "Re-upload"), icon = icon("check"),
+      status = "info", animation = "jelly", inline = TRUE),
     uiOutput("formula"),
-    # textInput("formula", "Design formula:", value = "~ condition", width = "100%"),
-    prettyRadioButtons(inputId = "trans_method", label = "Transformation functions:",
-                       choices = c("rlog", "vst"), icon = icon("check"), status = "info",
-                       animation = "jelly", inline = TRUE),
-    p("If you have many samples (e.g. 100s), the rlog function might take too long,and so the vst function will be a faster choice.",
+    selectInput(inputId = "trans_method", label = "Transformation functions:", width = "100%",
+                choices = c("Regularized log transformation (rlog)" = "rlog", "Variance stabilizing transformation (vst)" = "vst")),
+    p("VST will be a faster choice when you have samples more than 30.",
       tags$a("(Love, Huber, and Anders 2014).", href = "https://www.ncbi.nlm.nih.gov/pubmed/25516281",
              target = "_blank"), style = "text-align: justify"),
-    # numericInput("de_pval", "De Genes Pvalue Threashold:", value = 0.05, width = "100%"),
-    # p("Will use this P-value threashold to extract differential genes."),
     actionButton("deseq_modal_but", "Additional Parameters for Normalization ...", width = "100%",
                  style = "background-color: rgb(255,255,255);text-align:left;margin-bottom:10px", icon = icon("plus-square")),
     actionButton("runDESeq", "Run DESeq >>", class = "run-button", width = "100%")

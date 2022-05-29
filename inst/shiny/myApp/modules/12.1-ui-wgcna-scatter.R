@@ -2,12 +2,25 @@ fluidRow(
   style = "margin-left: 10px; margin-right:10px;",
   box(
     title = "Plotting Parameters:", width = 4, collapsible = TRUE, solidHeader = TRUE,
+    prettyRadioButtons(inputId = "WGCNA_scatter_method", label = "Visualize methods:",icon = icon("check"), status = "info",
+                       choices = c("ggplot2 (external function)", "verboseScatterplot (WGCNA function)"), animation = "jelly", inline = TRUE),
     uiOutput("trait"),
     uiOutput("wgcna_scatter_module"),
-    numericInput("wgcna_scatter_cex", "Size of pionts:", value = 1, width = "100%"),
-    numericInput("wgcna_scatter_main", "Fontsize of main text:", value = 1.5, width = "100%"),
-    numericInput("wgcna_scatter_lab", "Fontsize of label text:", value = 1.5, width = "100%"),
-    numericInput("wgcna_scatter_axis", "Fontsize of axis text:", value = 1.5, width = "100%"),
+    conditionalPanel(
+      "input.WGCNA_scatter_method=='ggplot2 (external function)'",
+      numericInput("wgcna_scatter_size", "Point size:", value = 1, min = 0, max = 5, width = "100%"),
+      numericInput("wgcna_scatter_alpha", "Point alpha:", value = 0.8, min = 0, max = 1, width = "100%"),
+      numericInput("wgcna_scatter_fontsize", "Fontsize:", value = 15, min = 0, max = 30, width = "100%"),
+      actionButton("wgcna_scatter_modal_but", "Additional Parameters for Visualization ...", width = "100%",
+                   style = "background-color: rgb(255,255,255);text-align:left;margin-bottom:10px", icon = icon("plus-square"))
+    ),
+    conditionalPanel(
+      "input.WGCNA_scatter_method=='verboseScatterplot (WGCNA function)'",
+      numericInput("wgcna_scatter_cex", "Size of pionts:", value = 1, width = "100%"),
+      numericInput("wgcna_scatter_main", "Fontsize of main text:", value = 1.5, width = "100%"),
+      numericInput("wgcna_scatter_lab", "Fontsize of label text:", value = 1.5, width = "100%"),
+      numericInput("wgcna_scatter_axis", "Fontsize of axis text:", value = 1.5, width = "100%")
+    ),
     actionButton("plot_wgcna_scatter", "Plot Module-Traits Relationship Heatmap", width = "100%", class = "plot-button")
   ),
   column(

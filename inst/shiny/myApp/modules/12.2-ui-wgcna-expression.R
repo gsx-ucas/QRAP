@@ -8,10 +8,15 @@ fluidRow(
     uiOutput("wgcna_exp_module"),
     conditionalPanel(
       "input.wgcna_exp_ptype == 'Pheatmap'",
+      uiOutput("wgcna_exp_anno"),
       numericInput("wgcna_hiera_fontsize", "Fontsize for legends:", value = 15, width = "100%"),
       numericInput("wgcna_hiera_fontsize_col", "Fontsize  for colnames:", value = 15, width = "100%"),
       textInput("wgcna_hiera_color", "color:", value = "navy,white,red", placeholder = "eg. navy,white,red or #000080,#FFFFFF,#FF0000", width = "100%"),
-      selectInput("wgcna_hiera_angle", "Column names angle (if showed):", choices = c('0', '45', '90', '270', '315'), selected = '315', width = "100%")
+      checkboxInput("wgcna_hiera_colname", "Specifying if column names are be shown.", value = FALSE, width = "100%"),
+      conditionalPanel(
+        "input.wgcna_hiera_colname == 'TRUE'",
+        selectInput("wgcna_hiera_angle", "Column names angle (if showed):", choices = c('0', '45', '90', '270', '315'), selected = '315', width = "100%")
+      )
     ),
     conditionalPanel(
       "input.wgcna_exp_ptype == 'BarPlot'",

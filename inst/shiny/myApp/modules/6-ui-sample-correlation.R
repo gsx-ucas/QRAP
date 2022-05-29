@@ -2,12 +2,6 @@ fluidPage(
   style = "margin-left: 10px; margin-right:10px;",
   box(
     title = "Correlation Plot Parameters:", width = 4, status = NULL, solidHeader = TRUE,
-    # radioButtons(
-    #   inputId = "corr_type",
-    #   label = "Pairwise or multiple:",
-    #   choices = c("pairwise (scatter)", "multiple (heatmap)", "multiple (scatter)"),
-    #   inline = TRUE, width = "100%"
-    # ),
     prettyRadioButtons(inputId = "corr_type", label = "Pairwise or multiple:", animation = "jelly", inline = TRUE,
                        choices = c("pairwise (scatter)", "multiple (heatmap)", "multiple (scatter)"), icon = icon("check"), status = "info"),
     conditionalPanel(
@@ -24,7 +18,10 @@ fluidPage(
                                                   "rlog or vst transformed value" = "trans_value"), width = "100%"),
     conditionalPanel(
       "input.corr_type=='pairwise (scatter)'",
-      numericRangeInput("corr_limits","xlim & ylim range:", value = c(-5, 50), width = "100%")
+      numericRangeInput("corr_limits","xlim & ylim range:", value = c(-0.5, 25), width = "100%"),
+      selectInput("corr_theme", "Figure themes:",
+                  choices = c("theme_bw", "theme_classic", "theme_test", "theme_linedraw",
+                              "theme_light", "theme_minimal", "theme_grey", "theme_gray", "theme_dark"))
     ),
     conditionalPanel(
       "input.corr_type=='multiple (heatmap)'",
@@ -55,14 +52,10 @@ fluidPage(
         numericInput("corr_size", "Point size:", value = 1, min = 0, max = 5, width = "100%"),
         numericInput("corr_alpha", "Point alpha:", value = 0.8, min = 0, max = 1, width = "100%"),
         textInput("corr_col", "Point color:", placeholder = "eg. black or #000000", value = "black", width = "100%"),
-        HTML(
-          paste0(
-            '<div class="form-group shiny-input-container" style="width: 100%;">',
-            '<label class="control-label" for="corr_ggText">ggplot2 codes:</label>',
-            '<textarea id="corr_ggText" class="form-control" placeholder="theme(text = element_text(face = &#39;bold&#39;))" style="width: 100%;" rows="12"></textarea>',
-            '</div>'
-          )
-        )
+        textAreaInput("corr_ggText", "ggplot2 codes:", value = 'scale_color_brewer(palette = "Set1")+
+          theme(axis.title = element_text(size = 21, face = "bold", color = "black", family = "Times"),
+          axis.text = element_text(size = 18, face = "bold", color = "black", family = "Times"),
+          text = element_text(size = 18, face = "bold", color = "black", family = "Times"))', width = "100%", rows = 12)
       ),
       conditionalPanel(
         "input.corr_type=='multiple (heatmap)'",

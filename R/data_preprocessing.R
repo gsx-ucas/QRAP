@@ -192,17 +192,13 @@ download.GEO <- function(geoID, out_dir = paste0(getwd(), "/GEO_Download")) {
     dir.create(out_dir, recursive = T)
   }
 
-  getRes <- try(getGEO(geoID, destdir = tempdir()), silent = F)
-  if ("try-error" %in% class(getRes)) {
+  gds_tb <- readRDS(system.file("extdata", "gds_datasets.rds", package = "QRAP"))
+  if (geoID %in% gds_tb$Series) {
+    incProgress(0.3, detail = "Downloading series_matrix ...")
+    GEO.File <- getGEO(geoID, destdir = tempdir(), getGPL = FALSE, parseCharacteristics = FALSE, AnnotGPL = FALSE)
+  }else {
     incProgress(0.3, detail = "Downloading GEOSuppFiles ...")
     GEO.File <- getGEOSuppFiles(geoID, baseDir = out_dir)
-  } else {
-    incProgress(0.3, detail = "Downloading series_matrix ...")
-    GEO.File <- getRes
-    if (dim(GEO.File[[1]]@assayData$exprs)[1] == 0) {
-      incProgress(0.3, detail = "Downloading GEOSuppFiles ...")
-      GEO.File <- getGEOSuppFiles(geoID, baseDir = out_dir)
-    }
   }
 
   if (is.data.frame(GEO.File)) {

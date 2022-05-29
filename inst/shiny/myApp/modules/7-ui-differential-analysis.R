@@ -86,6 +86,7 @@ fluidPage(
               h2("Additional Parameters of 'Volcano Plot':"), hr(),
               numericRangeInput("vol_threasholds","P-value and Abs log2FoldChange:", value = c(0.05, 1), width = "100%"),
               numericInput("vol_size", "Point size:", value = 1, min = 0, max = 5, width = "100%"),
+              numericInput("vol_text_size", "Text size:", value = 10, min = 0, max = 15, width = "100%"),
               numericInput("vol_alpha", "Point alpha:", value = 0.8, min = 0, max = 1, width = "100%"),
               HTML(
                 paste0(

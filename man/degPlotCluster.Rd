@@ -7,9 +7,10 @@
 degPlotCluster(
   table,
   time,
+  cluster_order = NULL,
   color = NULL,
-  points = TRUE,
-  boxes = TRUE,
+  points = FALSE,
+  boxes = FALSE,
   smooth = TRUE,
   lines = TRUE,
   facet = TRUE,

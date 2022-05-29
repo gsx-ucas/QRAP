@@ -1,10 +1,10 @@
-Package: QRseq
+Package: QRAP
 Type: Package
-Title: Quickly RNA-seq Data Analysis Web Tools
+Title: Quickly RNA-seq Analysis Platform
 Version: 0.1.0
 Author: Gou Shixue
 Maintainer: <gou_shixue@gibh.ac.cn>
-Description: QRseq is an R shiny application can easily launched from local web browser for analyzing sequenced or published RNA-seq data. 
+Description: QRAP is an R shiny application can easily launched from local web browser for analyzing sequenced or published RNA-seq data. 
 License: MIT
 Encoding: UTF-8
 LazyData: true
@@ -48,20 +48,20 @@ Imports:
     ggnewscale,
     rmarkdown
 biocViews:
-  sva,
-  limma,
-  DESeq2,
-  GENIE3,
-  pathview,
-  GEOquery,
-  DEGreport,
-  ReactomePA,
-  genefilter,
-  geneplotter,
-  SummarizedExperiment,
-  DOSE (>= 3.16.0),
-  fgsea (>= 1.16.0),
-  STRINGdb (>= 2.3.0),
-  enrichplot (>= 1.10.0),
-  clusterProfiler (>= 3.18.0),
+    sva,
+    limma,
+    DESeq2,
+    GENIE3,
+    pathview,
+    GEOquery,
+    DEGreport,
+    ReactomePA,
+    genefilter,
+    geneplotter,
+    SummarizedExperiment,
+    DOSE (>= 3.16.0),
+    fgsea (>= 1.16.0),
+    STRINGdb (>= 2.3.0),
+    enrichplot (>= 1.10.0),
+    clusterProfiler (>= 3.18.0),
 Remotes:
