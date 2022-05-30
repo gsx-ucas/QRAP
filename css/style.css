@@ -555,6 +555,19 @@ div.card-text {
 	border-right: 1px solid rgb(224,224,224);
 }
 
+/* pages
+=================================== */
+.mg-top {
+	margin-top: 60px;
+}
+.container-install {
+	min-height: 700px;
+}
+.nav-left {
+	height: auto;
+	position: fixed;
+	border-right: 1px solid rgb(224,224,224);
+}
 /* Bottom
 ==================================== */
 
