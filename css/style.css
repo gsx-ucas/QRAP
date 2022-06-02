@@ -190,6 +190,15 @@ header .nav li .dropdown-menu li a {
    padding: 3px 12px;
 }
 
+.container > .navbar-header, 
+.container > .navbar-collapse, 
+.container-fluid > .navbar-header, 
+.container-fluid > .navbar-collapse {
+	margin-right: -15px;
+	margin-left: -15px;
+	margin-top: 5px;
+}
+
 /* --- menu --- */
 
 header .navigation {
@@ -410,9 +419,9 @@ bottom: -30px;
 .text-center img {
 margin: auto;
 }
-.aboutUs{
+.features{
 padding:40px 0;
-background: #F2F2F2;
+background: #fffefe;
 }
 img.img-center {
 margin: 0 auto;
@@ -436,10 +445,16 @@ font-size: 16px;
 line-height: 30px;
 font-style: italic;
 } 
-section.callaction {
+
+section {
 	background:#fff;
 	padding:50px 0 0 0;
 }
+
+/* section.callaction {
+	background:#fff;
+	padding:50px 0 0 0;
+} */
 
 /* Clients
 ------------------------------------ */
@@ -518,12 +533,12 @@ section.callaction {
 
 /* Cards ++++++++++++++++++++++++++++*/
 
-#wrapper > section.callaction > div > div > div > h3 {
+/* #wrapper > section.callaction > div > div > div > h3 {
 	margin: 8px;
 	text-align: center;
 	font-family: 'Arial', sans-serif;
     font-weight: 400;
-}
+} */
 
 div.card-image > img {
 	display: block;
@@ -1361,6 +1376,7 @@ footer .widget .flickr_badge img {
 footer{
 	height: 60px;
 	color:#f8f8f8;
+	padding-top: 15px;
 }
 
 footer > div.container > div.row {

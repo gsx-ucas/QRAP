@@ -29,8 +29,8 @@
                 </div>
                 <div class="navbar-collapse collapse ">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="index.html">Home</a></li> 
-						<li><a href="install.html">Install</a></li>
+                        <li><a href="index.html">Home</a></li> 
+						<li class="active"><a href="install.html">Install</a></li>
 						<li><a href="services.html">Get Started</a></li>
                         <li><a href="portfolio.html">Vignettes</a></li>
                         <li><a href="pricing.html">FAQ</a></li>
@@ -58,25 +58,46 @@
 		<div>
 			<div class="col-md-8 col-sm-8 col-xs-8 col-xxs-4">
 				<h3 style="text-align: left;">Installation Instructions for QRAP</h3>
-				<hr>
-				<p>To install QRAP, R version 4.0 or greater is required. We also recommend installing R Studio.</p>
+				<hr style="margin-bottom: 5px; padding-top: 5px;">
+				<p style="color: black;">To install QRAP, R version 4.0 or greater is required. We also recommend installing R Studio.</p>
 				<br>
-				<h4 style="text-align: left;">Install QRAP From GitHub</h4>
-				<hr>
-				<p>QRAP is available on GitHub for all platforms. To install, run:</p>
+
+				<h4 style="text-align: left;">Install the release version of QRAP</h4>
+				<hr style="margin-bottom: 5px; padding-top: 5px;">
+				<p style="color: black;">QRAP is available on GitHub for all platforms. To install, run:</p>
 				<pre style="white-space: pre-line;">
-					## install.packages("devtools") ## you may need install devtools first
-					devtools::install_github("goushixue/QRseq")
-				</pre>
-				
+					# Enter commands in R (or R studio, if installed)
+					# Install the remotes package
+					install.packages('devtools')
+					devtools::install_github("gsx-ucas/QRAP")
+				</pre><br>
+
+				<h4 style="text-align: left;">Install the development version of QRAP</h4>
+				<hr style="margin-bottom: 5px; padding-top: 5px;">
+				<p style="color: black;">Install the development version of QRAP - directly from GitHub.</p>
+				<pre style="white-space: pre-line;">
+					# Enter commands in R (or R studio, if installed)
+					# Install the remotes package
+					install.packages('devtools')
+					devtools::install_github(repo = "gsx-ucas/QRAP", ref = "dev")
+					library(QRAP)
+				</pre><br>
+
+				<h4 style="text-align: left;">Get the docker image of QRAP</h4>
+				<hr style="margin-bottom: 5px; padding-top: 5px;">
+				<p style="color: black;">We provide docker images for QRAP via dockerhub.
+					To pull the latest image from the command line:</p>
+				<pre style="white-space: pre-line;">
+					docker pull goushixue/qrap:latest
+				</pre><br>
 			</div>
 		</div>
 	</div>
 	</section>
 
 	<footer>
-		<div class="container">
-			<div class="row">
+		<!-- <div class="container">
+			<div class="row"> -->
 				<div class="col-lg-6">
 					<div class="copyright">
 						<p>
@@ -84,8 +105,8 @@
 						</p>
 					</div>
 				</div>
-			</div>
-		</div>
+			<!-- </div>
+		</div> -->
 	</footer>
 </div>
 
