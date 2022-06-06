@@ -159,7 +159,7 @@ upload_data <- eventReactive(input$upload,{
 
 # read example data
 example <- eventReactive(input$example,{
-  data <- readRDS(system.file("extdata", "example.rds", package = "QRseq"))
+  data <- readRDS(system.file("extdata", "example.rds", package = "QRAP"))
 })
 
 # collapse upload_local_data_card
