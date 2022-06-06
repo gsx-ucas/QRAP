@@ -46,8 +46,7 @@ Imports:
     tidyr,
     ggplotify,
     ggnewscale,
-    rmarkdown
-biocViews:
+    rmarkdown,
     sva,
     limma,
     DESeq2,
@@ -65,3 +64,4 @@ biocViews:
     enrichplot (>= 1.10.0),
     clusterProfiler (>= 3.18.0),
 Remotes:
+biocViews:
