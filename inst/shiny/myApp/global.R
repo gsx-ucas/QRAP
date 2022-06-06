@@ -14,7 +14,7 @@
 #   }
 # }
 
-library(QRseq)
+library(QRAP)
 library(shiny)
 library(DT)
 library(gplots)
