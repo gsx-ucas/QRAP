@@ -6,6 +6,8 @@
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 html {
+  min-height: 700px;
+  height: 100%;
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
@@ -4803,7 +4805,7 @@ tbody.collapse.in {
   float: right;
   margin-right: 15px;
   padding: 9px 10px;
-  margin-top: 10.5px;
+  /* margin-top: 10.5px; */
   margin-bottom: 10.5px;
   background-color: transparent;
   background-image: none;

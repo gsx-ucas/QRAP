@@ -10,11 +10,12 @@ Do not remove the back-link in this web template
 @import url('animate.css');
 
 body {
+	height: 100%;
 	font-family:'Open Sans', Arial, sans-serif;
 	font-size:14px;
-	font-weight:300;
+	font-weight:400;
 	line-height:1.6em;
-	color:#656565;
+	color:#000000;
 }
 
 a:active {
@@ -29,7 +30,7 @@ h1,h2, h3, h4, h5, h6 {
 	font-family:'Open Sans', Arial, sans-serif;
 	font-weight: normal;
 	line-height:1.1em;
-	color:#333;
+	color:rgb(0, 0, 0);
 	margin-bottom: 20px;
 }
  
@@ -42,6 +43,7 @@ h1,h2, h3, h4, h5, h6 {
 	width:100%;
 	margin:0;	
 	padding:0;
+	height: 100%;
 }
 
 .row,.row-fluid {
@@ -188,15 +190,6 @@ header .nav li .dropdown-menu  {
 header .nav li .dropdown-menu li a {
    line-height: 28px;
    padding: 3px 12px;
-}
-
-.container > .navbar-header, 
-.container > .navbar-collapse, 
-.container-fluid > .navbar-header, 
-.container-fluid > .navbar-collapse {
-	margin-right: -15px;
-	margin-left: -15px;
-	margin-top: 5px;
 }
 
 /* --- menu --- */
@@ -419,9 +412,9 @@ bottom: -30px;
 .text-center img {
 margin: auto;
 }
-.features{
+.aboutUs{
 padding:40px 0;
-background: #fffefe;
+background: #F2F2F2;
 }
 img.img-center {
 margin: 0 auto;
@@ -446,15 +439,11 @@ line-height: 30px;
 font-style: italic;
 } 
 
-section {
+section.callaction {
 	background:#fff;
 	padding:50px 0 0 0;
+	height: 100%;
 }
-
-/* section.callaction {
-	background:#fff;
-	padding:50px 0 0 0;
-} */
 
 /* Clients
 ------------------------------------ */
@@ -533,12 +522,12 @@ section {
 
 /* Cards ++++++++++++++++++++++++++++*/
 
-/* #wrapper > section.callaction > div > div > div > h3 {
+#wrapper > section.callaction > div > div > div > h3 {
 	margin: 8px;
 	text-align: center;
 	font-family: 'Arial', sans-serif;
     font-weight: 400;
-} */
+}
 
 div.card-image > img {
 	display: block;
@@ -578,10 +567,10 @@ div.card-text {
 .container-install {
 	min-height: 700px;
 }
-.nav-left {
-	height: auto;
+.nav-right {
+	/* height: auto; */
 	position: fixed;
-	border-right: 1px solid rgb(224,224,224);
+	/* border-right: 1px solid rgb(224,224,224); */
 }
 /* Bottom
 ==================================== */
@@ -1375,8 +1364,9 @@ footer .widget .flickr_badge img {
   
 footer{
 	height: 60px;
+	width: 100%;
 	color:#f8f8f8;
-	padding-top: 15px;
+	position: relative;
 }
 
 footer > div.container > div.row {
@@ -1438,6 +1428,11 @@ ul.social-network li {
 
 #sub-footer ul.social-network {
 	float:right;
+}
+
+footer > div.container > div.row {
+	margin: 0;
+	bottom: 0;
 }
 
   
@@ -1628,7 +1623,7 @@ margin-top: 15px;
     padding-left: 0;
   }
 	.navbar-brand {
-		margin-top: 10px;
+		margin-top: 0px;
 		border-bottom: none;
 	}
 	.navbar-header {

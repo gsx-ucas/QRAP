@@ -46,51 +46,47 @@
 
 	<section class="callaction">
 	<div class="container container-install mg-top">
-		<div>
-			<div class="col-md-4 col-sm-4 col-xs-4 col-xxs-4">
-				<ul class="nav nav-left">
-					<li><a href="index.html">Install From GitHub</a></li> 
-					<li><a href="install.html">Install Development Version</a></li>
-					<li><a href="services.html">Install and Get Started from Docker</a></li>
-				</ul>
-			</div>
+		<div class="col-md-8 col-sm-8 col-xs-8 col-xxs-4">
+			<h3 style="text-align: left;">Installation Instructions for QRAP</h3>
+			<hr style="margin-bottom: 5px; padding-top: 5px;">
+			<p style="color: black;">To install QRAP, R version 4.0 or greater is required. We also recommend installing R Studio.</p>
+			<br>
+
+			<h4 style="text-align: left;">Install the release version of QRAP</h4>
+			<hr style="margin-bottom: 5px; padding-top: 5px;">
+			<p style="color: black;">QRAP is available on GitHub for all platforms. To install, run:</p>
+			<pre style="white-space: pre-line;">
+				# Enter commands in R (or R studio, if installed)
+				# Install the remotes package
+				install.packages('devtools')
+				devtools::install_github("gsx-ucas/QRAP")
+			</pre><br>
+
+			<h4 style="text-align: left;">Install the development version of QRAP</h4>
+			<hr style="margin-bottom: 5px; padding-top: 5px;">
+			<p style="color: black;">Install the development version of QRAP - directly from GitHub.</p>
+			<pre style="white-space: pre-line;">
+				# Enter commands in R (or R studio, if installed)
+				# Install the remotes package
+				install.packages('devtools')
+				devtools::install_github(repo = "gsx-ucas/QRAP", ref = "dev")
+				library(QRAP)
+			</pre><br>
+
+			<h4 style="text-align: left;">Get the docker image of QRAP</h4>
+			<hr style="margin-bottom: 5px; padding-top: 5px;">
+			<p style="color: black;">We provide docker images for QRAP via dockerhub.
+				To pull the latest image from the command line:</p>
+			<pre style="white-space: pre-line;">
+				docker pull goushixue/qrap:latest
+			</pre><br>
 		</div>
-		<div>
-			<div class="col-md-8 col-sm-8 col-xs-8 col-xxs-4">
-				<h3 style="text-align: left;">Installation Instructions for QRAP</h3>
-				<hr style="margin-bottom: 5px; padding-top: 5px;">
-				<p style="color: black;">To install QRAP, R version 4.0 or greater is required. We also recommend installing R Studio.</p>
-				<br>
-
-				<h4 style="text-align: left;">Install the release version of QRAP</h4>
-				<hr style="margin-bottom: 5px; padding-top: 5px;">
-				<p style="color: black;">QRAP is available on GitHub for all platforms. To install, run:</p>
-				<pre style="white-space: pre-line;">
-					# Enter commands in R (or R studio, if installed)
-					# Install the remotes package
-					install.packages('devtools')
-					devtools::install_github("gsx-ucas/QRAP")
-				</pre><br>
-
-				<h4 style="text-align: left;">Install the development version of QRAP</h4>
-				<hr style="margin-bottom: 5px; padding-top: 5px;">
-				<p style="color: black;">Install the development version of QRAP - directly from GitHub.</p>
-				<pre style="white-space: pre-line;">
-					# Enter commands in R (or R studio, if installed)
-					# Install the remotes package
-					install.packages('devtools')
-					devtools::install_github(repo = "gsx-ucas/QRAP", ref = "dev")
-					library(QRAP)
-				</pre><br>
-
-				<h4 style="text-align: left;">Get the docker image of QRAP</h4>
-				<hr style="margin-bottom: 5px; padding-top: 5px;">
-				<p style="color: black;">We provide docker images for QRAP via dockerhub.
-					To pull the latest image from the command line:</p>
-				<pre style="white-space: pre-line;">
-					docker pull goushixue/qrap:latest
-				</pre><br>
-			</div>
+		<div class="col-md-4 col-sm-4 col-xs-4 col-xxs-4">
+			<ul class="nav nav-right">
+				<li><a href="index.html">Install From GitHub</a></li> 
+				<li><a href="install.html">Install Development Version</a></li>
+				<li><a href="services.html">Install and Get Started from Docker</a></li>
+			</ul>
 		</div>
 	</div>
 	</section>
