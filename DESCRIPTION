@@ -46,7 +46,6 @@ Imports:
     tidyr,
     ggplotify,
     ggnewscale,
-    rmarkdown,
     sva,
     limma,
     DESeq2,
