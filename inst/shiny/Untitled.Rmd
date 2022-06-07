@@ -1,0 +1,182 @@
+---
+title: "Untitled"
+author: "Shixue Gou"
+date: "2021/1/26"
+output: html_document
+---
+
+```{r}
+library(pathview)
+```
+
+```{r}
+data(gse16873.d)
+data(demo.paths)
+i <- 1
+
+pv.out <- pathview(gene.data = gse16873.d[, 1], pathway.id = demo.paths$sel.paths[i],species = "hsa", out.suffix = "gse16873.2layer", kegg.native = F)
+
+pv.out <- pathview(gene.data = gse16873.d[, 1], pathway.id = demo.paths$sel.paths[i], species = "hsa", out.suffix = "gse16873", kegg.native = F, pdf.size = c(10, 10), cex = 0.7, key.pos ="topright", sign.pos = "topright", limit = list(gene = 3), bins = list(gene = 10))
+```
+
+```{r}
+pv.out <- pathview(gene.data = gse16873.d[, 1], pathway.id = demo.paths$sel.paths[i], species = "hsa", out.suffix = "gse16873.2layer", kegg.native = F, sign.pos = demo.paths$spos[i], same.layer = T, split.group = T, expand.node = T)
+```
+
+```{r}
+ko.data=sim.mol.data(mol.type="gene.ko", nmol=5000)
+pv.out <- pathview(gene.data = ko.data, pathway.id = "04112", species = "ko", out.suffix = "ko.data", kegg.native = T)
+```
+
+```{r}
+library(dplyr)
+degs <- read.csv("~/Desktop/APP_Test/GSE147507_Human_patients/DEGs/COVID19Lung_vs_HealthyLungBiopsy.csv", row.names = 1)
+degs <- degs %>% tibble::rownames_to_column(var = "input") 
+convert_df <- gprofiler2::gconvert(degs$input, organism = "mesculenta", target = "INTENZ")
+
+# joined_df <- left_join(degs, convert_df, by = "input") %>% filter(target != "nan")
+convert_df
+
+```
+
+```{r}
+input <- degs$log2FoldChange
+names(input) <- degs$input
+pv.out <- pathview(gene.data = input, pathway.id = "oaa03020", species = "oaa", gene.idtype = "SYMBOL", out.suffix = "gse16873", kegg.native = F, pdf.size = c(10, 10), cex = 0.7, key.pos ="topright", sign.pos = "topright", limit = list(gene = 3), bins = list(gene = 10))
+```
+
+```{r}
+data(bods); bods
+data(gene.idtype.list); gene.idtype.list
+
+gene.idtype.list[1]
+```
+
+```{r}
+dds <- readRDS("Cache/DESeq_object.rds")
+
+samp1 <- as.data.frame(assay(normTransform(dds)))[, 1:3] %>% rowMeans()
+samp2 <- as.data.frame(assay(normTransform(dds)))[, 4:6] %>% rowMeans()
+
+pearsonr <- cor.test(samp1, samp2)
+cor <- pearsonr$estimate %>% round(4)
+
+ggplot(data = NULL)+
+      geom_point(aes(samp1, samp2))+
+      # geom_label_repel(x=input$corr_limits[2]*0.1, y=input$corr_limits[2]*0.8, aes(label=paste('R =', cor, sep=' ')), cex=5, col='red',data=NULL)+
+      # xlab(input$corr_group1) + ylab(input$corr_group2)+
+      # xlim(input$corr_limits[1], input$corr_limits[2]) + ylim(input$corr_limits[1], input$corr_limits[2])+
+      theme_classic()
+```
+
+```{r fig.height=8, fig.width=5}
+topVarGenes <- dds %>% assay %>% rowVars %>% order(decreasing=TRUE) %>% head(500)
+topVarAssay <- assay(dds)[topVarGenes, ]
+
+ph <- pheatmap(topVarAssay, scale = "row", show_rownames = F, treeheight_row = 50)
+```
+
+```{r fig.height=8, fig.width=5}
+library(ggplot2)
+library(ggtree)
+
+# ph$tree_row$order
+# ph$gtable$widths %>% plot
+# cluster_g <- hclust(dist(topVarAssay, method = "euclidean"), method = "complete")
+# cluster_s <- hclust(dist(t(topVarAssay), method = "euclidean"), method = "complete")
+
+data <- topVarAssay[ph$tree_row$order, ph$tree_col$order]
+coln <- colnames(data)
+# data <- data - rowMeans(data)
+
+# data <- (data - rowMeans(data)) / rowSds(data)
+
+data <- t(apply(data, 1, scale))
+colnames(data) <- coln
+
+data <- data %>% as.data.frame %>% rownames_to_column(var = "Genes")
+
+data <- melt(data, id.vars = "Genes", na.rm = F)
+data[is.na(data$value), "value"] <- 0
+
+data$Genes <- factor(data$Genes, levels = topVarAssay[ph$tree_row$order, ] %>% rownames)
+data$variable <- factor(data$variable, levels = topVarAssay[, ph$tree_col$order] %>% colnames)
+
+map <- ggplot(data) + 
+   geom_tile(aes(x = variable, y = Genes, fill = value), na.rm = F)+
+   scale_fill_gradient2(low = "navy",high = "red",mid = "white", name = NULL, limits = c(-max(abs(data$value)), max(abs(data$value))))+
+   labs(x = NULL, y = NULL)+
+   # theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.text.x = element_text(angle = 90, hjust = 1))
+   theme(panel.background = element_blank(),
+         axis.line.x = element_blank(),
+         axis.line.y = element_blank(),
+         axis.title.y = element_blank(),
+         axis.title.x = element_blank(),
+         axis.text.x = element_text(angle = 90, hjust = 1),
+         axis.text.y = element_blank(),
+         axis.ticks.x = element_blank(),
+         axis.ticks.y = element_blank(),
+         plot.title = element_blank(),
+         plot.margin = margin(0,10,10,0))
+
+h <- ggtree::ggtree(ph$tree_row,layout = "rectangular",branch.length = "none")
+v <- ggtree::ggtree(ph$tree_col)+ggtree::layout_dendrogram()
+
+map %>% aplot::insert_top(v, height = 0.1) %>% aplot::insert_left(h, width = 0.1)
+
+```
+
+```{r}
+library(ggvenn)
+a <- list(`Set1` = c(1, 3, 5, 7, 9),
+          `Set2` = c(1, 5, 9, 13),
+          `Set3` = c(1, 2, 8, 9),
+          `Set4` = c(6, 7, 10, 12))
+```
+
+```{r}
+ggvenn(a, show_elements = F, stroke_size = 0.2) 
+```
+
+```{r}
+ggscatter <- function(data, mapping, ..., pt.size = 5, pt.color = "black") {
+    x <- GGally::eval_data_col(data, mapping$x)
+    y <- GGally::eval_data_col(data, mapping$y)
+    df <- data.frame(x = x, y = y)
+    pp <- ggplot(df, aes(x=x, y=y)) +
+                ggplot2::geom_point(shape=16, size = pt.size, color = pt.color, show.legend = FALSE) +
+                ggplot2::geom_abline(intercept = 0, slope = 1, col="darkred")
+return(pp)
+}
+
+ggdehist <- function(data, mapping, ...) {
+  x <- GGally::eval_data_col(data, mapping$x)
+  df <- data.frame(x = x)
+  pp <- ggplot(df, aes(x=x)) +
+    geom_histogram(aes(y=..density..), bins = 10, fill = "#00AFBB", color='black', alpha = 0.8) +
+    geom_density(aes(y=..density..))
+  return(pp)
+}
+
+```
+
+```{r fig.height=8, fig.width=8}
+library(airway)
+data(airway)
+
+df <- as.data.frame(assays(airway)$counts[,1:4]) #first 4 columns
+df <- df[rowSums(df)>4,] #keep genes with some counts
+set.seed(123)
+df <- df[sample.int(nrow(df),1e3),] #random 1K genes
+
+GGally::ggpairs(log2(df+1), progress = F, 
+                diag = list(continuous = GGally::wrap(ggdehist)),
+                lower = list(continuous = GGally::wrap(GGscatterPlot, method="pearson", pt.size = 1)),
+                upper = list(continuous = GGally::wrap(GGally::ggally_cor, align_percent = 0.8, color = "red", size = 5)))+
+   theme_bw()+
+   theme(strip.background = element_blank(), 
+         strip.text = element_text(color = "black", size = 13),
+         axis.text = element_text(color = "black", size = 8),
+         text = element_text(colour = "black", size = 10))
+```
+
