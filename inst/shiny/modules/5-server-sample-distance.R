@@ -19,7 +19,7 @@ output$dis_color_pal <- renderPlot({
 })
 
 sampleDists <- eventReactive(input$plot_dis, {
-  data <- assay(trans_value())[, input$dis_group]
+  data <- SummarizedExperiment::assay(trans_value())[, input$dis_group]
   sampleDists <- data %>% t %>% dist
   sampleDistMatrix <- as.matrix(sampleDists)
   rownames(sampleDistMatrix) <- trans_value()[, input$dis_group]$samples

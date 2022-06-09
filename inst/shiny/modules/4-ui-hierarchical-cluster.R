@@ -48,8 +48,7 @@ fluidPage(
     ),
     wellPanel(
       checkboxInput("hiera_cluster_rows", "Clustering genes?", value = TRUE, width = "100%"),
-      checkboxInput("hiera_colname", "Showing column names?", value = FALSE, width = "100%"),
-      checkboxInput("hiera_annotation", "Showing column annotation?", value = TRUE, width = "100%")
+      checkboxInput("hiera_colname", "Showing column names?", value = FALSE, width = "100%")
     )
   ),
   bsModal(

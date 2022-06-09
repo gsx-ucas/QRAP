@@ -49,19 +49,16 @@ observeEvent(input$get_DEGs,{
 output$dea_genes <- renderUI({
   if (input$dePlot == "Volcano") {
     mult = FALSE
+    selected <- stringr::str_remove_all(dir("DEGs"), ".csv")[1]
   }else {
     mult = TRUE
+    selected <- stringr::str_remove_all(dir("DEGs"), ".csv")
   }
   virtualSelectInput(
     inputId = "dea_genes",  label = "Select DEGs:",
     choices = stringr::str_remove_all(dir("DEGs"), ".csv"),
-    selected = stringr::str_remove_all(dir("DEGs"), ".csv")[1],
-    multiple = mult, search = TRUE, width = "100%"
+    selected = selected, multiple = mult, search = TRUE, width = "100%"
   )
-  # selectInput(
-  #   inputId = "dea_genes", label = "Select DEGs:", choices = stringr::str_remove_all(dir("DEGs"), ".csv"),
-  #   selected = stringr::str_remove_all(dir("DEGs"), ".csv")[1], width = "100%", multiple = mult 
-  # )
 })
 
 observeEvent(input$get_DEGs,{
@@ -75,57 +72,49 @@ observeEvent(input$get_DEGs,{
     choices = dir("DEGs") %>% stringr::str_remove_all(".csv"),
     selected = stringr::str_remove_all(dir("DEGs"), ".csv")[1]
   )
-  # updateSelectInput(
-  #   session = session, inputId = "dea_genes",
-  #   choices = dir("DEGs") %>% stringr::str_remove_all(".csv"),
-  #   selected = stringr::str_remove_all(dir("DEGs"), ".csv")[1]
-  # )
 })
 
 # # Volcano Plot
 VolPlot <- eventReactive(input$plot_volcano,{
-  Des_list <- load.DEGs(input$dea_genes)
-  # ctrl <- strsplit(names(Des_list)[1], "_vs_")[[1]][2]
-  # degroup <- strsplit(names(Des_list)[1], "_vs_")[[1]][1]
-  Res_list <- load.REGs(input$dea_genes)
-  # Plot_data <- Des_list[[1]]
+  
+  Res_list <- load.REGs(input$dea_genes)[[1]]
+  Res_list <- Res_list %>% na.omit()
+  
+  Res_list[Res_list$log2FoldChange < -input$dea_lfc & Res_list$padj < input$dea_pval, "Regulation"] <- "Down Regulated"
+  Res_list[Res_list$log2FoldChange > input$dea_lfc & Res_list$padj < input$dea_pval, "Regulation"] <- "Up Regulated"
+  Res_list[abs(Res_list$log2FoldChange) < input$dea_lfc | Res_list$padj > input$dea_pval, "Regulation"] <- "No Significant"
+  Res_list[Res_list$padj == 0, "padj"] <- min(Res_list[Res_list$padj != 0, "padj"]) * 1.2
+  
+  xlims <- c(min(Res_list$log2FoldChange) - 1, max(Res_list$log2FoldChange) + 1)
+  ylims <- -log10(min(Res_list$padj))
 
-  p <- ggplot(data = NULL) + lapply(names(Res_list), function(x){
-      geom_point(aes(x=Res_list[[x]]$log2FoldChange, y=-log10(Res_list[[x]]$padj)), size = input$vol_size, alpha=input$vol_alpha)
-    })+
-    # geom_point(aes(x=Plot_data$log2FoldChange, y=-log10(Plot_data$padj)), size = input$vol_size, alpha=input$vol_alpha)+
+  p <- ggplot(data = NULL) +
+    geom_point(data = Res_list[Res_list$Regulation == "No Significant", ], aes(x=log2FoldChange, y=-log10(padj)), size = input$vol_size, alpha=input$vol_alpha)+
     geom_vline(xintercept = c(-input$vol_threasholds[2], input$vol_threasholds[2]), lty=3)+
     geom_hline(yintercept = -log10(input$vol_threasholds[1]), lty=3)+
-    # coord_cartesian(clip = 'off')+
-    coord_cartesian(xlim = c(input$vol_xlimits[1], input$vol_xlimits[2]), ylim = c(-0.5, input$vol_ylimit), clip = 'off')+
-    # xlim(input$vol_xlimits[1], input$vol_xlimits[2])+ ylim(-0.5, input$vol_ylimit)+
+    xlim(xlims[1], xlims[2]) + ylim(0, ylims)+
     labs(x = 'Log2FoldChange', y = '-Log10 adjusted P-value', colour = "DEGs group")+
     theme_classic()
-
-  if (input$dea_genes %>% length > 1) {
-    p <- p + lapply(names(Des_list), function(x){
-      geom_point(aes(x=Des_list[[x]]$log2FoldChange, y=-log10(Des_list[[x]]$padj), col = x), size = input$vol_size, alpha=input$vol_alpha, show.legend = T)
-    })
+  
+  up <- subset(Res_list, padj < input$vol_threasholds[1] & log2FoldChange > input$dea_lfc)
+  down <- subset(Res_list, padj < input$vol_threasholds[1] & log2FoldChange < -input$dea_lfc)
+  
+  if (input$show_topn > 0) {
+    up_topn <- up[order(up$padj, -up$log2FoldChange), ] %>% head(input$show_topn)
+    down_topn <- down[order(down$padj, -down$log2FoldChange), ] %>% head(input$show_topn)
+    p <- p + geom_point(aes(x=up$log2FoldChange, y = -log10(up$padj)), color='red', size = input$vol_size, alpha=input$vol_alpha)+
+      geom_point(aes(x=down$log2FoldChange, y = -log10(down$padj)), color='blue', size = input$vol_size, alpha=input$vol_alpha)+
+      geom_text(x=xlims[1]*0.9, y=ylims*0.9, aes(label=paste0('Down: ', dim(down)[1])), col='blue', size = 5, data=NULL)+
+      geom_text(x=xlims[2]*0.9, y=ylims*0.9, aes(label=paste0('Up: ', dim(up)[1])), col='red', size = 5, data=NULL)+
+      geom_label_repel(data = up_topn, aes(x = log2FoldChange, y = -log10(padj), label = rownames(up_topn)), size = input$vol_text_size, color = "red", max.overlaps = 100)+
+      geom_label_repel(data = down_topn, aes(x = log2FoldChange, y = -log10(padj), label = rownames(down_topn)), size = input$vol_text_size, color = "blue", max.overlaps = 100)
   }else {
-    up <- subset(Res_list[[1]], padj < input$vol_threasholds[1] & log2FoldChange > input$dea_lfc)
-    down <- subset(Res_list[[1]], padj < input$vol_threasholds[1] & log2FoldChange < -input$dea_lfc)
-    if (input$show_topn > 0) {
-      up_topn <- up[order(up$padj, -up$log2FoldChange), ] %>% head(input$show_topn)
-      down_topn <- down[order(down$padj, -down$log2FoldChange), ] %>% head(input$show_topn)
-      p <- p + geom_point(aes(x=up$log2FoldChange, y = -log10(up$padj)), color='red', size = input$vol_size, alpha=input$vol_alpha)+
-        geom_point(aes(x=down$log2FoldChange, y = -log10(down$padj)), color='blue', size = input$vol_size, alpha=input$vol_alpha)+
-        geom_text(x=input$vol_xlimits[1]*0.9, y=input$vol_ylimit*0.9, aes(label=paste0('Down: ', dim(down)[1])), col='blue', size = 5, data=NULL)+
-        geom_text(x=input$vol_xlimits[2]*0.9, y=input$vol_ylimit*0.9, aes(label=paste0('Up: ', dim(up)[1])), col='red', size = 5, data=NULL)+
-        geom_label_repel(data = up_topn, aes(x = log2FoldChange, y = -log10(padj), label = rownames(up_topn)), size = input$vol_text_size, color = "red", max.overlaps = 100)+
-        geom_label_repel(data = down_topn, aes(x = log2FoldChange, y = -log10(padj), label = rownames(down_topn)), size = input$vol_text_size, color = "blue", max.overlaps = 100)
-    }else {
-      p <- p + geom_point(aes(x=up$log2FoldChange, y = -log10(up$padj)), color='red', size = input$vol_size, alpha=input$vol_alpha)+
-        geom_point(aes(x=down$log2FoldChange, y = -log10(down$padj)), color='blue', size = input$vol_size, alpha=input$vol_alpha)+
-        geom_text(x=input$vol_xlimits[1]*0.9, y=input$vol_ylimit*0.9, aes(label=paste0('Down: ', dim(down)[1])), col='blue', size = 5, data=NULL)+
-        geom_text(x=input$vol_xlimits[2]*0.9, y=input$vol_ylimit*0.9, aes(label=paste0('Up: ', dim(up)[1])), col='red', size = 5, data=NULL)
-    }
+    p <- p + geom_point(aes(x=up$log2FoldChange, y = -log10(up$padj)), color='red', size = input$vol_size, alpha=input$vol_alpha)+
+      geom_point(aes(x=down$log2FoldChange, y = -log10(down$padj)), color='blue', size = input$vol_size, alpha=input$vol_alpha)+
+      geom_text(x=xlims[1]*0.9, y=ylims*0.9, aes(label=paste0('Down: ', dim(down)[1])), col='blue', size = 5, data=NULL)+
+      geom_text(x=xlims[2]*0.9, y=ylims*0.9, aes(label=paste0('Up: ', dim(up)[1])), col='red', size = 5, data=NULL)
   }
-
+  
   if (nchar(input$deVol_ggText != 0)) {
     add_funcs <- strsplit(input$deVol_ggText, "\\+")[[1]]
     p <- p + lapply(add_funcs, function(x){
@@ -148,42 +137,62 @@ output$VolPlot_Pdf <- downloadHandler(
 )
 
 # # DeGene HeatMap
-HeatMap_Data <- eventReactive(input$plot_deheatmap,{
-  conditions <- strsplit(input$dea_genes, "_vs_") %>% unlist %>% unique
-  sampleTable <- as.data.frame(colData(dds()))[dds()$condition %in% conditions, ]
+output$deg_hiera_ancol <- renderUI({
+  pickerInput(
+    inputId = "deg_hiera_ancol", label = "Select Varables as column annotation:",
+    choices = colnames(dds()@colData)[!colnames(dds()@colData) %in% c("sizeFactor", "replaceable", "samples")],
+    selected = "condition", multiple = T, width = "100%", 
+    options = list(`actions-box` = TRUE, `live-search` = TRUE, size = 5)
+  )
+})
 
+# HeatMap_Data <- eventReactive(input$plot_deheatmap,{
+#   conditions <- strsplit(input$dea_genes, "_vs_") %>% unlist %>% unique
+#   sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% conditions, ]
+# 
+#   Des_list <- load.DEGs(input$dea_genes)
+#   DeGenes <- lapply(Des_list, function(x){
+#     rownames(x)
+#   }) %>% unlist %>% unique
+# 
+#   DeAssay <- SummarizedExperiment::assay(trans_value())[DeGenes, sampleTable$samples %>% as.character]
+# 
+#   return(DeAssay)
+# })
+
+DeGene_heatmap <- eventReactive(input$plot_deheatmap,{
+  conditions <- strsplit(input$dea_genes, "_vs_") %>% unlist %>% unique
+  sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% conditions, ]
+  
   Des_list <- load.DEGs(input$dea_genes)
   DeGenes <- lapply(Des_list, function(x){
     rownames(x)
   }) %>% unlist %>% unique
+  
+  DeAssay <- SummarizedExperiment::assay(trans_value())[DeGenes, sampleTable$samples %>% as.character]
+  
+  # conditions <- strsplit(input$dea_genes, "_vs_") %>% unlist %>% unique
+  # sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% conditions, ]
+  # annotation_col = data.frame(condition = factor(sampleTable$condition))
+  # rownames(annotation_col) = sampleTable$samples
 
-  DeAssay <- assay(trans_value())[DeGenes, sampleTable$samples %>% as.character]
-
-  return(DeAssay)
-})
-
-DeGene_heatmap <- eventReactive(input$plot_deheatmap,{
-  conditions <- strsplit(input$dea_genes, "_vs_") %>% unlist %>% unique
-  sampleTable <- as.data.frame(colData(dds()))[dds()$condition %in% conditions, ]
-  annotation_col = data.frame(condition = factor(sampleTable$condition))
-  rownames(annotation_col) = sampleTable$samples
-
-  print(HeatMap_Data() %>% head)
   color = colorRampPalette(strsplit(input$deheat_color, ",")[[1]])(100)
-  if (isTRUE(input$deheat_colanno)) {
-    pheatmap(HeatMap_Data(), col=color, scale = "row",
-             annotation_col = annotation_col,
-             show_rownames = FALSE, show_colnames = input$deheat_colname,
-             cluster_rows = input$deheat_row, cluster_cols = input$deheat_cols,
-             treeheight_row = input$deheat_rowh, treeheight_col = input$deheat_colh,
-             angle_col = input$deheat_angle, fontsize = input$deheat_fontsize)
+  if (!is.null(input$deg_hiera_ancol)) {
+    annotation_col = data.frame(row.names = sampleTable$samples, trans_value()@colData[sampleTable$samples, input$deg_hiera_ancol])
+    colnames(annotation_col) = input$deg_hiera_ancol
+    annotation_colors <- set_anno_color(anno_row = NULL, anno_col = annotation_col)
   }else {
-    pheatmap(HeatMap_Data(), col=color, scale = "row",
-             show_rownames = FALSE, show_colnames = input$deheat_colname,
-             cluster_rows = input$deheat_row, cluster_cols = input$deheat_cols,
-             treeheight_row = input$deheat_rowh, treeheight_col = input$deheat_colh,
-             angle_col = input$deheat_angle, fontsize = input$deheat_fontsize)
+    annotation_col <- NA
+    annotation_colors <- NA
   }
+  
+  pheatmap(DeAssay, col=color, scale = "row",
+           annotation_col = annotation_col,
+           annotation_colors = annotation_colors,
+           show_rownames = FALSE, show_colnames = input$deheat_colname,
+           cluster_rows = input$deheat_row, cluster_cols = input$deheat_cols,
+           treeheight_row = input$deheat_rowh, treeheight_col = input$deheat_colh,
+           angle_col = input$deheat_angle, fontsize = input$deheat_fontsize)
 })
 
 output$DeHeatmap <- renderPlot({
@@ -195,25 +204,36 @@ output$DeHeatmap_Pdf <- downloadHandler(
   content = function(file) {
     pdf(file, width = input$DeHeatmap_width, height = input$DeHeatmap_height)
     conditions <- strsplit(input$dea_genes, "_vs_") %>% unlist %>% unique
-    sampleTable <- as.data.frame(colData(dds()))[dds()$condition %in% conditions, ]
-    annotation_col = data.frame(condition = factor(sampleTable$condition))
-    rownames(annotation_col) = sampleTable$samples
-
+    sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% conditions, ]
+    
+    Des_list <- load.DEGs(input$dea_genes)
+    DeGenes <- lapply(Des_list, function(x){
+      rownames(x)
+    }) %>% unlist %>% unique
+    
+    DeAssay <- SummarizedExperiment::assay(trans_value())[DeGenes, sampleTable$samples %>% as.character]
+    
+    # conditions <- strsplit(input$dea_genes, "_vs_") %>% unlist %>% unique
+    # sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% conditions, ]
+    # annotation_col = data.frame(condition = factor(sampleTable$condition))
+    # rownames(annotation_col) = sampleTable$samples
+    
     color = colorRampPalette(strsplit(input$deheat_color, ",")[[1]])(100)
-    if (isTRUE(input$deheat_colanno)) {
-      pheatmap(HeatMap_Data(), col=color, scale = "row",
-               annotation_col = annotation_col,
-               show_rownames = FALSE, show_colnames = input$deheat_colname,
-               cluster_rows = input$deheat_row, cluster_cols = input$deheat_cols,
-               treeheight_row = input$deheat_rowh, treeheight_col = input$deheat_colh,
-               angle_col = input$deheat_angle, fontsize = input$deheat_fontsize)
+    if (!is.null(input$deg_hiera_ancol)) {
+      annotation_col = data.frame(row.names = sampleTable$samples, trans_value()@colData[sampleTable$samples, input$deg_hiera_ancol])
+      colnames(annotation_col) = input$deg_hiera_ancol
     }else {
-      pheatmap(HeatMap_Data(), col=color, scale = "row",
-               show_rownames = FALSE, show_colnames = input$deheat_colname,
-               cluster_rows = input$deheat_row, cluster_cols = input$deheat_cols,
-               treeheight_row = input$deheat_rowh, treeheight_col = input$deheat_colh,
-               angle_col = input$deheat_angle, fontsize = input$deheat_fontsize)
+      annotation_col <- NA
+      annotation_colors <- NA
     }
+    
+    pheatmap(DeAssay, col=color, scale = "row",
+             annotation_col = annotation_col,
+             annotation_colors = annotation_colors,
+             show_rownames = FALSE, show_colnames = input$deheat_colname,
+             cluster_rows = input$deheat_row, cluster_cols = input$deheat_cols,
+             treeheight_row = input$deheat_rowh, treeheight_col = input$deheat_colh,
+             angle_col = input$deheat_angle, fontsize = input$deheat_fontsize)
     dev.off()
   }
 )
@@ -238,7 +258,11 @@ VennGeneList <- eventReactive(input$plot_venn,{
 })
 
 VennPlot <- eventReactive(input$plot_venn,{
-  p <- ggvenn::ggvenn(VennGeneList(), show_percentage = input$venn_percentage %>% as.logical, stroke_size = 0.5, set_name_size = input$venn_nsize, text_size = input$venn_lsize) 
+  if (length(VennGeneList()) < 2) {
+    shinyalert(title = "error", text = "list `data` or vector `column` should be length between 2 and 4", type = "error", confirmButtonText = "Close")
+  }
+  
+  p <- ggvenn::ggvenn(VennGeneList(), show_percentage = T, stroke_size = 0.5, set_name_size = input$venn_nsize, text_size = input$venn_lsize) 
   # venn(VennGeneList(), zcolor = 'style', ilcs = input$venn_lsize, sncs = input$venn_nsize, box = F)
   
   if (nchar(input$deVenn_ggText != 0)) {
@@ -259,10 +283,6 @@ output$VennPlot_Pdf <- downloadHandler(
   content = function(file) {
     p <- VennPlot()
     ggsave(file, p, width = input$VennPlot_width, height = input$VennPlot_height)
-    
-    # pdf(file, width = input$VennPlot_width, height = input$VennPlot_height)
-    # venn(VennGeneList(), zcolor = 'style', ilcs = input$venn_lsize, sncs = input$venn_nsize, box = F)
-    # dev.off()
   }
 )
 
@@ -278,11 +298,11 @@ DeGene_barPlot <- eventReactive(input$plot_debar,{
       dim(subset(x, log2FoldChange < -input$dea_lfc))[1]
     })
 
-    up_df <- data.frame(dea_group = names(DesList), dea_number = Up_GeneList %>% unlist, Reg_Groups = "Up Reg")
-    down_df <- data.frame(dea_group = names(DesList), dea_number = Down_GeneList %>% unlist, Reg_Groups = "Down Reg")
+    up_df <- data.frame(dea_group = names(DesList), dea_number = Up_GeneList %>% unlist, Reg_Groups = "Up Regulation")
+    down_df <- data.frame(dea_group = names(DesList), dea_number = Down_GeneList %>% unlist, Reg_Groups = "Down Regulation")
     De_number <- rbind(up_df, down_df)
     De_number$dea_group <- factor(De_number$dea_group, levels = names(DesList))
-    De_number$Reg_Groups <- factor(De_number$Reg_Groups, levels = c("Up Reg", "Down Reg"))
+    De_number$Reg_Groups <- factor(De_number$Reg_Groups, levels = c("Up Regulation", "Down Regulation"))
 
     p <- ggplot(data = De_number, aes(x = dea_group, y = dea_number, fill = Reg_Groups))
   }else {
@@ -296,12 +316,12 @@ DeGene_barPlot <- eventReactive(input$plot_debar,{
   }
 
   p <- p + geom_bar(stat = "identity", position = position_dodge(width = 1))+
-    labs(x = "Sample Groups", y = "Differential Expressed Genes Number", fill = "Groups", vjust = -0.5)+
+    labs(x = NULL, y = "Number of DEGs", fill = NULL, vjust = -0.5)+
     theme_classic()+
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
   if (input$debar_number == "yes") {
-    p <- p + geom_text(aes(y = dea_number * 1.01, label = dea_number), position = position_dodge(width = 1))
+    p <- p + geom_text(aes(y = dea_number * 1.01, label = dea_number), position = position_dodge(width = 1), size = 5)
   }
 
   if (nchar(input$deBar_ggText != 0)) {

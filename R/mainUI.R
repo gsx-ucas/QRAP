@@ -10,7 +10,11 @@
 #' @export
 #'
 mainUI <- function() {
-
+  require(shiny)
+  require(shinyjs)
+  require(shinyWidgets)
+  require(shinydashboard)
+  
   jsCode <- jsCode <- "shinyjs.collapse = function(boxid) {
       $('#' + boxid).closest('.box').find('[data-widget=collapse]').click();
   };"

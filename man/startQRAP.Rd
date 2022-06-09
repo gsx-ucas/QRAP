@@ -4,7 +4,7 @@
 \alias{startQRAP}
 \title{Start the QRAP shiny App}
 \usage{
-startQRAP(launch.browser = TRUE)
+startQRAP(launch.browser = TRUE, port = 4986)
 }
 \description{
 Start the QRAP shiny App

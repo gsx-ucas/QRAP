@@ -11,8 +11,9 @@ fluidPage(
                                                 style = "height:40px;font-size:18px", class = "run-button", width = "300px"))
     )
   ),
+  column(12, align = "center", actionLink("showDEVis", label = NULL, icon = icon("angle-double-down", style = "font-size: 20px;"))),
   conditionalPanel(
-    "input.get_DEGs",
+    "input.get_DEGs | input.showDEVis",
     tabsetPanel(
       tabPanel(
         "DEGs Visualization",
@@ -27,26 +28,29 @@ fluidPage(
             conditionalPanel(
               "input.dePlot=='Volcano'",
               numericInput("show_topn", "Show top N significant genes:", value = 10, min = 0, width = "100%"),
-              numericRangeInput("vol_xlimits","xlim range:", value = c(-20, 20), width = "100%"),
-              numericInput("vol_ylimit","ylim range:", value = 50, min = 0,  width = "100%"),
+              numericInput("vol_text_size", "Label text size:", value = 5, min = 0, max = 15, width = "100%"),
+              # numericRangeInput("vol_xlimits","xlim range:", value = c(-20, 20), width = "100%"),
+              # numericInput("vol_ylimit","ylim range:", value = 50, min = 0,  width = "100%"),
               numericInput("vol_size", "Point size:", value = 1, min = 0, max = 5, width = "100%")
             ),
             conditionalPanel(
               "input.dePlot=='Venn'",
               selectInput("venn_genes", "Genes used to plot:", choices = c("Both", "Up Regulated Genes", "Down Regulated Genes"), width = "100%"),
-              selectInput("venn_percentage", "Show percentage:", choices = c("TRUE", "FALSE"), width = "100%"),
+              # selectInput("venn_percentage", "Show percentage:", choices = c("TRUE", "FALSE"), width = "100%"),
               numericInput("venn_lsize","Size of intersection labels:", value = 5,  min = 0, max = 10, width = "100%"),
               numericInput("venn_nsize","Size of set names:", value = 5,  min = 0, max = 10, width = "100%")
             ),
             conditionalPanel(
               "input.dePlot=='Heatmap'",
+              uiOutput("deg_hiera_ancol"),
               numericInput("deheat_fontsize", "Fontsize:", value = 15, width = "100%"),
               textInput("deheat_color", "color:", value = "navy,white,red",  width = "100%")
             ),
             conditionalPanel(
               "input.dePlot=='BarPlot'",
               selectInput("debar_number", "Show numbers on barplot:", c("yes", "no"), width = "100%"),
-              selectInput("debar_split", "Whether split up and down genes:", choices = c("yes", "no"), width = "100%")
+              selectInput("debar_split", "Whether split up and down genes:", choices = c("yes", "no"), width = "100%"),
+              numericInput("debar_text_fontsize", "Label text size:", value = 5, width = "100%")
             ),
             actionButton("diff_modal_but", "Additional Parameters for Visualization ...", width = "100%",
                          style = "background-color: rgb(255,255,255);text-align:left;margin-bottom:10px", icon = icon("plus-square")),
@@ -75,7 +79,7 @@ fluidPage(
             2,
             wellPanel(
               sliderInput("dea_plot_width", "Figure Width (%):", min = 50, max = 100, value = 100, step = 2, width = "100%"),
-              sliderInput("dea_plot_height", "Figure Height (px):", min = 200, max = 1000, value = 450, step = 20, width = "100%")
+              sliderInput("dea_plot_height", "Figure Height (px):", min = 200, max = 1000, value = 440, step = 10, width = "100%")
             )
           ),
           bsModal(
@@ -86,7 +90,6 @@ fluidPage(
                 "input.dePlot=='Volcano'",
                 h2("Additional Parameters of 'Volcano Plot':"), hr(),
                 numericRangeInput("vol_threasholds","P-value and Abs log2FoldChange:", value = c(0.05, 1), width = "100%"),
-                numericInput("vol_text_size", "Text size:", value = 5, min = 0, max = 15, width = "100%"),
                 numericInput("vol_alpha", "Point alpha:", value = 0.8, min = 0, max = 1, width = "100%"),
                 textAreaInput("deVol_ggText", "ggplot2 codes:", value = 'scale_color_brewer(palette = "Set1")+
                   theme(axis.title = element_text(size = 21, face = "bold", color = "black", family = "Times"),

@@ -5,7 +5,7 @@ library(shiny)
 library(plotly)
 library(shinyjs)
 library(shinyBS)
-library(shinythemes)
+# library(shinythemes)
 library(shinyalert)
 library(shinyWidgets)
 library(shinydashboard)
@@ -25,9 +25,6 @@ shinyUI(
 
     useShinyjs(),
     extendShinyjs(text = jsCode, functions = "collapse"),
-
-    # use_waiter(),
-    # waiter_show_on_load(html = spin_ball()), # place at the top before content
 
     navbarPage(
       id = "mainMenu",

@@ -23,14 +23,15 @@ output$hiera_ancol <- renderUI({
 })
 
 topVarGene_heatmap <- eventReactive(input$plot_hiera, {
-  topVarGenes <- trans_value()[, input$hiera_samples] %>% assay %>% rowVars %>% order(decreasing=TRUE) %>% head(input$hiera_topn)
-  topVarAssay <- assay(trans_value())[topVarGenes, input$hiera_samples]
-
-  annotation_col = as.data.frame(row.names = input$hiera_samples, colData(trans_value())[input$hiera_samples, input$hiera_ancol])
-  colnames(annotation_col) <- input$hiera_ancol
+  topVarGenes <- trans_value()[, input$hiera_samples] %>% 
+    SummarizedExperiment::assay() %>% MatrixGenerics::rowVars() %>% order(decreasing=TRUE) %>% head(input$hiera_topn)
+  topVarAssay <- SummarizedExperiment::assay(trans_value())[topVarGenes, input$hiera_samples]
+  
   color = grDevices::colorRampPalette(strsplit(input$hiera_color, ",")[[1]])(100)
-  if (isTRUE(input$hiera_annotation)) {
-    annotation_col <- annotation_col
+  
+  if (!is.null(input$hiera_ancol)) {
+    annotation_col <- as.data.frame(row.names = input$hiera_samples, trans_value()@colData[input$hiera_samples, input$hiera_ancol])
+    colnames(annotation_col) <- input$hiera_ancol
     annotation_colors <- set_anno_color(anno_row = NULL, anno_col = annotation_col)
   }else {
     annotation_col <- NA
@@ -59,7 +60,7 @@ output$topVar_Plot <- renderPlot({
 })
 
 output$hiera_plotUI <- renderUI({
-  withSpinner(plotOutput("topVar_Plot", width = paste0(input$hiera_plot_width, "%"), height = paste0(input$hiera_plot_height, "px")))
+  shinycssloaders::withSpinner(plotOutput("topVar_Plot", width = paste0(input$hiera_plot_width, "%"), height = paste0(input$hiera_plot_height, "px")))
 })
 
 output$hiera_Pdf <- downloadHandler(
