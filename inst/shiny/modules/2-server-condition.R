@@ -125,7 +125,7 @@ trans_value <- eventReactive(input$runDESeq,{
 norm_value <- eventReactive(input$runDESeq,{
   withProgress(message = "", min = 0, max = 1, value = 0,{
     if (input$run_cache != T | !file.exists("./Cache/Normalized_Values.rds")) {
-      data <- log2(counts(dds(), normalized=TRUE) %>% as.data.frame() + 1)
+      data <- log2(BiocGenerics::counts(dds(), normalized=TRUE) %>% as.data.frame() + 1)
 
       incProgress(0.5, detail = paste("Removing batch effects of Normalized values ..."))
       if (input$batch_methods != 'NULL') {

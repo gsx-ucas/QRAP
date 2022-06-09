@@ -19,6 +19,6 @@ fluidPage(
   ),
   column(
     9,
-    includeMarkdown(system.file("markdown", "installation.md", package = "QRseq"))
+    includeMarkdown(system.file("markdown", "installation.md", package = "QRAP"))
   )
 )

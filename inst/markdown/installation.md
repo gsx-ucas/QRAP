@@ -14,7 +14,7 @@
 <p style="text-align:center;">
   <strong>The main Features was showed below:</strong>
 </p>
-<img src="../shiny/myApp/www/images/workflow.tiff" width="70%" style="clear: both;display: block;margin: auto;"/>
+<img src="../shiny/www/images/workflow.jpg" width="70%" style="clear: both;display: block;margin: auto;"/>
 
 
 <h2 id="install" style="width:100%; text-align:left;font-family:&#39;Times New Roman&#39;, Times, serif;">Installing</h2>
@@ -103,7 +103,7 @@ startQRseq()
 
 <p style="text-align:justify;font-family:&#39;Times New Roman&#39;, Times, serif;">As you can see in this page above, there are two action buttons can let you start your data exploring. Click <code>Get Started Local</code> if you want upload your own data, or click <code>Get Started GEO</code> to explore the published data sets.</p>
 
-<img src="../shiny/myApp/www/images/get-start-button.jpeg" width="100%" style="clear: both;display: block;margin: auto;"/>
+<img src="../shiny/www/images/get-start-button.jpeg" width="100%" style="clear: both;display: block;margin: auto;"/>
 
 <h2 id="documentation" style="width:100%; text-align:left;font-family:&#39;Times New Roman&#39;, Times, serif;">Documentation</h2>
 

@@ -41,9 +41,9 @@ output$color_pal_corr <- renderPlot({
 
 CorrPlot <- eventReactive(input$plot_corr,{
   if (input$corr_data=="trans_value") {
-    data <- assay(trans_value())
+    data <- SummarizedExperiment::assay(trans_value())
   }else if (input$corr_data=="rel_value"){
-    data <- counts(dds(), normalized=TRUE)
+    data <- BiocGenerics::counts(dds(), normalized=TRUE)
     data <- log2(data + 1)
   }
 
@@ -76,7 +76,7 @@ CorrPlot <- eventReactive(input$plot_corr,{
     return(p)
   }else if (input$corr_type == "heatmap") {
     sub_data <- data[, dds()$condition %in% input$corr_groups]
-    corMatrix <- cor(sub_data, method = input$corr_method)
+    corMatrix <- stats::cor(sub_data, method = input$corr_method)
     if (input$corr_color == 'OrRd' | input$corr_color == 'YlOrRd') {
       colors <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, input$corr_color))(100)
     }else {

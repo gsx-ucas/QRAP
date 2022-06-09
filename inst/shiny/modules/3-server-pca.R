@@ -51,10 +51,10 @@ output$pca_shapeby <- renderUI({
 PCA <- eventReactive(input$plot_pca, {
   require(ggplot2)
   if (input$pca_shapeby != "NULL") {
-    pcadata <- plotPCA(trans_value()[, input$pca_samples], intgroup=c("samples", input$pca_colorby, input$pca_shapeby),returnData=TRUE)
+    pcadata <- DESeq2::plotPCA(trans_value()[, input$pca_samples], intgroup=c("samples", input$pca_colorby, input$pca_shapeby),returnData=TRUE)
     p <- ggplot(pcadata, aes_string('PC1', 'PC2', color = input$pca_colorby, shape = input$pca_shapeby))
   }else {
-    pcadata <- plotPCA(trans_value()[, input$pca_samples], intgroup=c("samples", input$pca_colorby),returnData=TRUE)
+    pcadata <- DESeq2::plotPCA(trans_value()[, input$pca_samples], intgroup=c("samples", input$pca_colorby),returnData=TRUE)
     p <- ggplot(pcadata, aes_string('PC1', 'PC2', color = input$pca_colorby))
   }
   percentVar <- round(100 * attr(pcadata, "percentVar"))
@@ -82,13 +82,13 @@ PCA <- eventReactive(input$plot_pca, {
 output$PCA <- renderPlot({ PCA() })
 
 output$PCA_plotUI <- renderUI({
-  withSpinner(plotOutput("PCA", width = paste0(input$pca_plot_width, "%"), height = paste0(input$pca_plot_height, "px")))
+  shinycssloaders::withSpinner(plotOutput("PCA", width = paste0(input$pca_plot_width, "%"), height = paste0(input$pca_plot_height, "px")))
 })
 
 output$pca_Pdf <- downloadHandler(
   filename = function()  {paste0("PCA_Plot",".pdf")},
   content = function(file) {
     p <- PCA()
-    ggsave(file, p, width = input$pca_width, height = input$pca_height)
+    ggplot2::ggsave(file, p, width = input$pca_width, height = input$pca_height)
   }
 )

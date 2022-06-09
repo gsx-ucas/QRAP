@@ -240,9 +240,12 @@ div.col-sm-6 > div.well {
 }
 
 /*-------------------form-group---------------------*/
+.form-group {
+    margin-bottom: 15px;
+}
+
 .selectize-input {
-  display: inline-block;
-  white-space: nowrap;
+  overflow: inherit;
 }
 
 select ~ button.dropdown-toggle {
