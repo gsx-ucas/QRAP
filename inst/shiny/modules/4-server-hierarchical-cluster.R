@@ -26,7 +26,13 @@ topVarGene_heatmap <- eventReactive(input$plot_hiera, {
   topVarGenes <- trans_value()[, input$hiera_samples] %>% 
     SummarizedExperiment::assay() %>% MatrixGenerics::rowVars() %>% order(decreasing=TRUE) %>% head(input$hiera_topn)
   topVarAssay <- SummarizedExperiment::assay(trans_value())[topVarGenes, input$hiera_samples]
+<<<<<<< HEAD
   
+=======
+
+  annotation_col = as.data.frame(row.names = input$hiera_samples, trans_value()@colData[input$hiera_samples, input$hiera_ancol])
+  colnames(annotation_col) <- input$hiera_ancol
+>>>>>>> 259a5af34672cd984b231d19211be8ee145b2b6f
   color = grDevices::colorRampPalette(strsplit(input$hiera_color, ",")[[1]])(100)
   
   if (!is.null(input$hiera_ancol)) {
