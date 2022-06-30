@@ -33,12 +33,16 @@ output$Expr_plotType <- renderUI({
   }else {
     ch <- c("BarPlot", "BoxPlot", "Heatmap")
   }
-  radioButtons("GenePlot_type", "Plot type:", choices = c("BarPlot", "BoxPlot", "Heatmap"), inline = T, width = "100%")
+  prettyRadioButtons(
+    inputId = "GenePlot_type", label = "Plot type:",
+    choices = c("BarPlot", "BoxPlot", "Heatmap"), icon = icon("check"),
+    status = "info", animation = "jelly", inline = TRUE, width = "100%")
+  # radioButtons("GenePlot_type", "Plot type:", choices = c("BarPlot", "BoxPlot", "Heatmap"), inline = T, width = "100%")
 })
 
 observe({
   if (input$data_use == "log2flc") {
-    updateRadioButtons(
+    updatePrettyRadioButtons(
       session = session, inputId = "GenePlot_type",
       choices = c("BarPlot", "DotPlot", "Heatmap"), inline = TRUE
     )

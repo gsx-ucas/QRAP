@@ -29,7 +29,7 @@ sampleTable <- reactive({
 output$conditionTab <- renderDataTable({
   sampleTable()
 },rownames = T, editable = TRUE,
-options = list(pageLength = 10, autoWidth = F, scrollX=TRUE, scrollY="220px")
+options = list(pageLength = 10, autoWidth = F, scrollX=TRUE, scrollY="228px")
 )
 
 output$ConditionTab <- downloadHandler(

@@ -36,6 +36,72 @@ fluidPage(
       )
     )
   ),
+  column(
+    8,
+    tabsetPanel(
+      tabPanel(
+        "Plots of DEG Patterns",
+        fluidPage(
+          style = "padding: 10px;margin-left: 0px; margin-right: 0px;",
+          column(
+            9,
+            fluidRow(
+              column(
+                12, 
+                # style = "padding-left:0px;margin-left:0px;padding-right:0px;margin-right:0px;border-bottom:solid 1px rgb(224,224,224)",
+                column(6),
+                column(
+                  6, align = "right", style = "padding-top:5px;",
+                  dropdownButton(
+                    numericInput('degsp_width', 'Figure Width:', min = 1, max = 20, value = 7, width = "100%"),
+                    numericInput('degsp_height', 'Figure Height:', min = 1, max = 20, value = 5, width = "100%"),
+                    downloadButton('degsp_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
+                    circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px", right = TRUE,
+                    tooltip = tooltipOptions(title = "Click to download figures !")
+                  )
+                )
+              )
+            ),
+            uiOutput("degsp_plotUI")
+          ),
+          column(
+            3,
+            wellPanel(
+              sliderInput("degsp_plot_width", "Figure Width (%):", min = 50, max = 100, value = 100, step = 2, width = "100%"),
+              sliderInput("degsp_plot_height", "Figure Height (px):", min = 200, max = 1000, value = 470, step = 10, width = "100%")
+            ),
+            conditionalPanel(
+              "input.degsp_type == 'BoxPlot'",
+              wellPanel(
+                checkboxInput("degsp_points", "plotting points?", value = FALSE, width = "100%"),
+                checkboxInput("degsp_boxes", "plotting boxes?", value = FALSE, width = "100%"),
+                checkboxInput("degsp_lines", "plotting lines?", value = TRUE, width = "100%")
+              )
+            ),
+            conditionalPanel(
+              "input.degsp_type == 'HeatMap'",
+              wellPanel(
+                checkboxInput("degsp_cluster_rows", "clustere rows?", value = FALSE, width = "100%"),
+                checkboxInput("degsp_colname", "show colnames?", value = TRUE, width = "100%"),
+                checkboxInput("degsp_annoRow", "annotate clusters?", value = TRUE, width = "100%")
+              )
+            )
+          )
+        )
+      ),
+      tabPanel(
+        "Detail Tabel",
+        fluidPage(
+          style = "padding: 10px;margin-left: 0px; margin-right: 0px;",
+          column(
+            12,
+            withSpinner(dataTableOutput("degsp_cluster_tab")),
+            downloadButton('degsp_cluster_csv','Download .csv', class = "btn btn-warning", width = "20%")
+          )
+        )
+      )
+    )
+  ),
   bsModal(
     "plot_degspmodal", "Additional Parameters", "plot_degspmodal_but", size = "large",
     fluidRow(
@@ -55,81 +121,29 @@ fluidPage(
           )
         )
       )
-      # column(
-      #   6, style = "text-align:justify;color:black;background-color:papayawhip;border-radius:10px;border:1px solid black;", br(),
-      #   h2("Additional Parameters of Heatmap:"), hr(),
-      #   checkboxInput("degsp_colname", "Specifying if column names are be shown.", value = TRUE, width = "100%"),
-      #   checkboxInput("degsp_cluster_rows", "Specifying if rows should be clustered.", value = FALSE, width = "100%"),
-      #   checkboxInput("degsp_annoRow", "Specifies the annotations shown on left of the heatmap.", value = TRUE, width = "100%"),
-      #   numericInput("degsp_treeheight_row", "The height of a tree for rows:", value = 20, width = "100%"),
-      #   selectInput("degsp_angle", "Column names angle (if showed):", choices = c('0', '45', '90', '270', '315'), selected = '315', width = "100%")
-      # )
     )
   ),
   column(
-    6,
-    wellPanel(
-      style = "padding-top:5px",
-      fluidRow(
-        column(
-          12, style = "padding-left:0px;margin-left:0px;padding-right:0px;margin-right:0px;border-bottom:solid 1px rgb(224,224,224)",
-          column(
-            6, style = "padding-left:10px;",
-            tags$h4("Plots of DEG Patterns:")
-          ),
-          column(
-            6, align = "right", style = "padding-top:5px;",
-            dropdownButton(
-              numericInput('degsp_width', 'Figure Width:', min = 1, max = 20, value = 7, width = "100%"),
-              numericInput('degsp_height', 'Figure Height:', min = 1, max = 20, value = 5, width = "100%"),
-              downloadButton('degsp_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
-              circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px", right = TRUE,
-              tooltip = tooltipOptions(title = "Click to download figures !")
-            )
-          )
-        )
+    12, style = "padding:0px;",
+    fluidRow(
+      style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
+      column(
+        4, style = "text-align:center;border-right: 2px solid white;",
+        tags$img(src = "images/dist_demo.png",
+                 width = "100%")
       ),
-      uiOutput("degsp_plotUI")
-    )
-  ),
-  column(
-    2,
-    wellPanel(
-      sliderInput("degsp_plot_width", "Figure Width (%):", min = 50, max = 100, value = 100, step = 2, width = "100%"),
-      sliderInput("degsp_plot_height", "Figure Height (px):", min = 200, max = 1000, value = 550, step = 20, width = "100%")
-    ),
-    conditionalPanel(
-      "input.degsp_type == 'BoxPlot'",
-      wellPanel(
-        checkboxInput("degsp_points", "Specifying if points are be plotted.", value = FALSE, width = "100%"),
-        checkboxInput("degsp_boxes", "Specifying if boxes are be plotted.", value = FALSE, width = "100%"),
-        checkboxInput("degsp_lines", "Specifying if lines are be plotted.", value = TRUE, width = "100%")
-      )
-    ),
-    conditionalPanel(
-      "input.degsp_type == 'HeatMap'",
-      wellPanel(
-        checkboxInput("degsp_cluster_rows", "clustere rows?", value = FALSE, width = "100%"),
-        checkboxInput("degsp_colname", "show colnames?", value = TRUE, width = "100%"),
-        checkboxInput("degsp_annoRow", "annotate clusters?", value = TRUE, width = "100%"),
-        numericInput("degsp_treeheight_row", "Tree height of rows:", value = 20, width = "100%"),
-        conditionalPanel(
-          "input.degsp_colname",
-          selectInput("degsp_angle", "Column names angle:", choices = c('0', '45', '90', '270', '315'), selected = '315', width = "100%")
-        )
-      )
-    )
-  ),
-  conditionalPanel(
-    "input.plot_degsp", style = "margin-left: 10px;",
-    box(
-      title = "DEGs pattern table:", width = 12, solidHeader = TRUE,
-      fluidRow(
-        column(
-          12,
-          withSpinner(dataTableOutput("degsp_cluster_tab")),
-          downloadButton('degsp_cluster_csv','Download .csv', class = "btn btn-warning", width = "20%")
-        )
+      column(
+        8, style = "text-align:justify;",
+        h3("What is sample-to-sample distance (SSD) ?"),
+        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
+          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
+          distance metrics, which specify how the distance between the input samples. A commonly used approach for
+          measuring sample distance in RNA-seq data is to use Euclidean distance."),
+        h3("How to interpret the SSD analysis results ?"),
+        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
+          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
+          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
+          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
       )
     )
   ),

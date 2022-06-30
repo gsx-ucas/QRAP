@@ -60,7 +60,7 @@ degsp_object <- eventReactive(input$run_degsp, {
       }
 
       incProgress(0.2, detail = "Subset transformed exprs table ...")
-      DeAssay <- assay(trans_value())[DeGenes, sampleTable$samples %>% as.character]
+      DeAssay <- SummarizedExperiment::assay(trans_value())[DeGenes, sampleTable$samples %>% as.character]
       incProgress(0.4, detail = "Calculating co-expression genes, this will take a while ...")
       if (dim(DeAssay)[1] < input$degsp_minc) {
         des_patterns <- degPatterns(ma = DeAssay, metadata = sampleTable,reduce = input$degsp_reduce, col = input_degp_col,
@@ -123,7 +123,7 @@ degsp_plot <- eventReactive(input$plot_degsp, {
     return(p)
   }else {
     sampleTable <- subset_Tab(dds(), vars = input$degp_time, input$degsp_order)
-    data <- as.data.frame(assay(trans_value()))[, rownames(sampleTable)]
+    data <- as.data.frame(SummarizedExperiment::assay(trans_value()))[, rownames(sampleTable)]
     col_ids <- lapply(input$degsp_order, function(x){
       trans_value()$samples[trans_value()@colData[, input$degp_time] %in% x] %>% as.character
     }) %>% unlist()
@@ -146,14 +146,13 @@ degsp_plot <- eventReactive(input$plot_degsp, {
       annotation_row <- NA
     }
 
-    pheatmap(data, color = color, scale = "row",
+    pheatmap::pheatmap(data, color = color, scale = "row",
              cluster_cols = F,show_rownames = F,
              annotation_row = annotation_row,
              cluster_rows = input$degsp_cluster_rows,
              show_colnames = input$degsp_colname,
-             treeheight_row = input$degsp_treeheight_row,
-             fontsize = input$degsp_fontsize,
-             angle_col = input$degsp_angle)
+             fontsize_col = input$degsp_fontsize,
+             treeheight_row = 20, angle_col = "315")
   }
 })
 
@@ -183,7 +182,7 @@ degsp_cluster_tab <- eventReactive(input$run_degsp, {
 output$degsp_cluster_tab <- renderDataTable({
   degsp_cluster_tab()
 },rownames = T, editable = TRUE,
-options = list(pageLength = 5, autoWidth = F, scrollX=TRUE, scrollY=TRUE)
+options = list(pageLength = 10, autoWidth = F, scrollX=TRUE, scrollY="360px")
 )
 
 output$degsp_cluster_csv <- downloadHandler(

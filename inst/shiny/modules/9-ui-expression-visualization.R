@@ -2,21 +2,12 @@ fluidPage(
   style = "margin-left: 10px; margin-right:10px;",
   box(
     title = "Plot Parameters:", width = 4, collapsible = TRUE, solidHeader = TRUE,
-    textAreaInput("input_gene", "Input genes:", rows = 4, placeholder = "Gene1,Gene2,Gene3 ...", width = "100%"),
-    # HTML(
-    #   paste0(
-    #     '<div class="form-group shiny-input-container" style="width: 100%;">',
-    #     '<label class="control-label" for="input_gene">Input genes:</label>',
-    #     '<textarea id="input_gene" class="form-control" style="width: 100%;" rows="2" cols="4">DAG1,SCN5A,SNTG2,SNTB1,SNTB2,SNTA1,DTNA,SSPN,SGCB,SGCA,SGCG,SGCD,SGCE,NOSIP,NOS3,DMD</textarea>',
-    #     '</div>'
-    #   )
-    # ),
+    textAreaInput("input_gene", "Input genes:", rows = 5, width = "100%", placeholder = "Gene1,Gene2,Gene3 ..."),
     selectInput("data_use", "Values Used To Visualize:", width = "100%",
                 c("rlog or vst transformed value" = "trans_value", "log2(normalized_counts + 1)" = "rel_value",
                   "DESeq2 normalized counts" = "norm_value", "log2 FoldChange" = "log2flc")),
     conditionalPanel("input.data_use != 'log2flc'", uiOutput('Expr_group')),
     conditionalPanel("input.data_use == 'log2flc'", uiOutput('Expr_de_group')),
-    # radioButtons("GenePlot_type", "Plot type:", c("BarPlot", "BoxPlot", "Heatmap"), inline = T, width = "100%"),
     uiOutput("Expr_plotType"),
     conditionalPanel(
       "input.GenePlot_type=='BarPlot' | input.GenePlot_type=='BoxPlot'",

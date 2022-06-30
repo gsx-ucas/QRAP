@@ -220,7 +220,7 @@ output$rawTable <- renderDataTable({
   }
 },
 rownames = T,
-options = list(pageLength = 5, autoWidth = F, scrollX=TRUE, scrollY=TRUE)
+options = list(pageLength = 10, autoWidth = F, scrollX=TRUE, scrollY="225px")
 )
 
 # filter out low expression genes
@@ -409,7 +409,7 @@ geo_matrix <- eventReactive(input$preview_geo, {
 output$geo_matrix <- renderDataTable({
   geo_matrix()
 },rownames = T,
-options = list(pageLength = 3, autoWidth = F, scrollX=TRUE, scrollY=TRUE)
+options = list(pageLength = 10, autoWidth = F, scrollX=TRUE, scrollY="225px")
 )
 
 # # collapse dataset_preview_card

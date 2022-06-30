@@ -177,6 +177,13 @@ div.col-sm-4 > div.col-sm-12, div.col-sm-4 > div > div.col-sm-12 {
   padding-left: 3px;
   padding-right: 3px;
 }
+
+/*---------------action link-----------------*/
+.tabbable > .tab-content > .tab-pane > .container-fluid {
+  border: 1px solid rgb(224,224,224);
+}
+
+
 /*---------------action link-----------------*/
 div.col-sm-3 a.action-button {
   color: black;
