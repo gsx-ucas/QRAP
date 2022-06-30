@@ -43,6 +43,12 @@ observeEvent(input$get_DEGs,{
   }
 })
 
+observe({
+  if (input$showDEVis) {
+    js$collapse("dea_tab")
+  }
+})
+
 ##--------------------------------------------------------
 ## Visualize DEGs
 
@@ -137,7 +143,6 @@ output$VolPlot_Pdf <- downloadHandler(
 )
 
 # # DeGene HeatMap
-<<<<<<< HEAD
 output$deg_hiera_ancol <- renderUI({
   pickerInput(
     inputId = "deg_hiera_ancol", label = "Select Varables as column annotation:",
@@ -146,25 +151,6 @@ output$deg_hiera_ancol <- renderUI({
     options = list(`actions-box` = TRUE, `live-search` = TRUE, size = 5)
   )
 })
-
-# HeatMap_Data <- eventReactive(input$plot_deheatmap,{
-#   conditions <- strsplit(input$dea_genes, "_vs_") %>% unlist %>% unique
-#   sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% conditions, ]
-# 
-#   Des_list <- load.DEGs(input$dea_genes)
-#   DeGenes <- lapply(Des_list, function(x){
-#     rownames(x)
-#   }) %>% unlist %>% unique
-# 
-#   DeAssay <- SummarizedExperiment::assay(trans_value())[DeGenes, sampleTable$samples %>% as.character]
-# 
-#   return(DeAssay)
-# })
-=======
-HeatMap_Data <- eventReactive(input$plot_deheatmap,{
-  conditions <- strsplit(input$dea_genes, "_vs_") %>% unlist %>% unique
-  sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% conditions, ]
->>>>>>> 259a5af34672cd984b231d19211be8ee145b2b6f
 
 DeGene_heatmap <- eventReactive(input$plot_deheatmap,{
   conditions <- strsplit(input$dea_genes, "_vs_") %>% unlist %>% unique
@@ -177,26 +163,6 @@ DeGene_heatmap <- eventReactive(input$plot_deheatmap,{
   
   DeAssay <- SummarizedExperiment::assay(trans_value())[DeGenes, sampleTable$samples %>% as.character]
   
-  # conditions <- strsplit(input$dea_genes, "_vs_") %>% unlist %>% unique
-  # sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% conditions, ]
-  # annotation_col = data.frame(condition = factor(sampleTable$condition))
-  # rownames(annotation_col) = sampleTable$samples
-
-<<<<<<< HEAD
-=======
-  DeAssay <- SummarizedExperiment::assay(trans_value())[DeGenes, sampleTable$samples %>% as.character]
-
-  return(DeAssay)
-})
-
-DeGene_heatmap <- eventReactive(input$plot_deheatmap,{
-  conditions <- strsplit(input$dea_genes, "_vs_") %>% unlist %>% unique
-  sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% conditions, ]
-  annotation_col = data.frame(condition = factor(sampleTable$condition))
-  rownames(annotation_col) = sampleTable$samples
-
-  print(HeatMap_Data() %>% head)
->>>>>>> 259a5af34672cd984b231d19211be8ee145b2b6f
   color = colorRampPalette(strsplit(input$deheat_color, ",")[[1]])(100)
   if (!is.null(input$deg_hiera_ancol)) {
     annotation_col = data.frame(row.names = sampleTable$samples, trans_value()@colData[sampleTable$samples, input$deg_hiera_ancol])
@@ -226,7 +192,6 @@ output$DeHeatmap_Pdf <- downloadHandler(
     pdf(file, width = input$DeHeatmap_width, height = input$DeHeatmap_height)
     conditions <- strsplit(input$dea_genes, "_vs_") %>% unlist %>% unique
     sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% conditions, ]
-<<<<<<< HEAD
     
     Des_list <- load.DEGs(input$dea_genes)
     DeGenes <- lapply(Des_list, function(x){
@@ -235,37 +200,14 @@ output$DeHeatmap_Pdf <- downloadHandler(
     
     DeAssay <- SummarizedExperiment::assay(trans_value())[DeGenes, sampleTable$samples %>% as.character]
     
-    # conditions <- strsplit(input$dea_genes, "_vs_") %>% unlist %>% unique
-    # sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% conditions, ]
-    # annotation_col = data.frame(condition = factor(sampleTable$condition))
-    # rownames(annotation_col) = sampleTable$samples
-    
     color = colorRampPalette(strsplit(input$deheat_color, ",")[[1]])(100)
     if (!is.null(input$deg_hiera_ancol)) {
       annotation_col = data.frame(row.names = sampleTable$samples, trans_value()@colData[sampleTable$samples, input$deg_hiera_ancol])
       colnames(annotation_col) = input$deg_hiera_ancol
+      annotation_colors <- set_anno_color(anno_row = NULL, anno_col = annotation_col)
     }else {
       annotation_col <- NA
       annotation_colors <- NA
-=======
-    annotation_col = data.frame(condition = factor(sampleTable$condition))
-    rownames(annotation_col) = sampleTable$samples
-
-    color = colorRampPalette(strsplit(input$deheat_color, ",")[[1]])(100)
-    if (isTRUE(input$deheat_colanno)) {
-      pheatmap::pheatmap(HeatMap_Data(), col=color, scale = "row",
-               annotation_col = annotation_col,
-               show_rownames = FALSE, show_colnames = input$deheat_colname,
-               cluster_rows = input$deheat_row, cluster_cols = input$deheat_cols,
-               treeheight_row = input$deheat_rowh, treeheight_col = input$deheat_colh,
-               angle_col = input$deheat_angle, fontsize = input$deheat_fontsize)
-    }else {
-      pheatmap::pheatmap(HeatMap_Data(), col=color, scale = "row",
-               show_rownames = FALSE, show_colnames = input$deheat_colname,
-               cluster_rows = input$deheat_row, cluster_cols = input$deheat_cols,
-               treeheight_row = input$deheat_rowh, treeheight_col = input$deheat_colh,
-               angle_col = input$deheat_angle, fontsize = input$deheat_fontsize)
->>>>>>> 259a5af34672cd984b231d19211be8ee145b2b6f
     }
     
     pheatmap(DeAssay, col=color, scale = "row",

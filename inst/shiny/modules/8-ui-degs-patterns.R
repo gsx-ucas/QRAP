@@ -7,10 +7,10 @@ fluidPage(
       switchInput(inputId = "degsp_switch", label = "Use Cache", onStatus = "success", offStatus = "danger", inline = T, labelWidth = "100px"),
       uiOutput('degsp_group'),
       numericInput("degsp_minc","Minimum number of genes in a group that will be return:", value = 30, width = "100%"),
+      uiOutput("degp_time"),
+      uiOutput("degp_col"),
       checkboxInput("degsp_scale", "Scale the expression values by row.", value = TRUE, width = "100%"),
       checkboxInput("degsp_reduce", "Remove genes that are outliers of the cluster distribution.", value = FALSE, width = "100%"),
-      # actionButton("degsp_modal_but", "Additional Parameters for Visualization ...", width = "100%",
-      #              style = "background-color: rgb(255,255,255);text-align:left;margin-bottom:10px", icon = icon("plus-square")),
       actionButton("run_degsp", "Find genes similarity among samples", class = "run-button", width = "100%")
     ),
     conditionalPanel(
@@ -41,11 +41,11 @@ fluidPage(
     fluidRow(
       style = "padding: 10px; margin: 10px",
       column(
-        6, style = "text-align:justify;color:black;background-color:lavender;border-radius:10px;border:1px solid black;", br(),
+        12, style = "text-align:justify;color:black;background-color:lavender;border-radius:10px;border:1px solid black;", br(),
         h2("Additional Parameters of Box-Line Plot:"), hr(),
-        checkboxInput("degsp_points", "Specifying if points are be plotted.", value = TRUE, width = "100%"),
-        checkboxInput("degsp_boxes", "Specifying if boxes are be plotted.", value = TRUE, width = "100%"),
-        checkboxInput("degsp_lines", "Specifying if lines are be plotted.", value = TRUE, width = "100%"),
+        # checkboxInput("degsp_points", "Specifying if points are be plotted.", value = TRUE, width = "100%"),
+        # checkboxInput("degsp_boxes", "Specifying if boxes are be plotted.", value = TRUE, width = "100%"),
+        # checkboxInput("degsp_lines", "Specifying if lines are be plotted.", value = TRUE, width = "100%"),
         HTML(
           paste0(
             '<div class="form-group shiny-input-container" style="width: 100%;">',
@@ -54,16 +54,16 @@ fluidPage(
             '</div>'
           )
         )
-      ),
-      column(
-        6, style = "text-align:justify;color:black;background-color:papayawhip;border-radius:10px;border:1px solid black;", br(),
-        h2("Additional Parameters of Heatmap:"), hr(),
-        checkboxInput("degsp_colname", "Specifying if column names are be shown.", value = TRUE, width = "100%"),
-        checkboxInput("degsp_cluster_rows", "Specifying if rows should be clustered.", value = FALSE, width = "100%"),
-        checkboxInput("degsp_annoRow", "Specifies the annotations shown on left of the heatmap.", value = TRUE, width = "100%"),
-        numericInput("degsp_treeheight_row", "The height of a tree for rows:", value = 20, width = "100%"),
-        selectInput("degsp_angle", "Column names angle (if showed):", choices = c('0', '45', '90', '270', '315'), selected = '315', width = "100%")
       )
+      # column(
+      #   6, style = "text-align:justify;color:black;background-color:papayawhip;border-radius:10px;border:1px solid black;", br(),
+      #   h2("Additional Parameters of Heatmap:"), hr(),
+      #   checkboxInput("degsp_colname", "Specifying if column names are be shown.", value = TRUE, width = "100%"),
+      #   checkboxInput("degsp_cluster_rows", "Specifying if rows should be clustered.", value = FALSE, width = "100%"),
+      #   checkboxInput("degsp_annoRow", "Specifies the annotations shown on left of the heatmap.", value = TRUE, width = "100%"),
+      #   numericInput("degsp_treeheight_row", "The height of a tree for rows:", value = 20, width = "100%"),
+      #   selectInput("degsp_angle", "Column names angle (if showed):", choices = c('0', '45', '90', '270', '315'), selected = '315', width = "100%")
+      # )
     )
   ),
   column(
@@ -97,6 +97,27 @@ fluidPage(
     wellPanel(
       sliderInput("degsp_plot_width", "Figure Width (%):", min = 50, max = 100, value = 100, step = 2, width = "100%"),
       sliderInput("degsp_plot_height", "Figure Height (px):", min = 200, max = 1000, value = 550, step = 20, width = "100%")
+    ),
+    conditionalPanel(
+      "input.degsp_type == 'BoxPlot'",
+      wellPanel(
+        checkboxInput("degsp_points", "Specifying if points are be plotted.", value = FALSE, width = "100%"),
+        checkboxInput("degsp_boxes", "Specifying if boxes are be plotted.", value = FALSE, width = "100%"),
+        checkboxInput("degsp_lines", "Specifying if lines are be plotted.", value = TRUE, width = "100%")
+      )
+    ),
+    conditionalPanel(
+      "input.degsp_type == 'HeatMap'",
+      wellPanel(
+        checkboxInput("degsp_cluster_rows", "clustere rows?", value = FALSE, width = "100%"),
+        checkboxInput("degsp_colname", "show colnames?", value = TRUE, width = "100%"),
+        checkboxInput("degsp_annoRow", "annotate clusters?", value = TRUE, width = "100%"),
+        numericInput("degsp_treeheight_row", "Tree height of rows:", value = 20, width = "100%"),
+        conditionalPanel(
+          "input.degsp_colname",
+          selectInput("degsp_angle", "Column names angle:", choices = c('0', '45', '90', '270', '315'), selected = '315', width = "100%")
+        )
+      )
     )
   ),
   conditionalPanel(

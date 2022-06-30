@@ -159,21 +159,22 @@ load.REGs <- function(filesName) {
 
 
 
-#' Subset The Experiment design Table while keep the order
+#' Subset The Experiment design Table and keep the order
 #'
 #' @param dds object of produced by DESeq
-#' @param condition conditions to keep
+#' @param vars columns names
+#' @param selected variable to keep
 #' @importFrom SummarizedExperiment colData
 #'
 #' @return Data.Frame
 #' @export
 #'
 
-subset_Tab <- function(dds, condition) {
+subset_Tab <- function(dds, vars, selected) {
   sampleTable <- as.data.frame(colData(dds))
   rownames(sampleTable) <- sampleTable$samples
-  idx <- lapply(condition, function(x){
-    sampleTable[sampleTable$condition == x, "samples"]
+  idx <- lapply(selected, function(x){
+    sampleTable[sampleTable[, vars] == x, "samples"]
   }) %>% unlist
   idx <- idx[idx %in% rownames(sampleTable)]
   sampleTable <- sampleTable[idx, ]

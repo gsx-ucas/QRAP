@@ -22,6 +22,23 @@ observeEvent(input$get_DEGs,{
   )
 })
 
+output$degp_time <- renderUI({
+  pickerInput(
+    inputId = "degp_time", label = "variable that changes:",
+    choices = colnames(dds()@colData)[!colnames(dds()@colData) %in% c("sizeFactor", "replaceable", "samples")],
+    selected = "condition", multiple = F, width = "100%"
+  )
+})
+
+output$degp_col <- renderUI({
+  choices_vector <- colnames(dds()@colData)[!colnames(dds()@colData) %in% c("sizeFactor", "replaceable", "samples", input$degp_time)]
+  pickerInput(
+    inputId = "degp_col", label = "variable to separate samples:",
+    choices = c("NULL", choices_vector), selected = "NULL", multiple = F, width = "100%"
+  )
+})
+
+
 degsp_object <- eventReactive(input$run_degsp, {
   withProgress(message = "", min = 0, max = 1, value = 0, {
     if (!isTRUE(input$degsp_switch) | !file.exists("Cache/des_patterns.rds")) {
@@ -35,16 +52,22 @@ degsp_object <- eventReactive(input$run_degsp, {
       DeGenes <- lapply(GeneList, function(x){
         rownames(x)
       }) %>% unlist %>% unique()
+      
+      if (input$degp_col == "NULL") {
+        input_degp_col <- NULL
+      }else {
+        input_degp_col <- input$degp_col
+      }
 
       incProgress(0.2, detail = "Subset transformed exprs table ...")
       DeAssay <- assay(trans_value())[DeGenes, sampleTable$samples %>% as.character]
       incProgress(0.4, detail = "Calculating co-expression genes, this will take a while ...")
       if (dim(DeAssay)[1] < input$degsp_minc) {
-        des_patterns <- degPatterns(ma = DeAssay, metadata = sampleTable,reduce = input$degsp_reduce,
-                                    scale = input$degsp_scale, minc = dim(DeAssay)[1] / 2, time = "condition", plot = F)
+        des_patterns <- degPatterns(ma = DeAssay, metadata = sampleTable,reduce = input$degsp_reduce, col = input_degp_col,
+                                    scale = input$degsp_scale, minc = dim(DeAssay)[1] / 2, time = input$degp_time, plot = F)
       }else {
-        des_patterns <- degPatterns(ma = DeAssay, metadata = sampleTable,reduce = input$degsp_reduce,
-                                    scale = input$degsp_scale, minc = input$degsp_minc, time = "condition", plot = F)
+        des_patterns <- degPatterns(ma = DeAssay, metadata = sampleTable,reduce = input$degsp_reduce,col = input_degp_col,
+                                    scale = input$degsp_scale, minc = input$degsp_minc, time = input$degp_time, plot = F)
       }
       saveRDS(des_patterns, "Cache/des_patterns.rds")
     }else {
@@ -64,22 +87,20 @@ observeEvent(input$run_degsp, {
 ## plotting DEGs Pattern
 
 output$degsp_cluster <- renderUI({
-  selectInput(
-    inputId = "degsp_cluster",
-    label = "Select cluster to plot:",
+  virtualSelectInput(
+    inputId = "degsp_cluster",  label = "Select cluster to plot:",
     choices = degsp_object()$normalized$cluster %>% unique %>% as.character,
     selected = degsp_object()$normalized$cluster %>% unique %>% as.character,
-    width = "100%",
-    multiple = T
+    multiple = TRUE, search = TRUE, width = "100%"
   )
 })
 
 output$degsp_order <- renderUI({
-  selectInput(
-    inputId = "degsp_order", label = "Condition plotting order:",
-    choices = degsp_object()$summarise$condition %>% unique %>% as.character,
-    selected = degsp_object()$summarise$condition %>% unique %>% as.character,
-    width = "100%", multiple = T
+  virtualSelectInput(
+    inputId = "degsp_order",  label = "Plotting order:",
+    choices = as.data.frame(degsp_object()$summarise)[, input$degp_time] %>% unique %>% as.character,
+    selected = as.data.frame(degsp_object()$summarise)[, input$degp_time] %>% unique %>% as.character,
+    multiple = TRUE, search = TRUE, width = "100%"
   )
 })
 
@@ -89,7 +110,8 @@ degsp_plot <- eventReactive(input$plot_degsp, {
     data <- data[data$condition %in% input$degsp_order, ]
     data$condition <- factor(data$condition, levels = input$degsp_order)
     data <- data[data$cluster %in% as.numeric(input$degsp_cluster), ]
-    p <- QRseq::degPlotCluster(table = data, time = "condition", color = "colored", angle = 45,
+    
+    p <- QRseq::degPlotCluster(table = data, time = input$degp_time, color = "colored", angle = 45,
                          points = input$degsp_points, boxes = input$degsp_boxes, lines = input$degsp_lines,
                          facet_col = input$degsp_cols, facet_scales = input$degsp_scales, cluster_order = input$degsp_cluster)
     if (nchar(input$degsp_ggText != 0)) {
@@ -100,34 +122,38 @@ degsp_plot <- eventReactive(input$plot_degsp, {
     }
     return(p)
   }else {
-    sampleTable <- subset_Tab(dds(), input$degsp_order)
-    df <- degsp_object()$df[degsp_object()$df$cluster %in% as.numeric(input$degsp_cluster), ]
+    sampleTable <- subset_Tab(dds(), vars = input$degp_time, input$degsp_order)
     data <- as.data.frame(assay(trans_value()))[, rownames(sampleTable)]
-    order_ids <- df$cluster %>% order
-    annotable <- data.frame(row.names = df$genes[order_ids], deg_cluster = df$cluster[order_ids])
-    annotable$deg_cluster <- factor(as.character(annotable$deg_cluster), levels = as.character(annotable$deg_cluster) %>% unique)
-    data <- data[rownames(annotable), ] %>% as.data.frame()
-    col_ids <- trans_value()$samples[trans_value()$condition %in% input$degsp_order] %>% as.character
+    col_ids <- lapply(input$degsp_order, function(x){
+      trans_value()$samples[trans_value()@colData[, input$degp_time] %in% x] %>% as.character
+    }) %>% unlist()
     data <- data[, col_ids]
+    
+    df <- degsp_object()$df[degsp_object()$df$cluster %in% as.numeric(input$degsp_cluster), ]
+    
+    matched_genes <- intersect(df$genes, rownames(data))
+    df <- df[df$genes %in% matched_genes, ]
+    annotable <- data.frame(row.names = df$genes, deg_cluster = df$cluster)
+    annotable$deg_cluster <- factor(as.character(annotable$deg_cluster), levels = annotable$deg_cluster %>% sort %>% as.character %>% unique)
+    
+    data <- data[matched_genes, ]
+    
     color = colorRampPalette(strsplit(input$degsp_color, ",")[[1]])(100)
+    
     if (isTRUE(input$degsp_annoRow)) {
-      pheatmap(data, color = color, scale = "row",
-               cluster_cols = F,show_rownames = F,
-               annotation_row = annotable,
-               cluster_rows = input$degsp_cluster_rows,
-               show_colnames = input$degsp_colname,
-               treeheight_row = input$degsp_treeheight_row,
-               fontsize = input$degsp_fontsize,
-               angle_col = input$degsp_angle)
+      annotation_row <- annotable
     }else {
-      pheatmap(data, color = color, scale = "row",
-               cluster_cols = F,show_rownames = F,
-               cluster_rows = input$degsp_cluster_rows,
-               show_colnames = input$degsp_colname,
-               treeheight_row = input$degsp_treeheight_row,
-               fontsize = input$degsp_fontsize,
-               angle_col = input$degsp_angle)
+      annotation_row <- NA
     }
+
+    pheatmap(data, color = color, scale = "row",
+             cluster_cols = F,show_rownames = F,
+             annotation_row = annotation_row,
+             cluster_rows = input$degsp_cluster_rows,
+             show_colnames = input$degsp_colname,
+             treeheight_row = input$degsp_treeheight_row,
+             fontsize = input$degsp_fontsize,
+             angle_col = input$degsp_angle)
   }
 })
 
