@@ -6,16 +6,19 @@ fluidPage(
     selectInput("data_use", "Values Used To Visualize:", width = "100%",
                 c("rlog or vst transformed value" = "trans_value", "log2(normalized_counts + 1)" = "rel_value",
                   "DESeq2 normalized counts" = "norm_value", "log2 FoldChange" = "log2flc")),
-    conditionalPanel("input.data_use != 'log2flc'", uiOutput('Expr_group')),
-    conditionalPanel("input.data_use == 'log2flc'", uiOutput('Expr_de_group')),
-    uiOutput("Expr_plotType"),
     conditionalPanel(
-      "input.GenePlot_type=='BarPlot' | input.GenePlot_type=='BoxPlot'",
-      checkboxInput("Expr_split", "Specifying if split figure by gene.", value = FALSE, width = "100%")
+      "input.data_use != 'log2flc'",
+      uiOutput("expr_groupby"),
+      uiOutput('expr_group')
     ),
     conditionalPanel(
-      "input.GenePlot_type=='Heatmap'",
-      textInput("exprsh_color", "color:", value = "navy,white,red",  width = "100%")
+      "input.data_use == 'log2flc'", 
+      uiOutput('expr_de_group'),
+    ),
+    uiOutput("expr_plotType"),
+    conditionalPanel(
+      "input.data_use == 'log2flc'",
+      numericInput("exprsh_fontsize", "Fontsize:", value = 15, width = "100%")
     ),
     actionButton("exprs_modal_but", "Additional Parameters for Visualization ...", width = "100%",
                  style = "background-color: rgb(255,255,255);text-align:left;margin-bottom:10px", icon = icon("plus-square")),
@@ -51,6 +54,7 @@ fluidPage(
         checkboxInput("cluster_row", "Specifying if genes (rows side) should be clustered.", value = TRUE, width = "100%"),
         numericInput("exprsh_treeheight_row", "The height of a tree for rows:", value = 20, width = "100%"),
         numericInput("exprsh_fontsize", "Fontsize:", value = 15, width = "100%"),
+        textInput("exprsh_color", "color:", value = "navy,white,red",  width = "100%"),
         numericRangeInput("Expr_break", "Color bar value range:", value = c(-2,2), width = "100%"),
         selectInput("exprsh_scale", "How to scale data:", choices = c('row', 'column', 'none'), selected = 'row', width = "100%"),
         selectInput("exprsh_angle", "Column names angle (if showed):", choices = c('0', '45', '90', '270', '315'), selected = '315', width = "100%")
@@ -88,7 +92,37 @@ fluidPage(
     2,
     wellPanel(
       sliderInput("epv_plot_width", "Figure Width (%):", min = 50, max = 100, value = 100, step = 2, width = "100%"),
-      sliderInput("epv_plot_height", "Figure Height (px):", min = 200, max = 1000, value = 510, step = 20, width = "100%")
+      sliderInput("epv_plot_height", "Figure Height (px):", min = 200, max = 1000, value = 518, step = 10, width = "100%")
+    ),
+    conditionalPanel(
+      "input.expr_plotType=='BarPlot' | input.expr_plotType=='BoxPlot'",
+      wellPanel(
+        checkboxInput("Expr_split", "split figure by genes?", value = FALSE, width = "100%")
+      )
+    )
+  ),
+  column(
+    12, style = "padding:0px;",
+    fluidRow(
+      style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
+      column(
+        4, style = "text-align:center;border-right: 2px solid white;",
+        tags$img(src = "images/dist_demo.png",
+                 width = "100%")
+      ),
+      column(
+        8, style = "text-align:justify;",
+        h3("What is sample-to-sample distance (SSD) ?"),
+        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
+          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
+          distance metrics, which specify how the distance between the input samples. A commonly used approach for
+          measuring sample distance in RNA-seq data is to use Euclidean distance."),
+        h3("How to interpret the SSD analysis results ?"),
+        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
+          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
+          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
+          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
+      )
     )
   ),
   column(

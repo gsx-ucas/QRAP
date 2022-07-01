@@ -6,12 +6,23 @@ observe({
 })
 
 
-output$Expr_group <- renderUI({
-  selectInput(inputId = "expr_group", label = "Select group to plot:", dds()$condition %>% unique %>% as.character,
-              selected = dds()$condition %>% unique %>% as.character, multiple = T, width = "100%")
+output$expr_groupby <- renderUI({
+  colNames <- colnames(as.data.frame(dds()@colData))
+  selectInput(
+    inputId = "expr_groupby", label = "Group for summarise data:", width = "100%",
+    choices = colNames[!colNames %in% c("samples", "sizeFactor", "replaceable")]
+  )
 })
 
-output$Expr_de_group <- renderUI({
+
+output$expr_group <- renderUI({
+  req(input$expr_groupby, dds())
+  selectInput(inputId = "expr_group", label = "Select group to plot:", 
+              choices = dds()@colData[, input$expr_groupby] %>% unique %>% as.character,
+              selected = dds()@colData[, input$expr_groupby] %>% unique %>% as.character, multiple = T, width = "100%")
+})
+
+output$expr_de_group <- renderUI({
   selectInput(
     inputId = "expr_de_group", label = "Groups Of Differential Expressed Genes:",
     choices = dir("DEGs") %>% stringr::str_remove_all(".csv"),
@@ -27,58 +38,68 @@ observeEvent(input$get_DEGs,{
   )
 })
 
-output$Expr_plotType <- renderUI({
+output$expr_plotType <- renderUI({
   if (input$data_use == "log2flc") {
     ch <- c("BarPlot", "DotPlot", "Heatmap")
   }else {
     ch <- c("BarPlot", "BoxPlot", "Heatmap")
   }
   prettyRadioButtons(
-    inputId = "GenePlot_type", label = "Plot type:",
+    inputId = "expr_plotType", label = "Plot type:",
     choices = c("BarPlot", "BoxPlot", "Heatmap"), icon = icon("check"),
     status = "info", animation = "jelly", inline = TRUE, width = "100%")
-  # radioButtons("GenePlot_type", "Plot type:", choices = c("BarPlot", "BoxPlot", "Heatmap"), inline = T, width = "100%")
+  # radioButtons("expr_plotType", "Plot type:", choices = c("BarPlot", "BoxPlot", "Heatmap"), inline = T, width = "100%")
 })
 
 observe({
   if (input$data_use == "log2flc") {
     updatePrettyRadioButtons(
-      session = session, inputId = "GenePlot_type",
-      choices = c("BarPlot", "DotPlot", "Heatmap"), inline = TRUE
+      session = session, inputId = "expr_plotType", choices = c("BarPlot", "DotPlot", "Heatmap"), 
+      inline = TRUE, prettyOptions = list(icon = icon("check"), status = "info", animation = "jelly", width = "100%")
     )
   }
 })
 
-## ----------------------------- plot colors ----------------------------##
-output$color_pal_exprsh <- renderPlot({
-  par(mar=c(0,0,0,0))
-  display.brewer.pal(n = 9, name = input$exprsh_color)
+observe({
+  print(input$input_gene)
+  print(grepl("\n", input$input_gene))
 })
 
 ##-----------------Plotting genes expression----------------------------##
 Expr_plot <- eventReactive(input$plot_geneExpr,{
-  genes <- strsplit(input$input_gene, ",")[[1]]
-  if (length(genes)==0) {
-    stop("Empty input, please input gene names you are interested in.")
+  
+  if (grepl("\n", input$input_gene)) {
+    genes <- strsplit(input$input_gene, "\n")[[1]] %>% unique
+  }else if (grepl(",", input$input_gene)) {
+    genes <- strsplit(input$input_gene, ",")[[1]] %>% unique
+  }else {
+    genes <- input$input_gene %>% unique
   }
+  
+  matched_genes <- genes[genes %in% rownames(trans_value())]
+  if (length(matched_genes) != length(genes)) {
+    shinyalert(title = "warning", type = "warning", confirmButtonText = "Close", 
+               text = paste0("Can not find input genes: '", genes[!genes %in% matched_genes], "'", "please check your input!"))
+  }
+  
   if (input$data_use == "log2flc") {
     ResList <- load.REGs(input$expr_de_group)
-    if (input$GenePlot_type == "BarPlot" | input$GenePlot_type == "DotPlot") {
+    if (input$expr_plotType == "BarPlot" | input$expr_plotType == "DotPlot") {
       data <- lapply(names(ResList), function(x){
         df <- ResList[[x]][genes[genes %in% rownames(ResList[[x]])], c("padj", "log2FoldChange")]
         df$group <- x
         df$genes <- df %>% rownames
         return(df)
-      }) %>% bind_rows()
+      }) %>% dplyr::bind_rows()
 
       data$padj[is.na(data$padj)] <- 1
-      data <- drop_na(data)
+      data <- tidyr::drop_na(data)
       data$padj <- -log10(data$padj)
 
       data$group <- factor(data$group, levels = input$expr_de_group)
       data$genes <- factor(data$genes, levels = genes[genes %in% data$genes])
 
-      if (input$GenePlot_type == "BarPlot") {
+      if (input$expr_plotType == "BarPlot") {
         if (input$Expr_split == TRUE) {
           p <- ggplot(data = data, aes(x = group, y = log2FoldChange, fill = group))+
             geom_bar(stat = "identity", position = "dodge")+
@@ -93,7 +114,7 @@ Expr_plot <- eventReactive(input$plot_geneExpr,{
           p <- p + geom_bar(stat = "identity", position = "dodge")+
             theme_classic()
         }
-      }else if (input$GenePlot_type == "DotPlot") {
+      }else if (input$expr_plotType == "DotPlot") {
         p <- ggplot(data = data, aes(x = group, y = genes))+
           geom_point(aes(size = padj, col = log2FoldChange))+
           scale_color_gradient2(low = "blue", mid = "white", high = "red")+
@@ -115,11 +136,11 @@ Expr_plot <- eventReactive(input$plot_geneExpr,{
         df <- data.frame(row.names = rownames(ResList[[x]]), lfc = ResList[[x]][, "log2FoldChange"])
         colnames(df) <- x
         return(df)
-      }) %>% bind_cols()
+      }) %>% dplyr::bind_cols()
       rownames(lfc_mat) <- rownames(ResList[[1]])
       data <- lfc_mat[genes[genes %in% rownames(lfc_mat)], names(ResList)]
       color = colorRampPalette(strsplit(input$exprsh_color, ",")[[1]])(100)
-      pheatmap(data, col=color,
+      pheatmap::pheatmap(data, col=color,
                cluster_col=F, cluster_row=input$cluster_row,
                scale = 'none', show_rownames = T,
                fontsize = input$exprsh_fontsize,
@@ -127,7 +148,7 @@ Expr_plot <- eventReactive(input$plot_geneExpr,{
                breaks=seq(input$Expr_break[1], input$Expr_break[2], (input$Expr_break[2] - input$Expr_break[1])/100),
                treeheight_row = input$exprsh_treeheight_row,
                angle_col = input$exprsh_angle %>% as.integer)
-      # if (input$GenePlot_type == "Heatmap") {
+      # if (input$expr_plotType == "Heatmap") {
       #   data <- lfc_mat[rownames(lfc_mat) %in% genes, ]
       #   color = colorRampPalette(strsplit(input$exprsh_color, ",")[[1]])(100)
       #   pheatmap(data, col=color,
@@ -169,7 +190,7 @@ Expr_plot <- eventReactive(input$plot_geneExpr,{
       #                        key_words = input$batch_col, design = "condition", method = input$batch_methods)
       # }
     }else if(input$data_use == "trans_value"){
-      data <- assay(trans_value()) %>% as.data.frame()
+      data <- SummarizedExperiment::assay(trans_value()) %>% as.data.frame()
     }else if(input$data_use == "norm_value"){
       data <- norm_value() %>% as.data.frame()
       # data <- counts(dds(), normalized=TRUE) %>% as.data.frame()
@@ -182,17 +203,18 @@ Expr_plot <- eventReactive(input$plot_geneExpr,{
     # sampleTable <- as.data.frame(colData(dds()))[dds()$condition %in% input$expr_group, ]
     # rownames(sampleTable) <- sampleTable$samples
     # colNames <- sampleTable$samples
-    sampleTable <- subset_Tab(dds(), input$expr_group)
+    sampleTable <- subset_Tab(dds(), vars = input$expr_groupby, selected = input$expr_group)
 
     Sub_data <- data[genes[genes %in% rownames(data)], sampleTable$samples] %>% as.matrix
     if (dim(Sub_data)[1] == 0) {
-      stop("No genes can match to expression data, please check your input, or this genes were filtered out beacause they are low expression genes.")
+      return(NULL)
+      # stop("No genes can match to expression data, please check your input, or this genes were filtered out beacause they are low expression genes.")
     }
 
-    Mel_data <- Sub_data %>% melt()
+    Mel_data <- Sub_data %>% reshape2::melt()
     colnames(Mel_data) <- c("genes", "samples", "expr_value")
-    Mel_data["Groups"] = sampleTable[Mel_data$samples, "condition"]
-    Sum_data <- summarySE(Mel_data, measurevar = "expr_value", groupvars=c("Groups", "genes"), conf.interval = 0.95)
+    Mel_data["Groups"] = sampleTable[Mel_data$samples, input$expr_groupby]
+    Sum_data <- Rmisc::summarySE(Mel_data, measurevar = "expr_value", groupvars=c("Groups", "genes"), conf.interval = 0.95)
     Sum_data$Groups <- factor(Sum_data$Groups, levels = input$expr_group)
     Sum_data$genes <- factor(Sum_data$genes, levels = genes[genes %in% Sum_data$genes])
 
@@ -202,7 +224,7 @@ Expr_plot <- eventReactive(input$plot_geneExpr,{
       }
     }
 
-    if (input$GenePlot_type=="BarPlot") {
+    if (input$expr_plotType=="BarPlot") {
       dodge <- position_dodge(width = 1)
 
       if (isTRUE(input$Expr_split)) {
@@ -232,7 +254,7 @@ Expr_plot <- eventReactive(input$plot_geneExpr,{
         })
       }
       return(p)
-    }else if (input$GenePlot_type=="BoxPlot") {
+    }else if (input$expr_plotType=="BoxPlot") {
       if (isTRUE(input$Expr_split)) {
         p <- ggplot(data=Mel_data, aes(x=Groups, y=expr_value, fill=Groups))+
           geom_boxplot()+
@@ -260,25 +282,19 @@ Expr_plot <- eventReactive(input$plot_geneExpr,{
       # color = colorRampPalette(c("navy", "white", "red"))(50)
       color = colorRampPalette(strsplit(input$exprsh_color, ",")[[1]])(100)
       if (isTRUE(input$exprsh_colanno)) {
-        pheatmap(Sub_data, col=color,
-                 cluster_col=F, cluster_row=input$cluster_row,
-                 scale = input$exprsh_scale, show_rownames = T,
-                 fontsize = input$exprsh_fontsize,
-                 show_colnames = input$exprsh_colname,
-                 breaks=seq(input$Expr_break[1], input$Expr_break[2], (input$Expr_break[2] - input$Expr_break[1])/100),
-                 annotation_col=annotation_col,
-                 treeheight_row = input$exprsh_treeheight_row,
-                 angle_col = input$exprsh_angle %>% as.integer)
+        annotation_col <- annotation_col
       }else {
-        pheatmap(Sub_data, col=color,
-                 cluster_col=F, cluster_row=input$cluster_row,
-                 scale = input$exprsh_scale, show_rownames = T,
-                 fontsize = input$exprsh_fontsize,
-                 show_colnames = input$exprsh_colname,
-                 breaks=seq(input$Expr_break[1], input$Expr_break[2], (input$Expr_break[2] - input$Expr_break[1])/100),
-                 treeheight_row = input$exprsh_treeheight_row,
-                 angle_col = input$exprsh_angle %>% as.integer)
+        annotation_col <- NA
       }
+      pheatmap::pheatmap(Sub_data, col=color,
+                         cluster_col=F, cluster_row=input$cluster_row,
+                         scale = input$exprsh_scale, show_rownames = T,
+                         fontsize = input$exprsh_fontsize,
+                         show_colnames = input$exprsh_colname,
+                         breaks=seq(input$Expr_break[1], input$Expr_break[2], (input$Expr_break[2] - input$Expr_break[1])/100),
+                         annotation_col=annotation_col,
+                         treeheight_row = input$exprsh_treeheight_row,
+                         angle_col = input$exprsh_angle %>% as.integer)
     }
   }
 })
