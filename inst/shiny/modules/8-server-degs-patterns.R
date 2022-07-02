@@ -63,10 +63,10 @@ degsp_object <- eventReactive(input$run_degsp, {
       DeAssay <- SummarizedExperiment::assay(trans_value())[DeGenes, sampleTable$samples %>% as.character]
       incProgress(0.4, detail = "Calculating co-expression genes, this will take a while ...")
       if (dim(DeAssay)[1] < input$degsp_minc) {
-        des_patterns <- degPatterns(ma = DeAssay, metadata = sampleTable,reduce = input$degsp_reduce, col = input_degp_col,
+        des_patterns <- DEGreport::degPatterns(ma = DeAssay, metadata = sampleTable,reduce = input$degsp_reduce, col = input_degp_col,
                                     scale = input$degsp_scale, minc = dim(DeAssay)[1] / 2, time = input$degp_time, plot = F)
       }else {
-        des_patterns <- degPatterns(ma = DeAssay, metadata = sampleTable,reduce = input$degsp_reduce,col = input_degp_col,
+        des_patterns <- DEGreport::degPatterns(ma = DeAssay, metadata = sampleTable,reduce = input$degsp_reduce,col = input_degp_col,
                                     scale = input$degsp_scale, minc = input$degsp_minc, time = input$degp_time, plot = F)
       }
       saveRDS(des_patterns, "Cache/des_patterns.rds")
@@ -107,11 +107,11 @@ output$degsp_order <- renderUI({
 degsp_plot <- eventReactive(input$plot_degsp, {
   if (input$degsp_type == "BoxPlot") {
     data <- degsp_object()$normalized
-    data <- data[data$condition %in% input$degsp_order, ]
-    data$condition <- factor(data$condition, levels = input$degsp_order)
+    data <- data[data[, input$degp_time] %in% input$degsp_order, ]
+    data[, input$degp_time] <- factor(data[, input$degp_time], levels = input$degsp_order)
     data <- data[data$cluster %in% as.numeric(input$degsp_cluster), ]
     
-    p <- QRseq::degPlotCluster(table = data, time = input$degp_time, color = "colored", angle = 45,
+    p <- QRAP::degPlotCluster(table = data, time = input$degp_time, color = "colored", angle = 45,
                          points = input$degsp_points, boxes = input$degsp_boxes, lines = input$degsp_lines,
                          facet_col = input$degsp_cols, facet_scales = input$degsp_scales, cluster_order = input$degsp_cluster)
     if (nchar(input$degsp_ggText != 0)) {
@@ -129,7 +129,10 @@ degsp_plot <- eventReactive(input$plot_degsp, {
     }) %>% unlist()
     data <- data[, col_ids]
     
-    df <- degsp_object()$df[degsp_object()$df$cluster %in% as.numeric(input$degsp_cluster), ]
+    # df <- degsp_object()$df[degsp_object()$df$cluster %in% as.numeric(input$degsp_cluster), ]
+    df <- lapply(input$degsp_cluster, function(x){
+      degsp_object()$df[degsp_object()$df$cluster == as.numeric(x), ]
+    }) %>% dplyr::bind_rows()
     
     matched_genes <- intersect(df$genes, rownames(data))
     df <- df[df$genes %in% matched_genes, ]

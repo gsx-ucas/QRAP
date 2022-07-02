@@ -173,7 +173,7 @@ DeGene_heatmap <- eventReactive(input$plot_deheatmap,{
     annotation_colors <- NA
   }
   
-  pheatmap(DeAssay, col=color, scale = "row",
+  pheatmap::pheatmap(DeAssay, col=color, scale = "row",
            annotation_col = annotation_col,
            annotation_colors = annotation_colors,
            show_rownames = FALSE, show_colnames = input$deheat_colname,
@@ -210,7 +210,7 @@ output$DeHeatmap_Pdf <- downloadHandler(
       annotation_colors <- NA
     }
     
-    pheatmap(DeAssay, col=color, scale = "row",
+    pheatmap::pheatmap(DeAssay, col=color, scale = "row",
              annotation_col = annotation_col,
              annotation_colors = annotation_colors,
              show_rownames = FALSE, show_colnames = input$deheat_colname,

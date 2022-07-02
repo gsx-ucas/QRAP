@@ -31,6 +31,7 @@ degPlotCluster <- function (table, time, cluster_order = NULL, color = NULL, poi
   splan <- length(unique(table[[time]])) - 1L
 
   if (!is.null(cluster_order)) {
+    counts <- counts[cluster_order]
     table$tittle <- factor(table$tittle, levels = paste0("cluster", cluster_order, " - genes: ", counts))
   }else {
     table$tittle <- factor(table$tittle, levels = paste0("cluster", names(counts), " - genes: ", counts))
