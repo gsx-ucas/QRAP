@@ -40,7 +40,6 @@ Imports:
     shinyalert,
     visNetwork,
     edgebundleR,
-    rentrez,
     shinydashboard,
     gridExtra,
     tidyr,
