@@ -17,18 +17,32 @@ output$expr_groupby <- renderUI({
 
 output$expr_group <- renderUI({
   req(input$expr_groupby, dds())
-  selectInput(inputId = "expr_group", label = "Select group to plot:", 
-              choices = dds()@colData[, input$expr_groupby] %>% unique %>% as.character,
-              selected = dds()@colData[, input$expr_groupby] %>% unique %>% as.character, multiple = T, width = "100%")
+  virtualSelectInput(
+    inputId = "expr_group",  label = "Select group to plot:",
+    choices = dds()@colData[, input$expr_groupby] %>% unique %>% as.character,
+    selected = dds()@colData[, input$expr_groupby] %>% unique %>% as.character,
+    multiple = TRUE, search = TRUE, width = "100%"
+  )
+  # 
+  # selectInput(inputId = "expr_group", label = "Select group to plot:", 
+  #             choices = dds()@colData[, input$expr_groupby] %>% unique %>% as.character,
+  #             selected = dds()@colData[, input$expr_groupby] %>% unique %>% as.character, multiple = T, width = "100%")
 })
 
 output$expr_de_group <- renderUI({
-  selectInput(
-    inputId = "expr_de_group", label = "Groups Of Differential Expressed Genes:",
+  virtualSelectInput(
+    inputId = "expr_de_group",  label = "Groups Of Differential Expressed Genes::",
     choices = dir("DEGs") %>% stringr::str_remove_all(".csv"),
     selected = dir("DEGs") %>% stringr::str_remove_all(".csv"),
-    width = "100%", multiple = T
+    multiple = TRUE, search = TRUE, width = "100%"
   )
+  # 
+  # selectInput(
+  #   inputId = "expr_de_group", label = "Groups Of Differential Expressed Genes:",
+  #   choices = dir("DEGs") %>% stringr::str_remove_all(".csv"),
+  #   selected = dir("DEGs") %>% stringr::str_remove_all(".csv"),
+  #   width = "100%", multiple = T
+  # )
 })
 
 observeEvent(input$get_DEGs,{

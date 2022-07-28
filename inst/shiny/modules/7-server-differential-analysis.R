@@ -81,7 +81,7 @@ observeEvent(input$get_DEGs,{
 })
 
 observe({
-  if (length(input$dea_genes) == 0 & input$showDEVis) {
+  if (length(dir("DEGs") %>% stringr::str_remove_all(".csv")) == 0 & input$showDEVis) {
     sendSweetAlert(session = session, title = "No DEGs was calculated!", type = "warning")
   }
 })

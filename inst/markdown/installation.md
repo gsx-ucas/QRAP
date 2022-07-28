@@ -33,7 +33,7 @@ devtools::install_github("gsx-ucas/QRAP")
 
 <h2 id="getting-start" style="width:100%; text-align:left;font-family:&#39;Times New Roman&#39;, Times, serif;">Getting Start</h2>
 
-<h3 style="width:100%; text-align:left;font-family:&#39;Times New Roman&#39;, Times, serif;"> Launching QRseq </h3>
+<h3 style="width:100%; text-align:left;font-family:&#39;Times New Roman&#39;, Times, serif;"> Launch the QRAP </h3>
 
 ```
 library(QRAP)
@@ -50,7 +50,7 @@ The documentation is available at <a href="https://github.com/gsx-ucas/QRAP" tar
 
 <h2 id="development" style="width:100%; text-align:left;font-family:&#39;Times New Roman&#39;, Times, serif;"> Development </h2>
 
-QRseq development takes place on Github: <a href="https://github.com/gsx-ucas/QRseq" target="_blank">https://github.com/gsx-ucas/QRAP</a>
+QRAP development takes place on Github: <a href="https://github.com/gsx-ucas/QRAP" target="_blank">https://github.com/gsx-ucas/QRAP</a>
 
 Please submit any reproducible bugs you encounter to the <a href="https://github.com/gsx-ucas/QRAP/issues" target="_blank">issue tracker</a>
 
