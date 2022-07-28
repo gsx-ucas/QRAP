@@ -2,18 +2,20 @@
 % Please edit documentation in R/utilities.R
 \name{subset_Tab}
 \alias{subset_Tab}
-\title{Subset The Experiment design Table while keep the order}
+\title{Subset The Experiment design Table and keep the order}
 \usage{
-subset_Tab(dds, condition)
+subset_Tab(dds, vars, selected)
 }
 \arguments{
 \item{dds}{object of produced by DESeq}
 
-\item{condition}{conditions to keep}
+\item{vars}{columns names}
+
+\item{selected}{variable to keep}
 }
 \value{
 Data.Frame
 }
 \description{
-Subset The Experiment design Table while keep the order
+Subset The Experiment design Table and keep the order
 }

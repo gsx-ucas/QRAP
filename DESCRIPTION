@@ -64,6 +64,7 @@ Imports:
     STRINGdb (>= 2.3.0),
     enrichplot (>= 1.10.0),
     clusterProfiler (>= 3.18.0),
-    ggvenn
+    ggvenn,
+    BiocManager
 Remotes:
 biocViews:
