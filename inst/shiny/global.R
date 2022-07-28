@@ -67,58 +67,58 @@ library(visNetwork)
 library(edgebundleR)
 
 # options(url.method='libcurl')
-
-get.DEGs <- function(dds, ctrl, treat, p.adjust = 0.05, abs.lfc = 1, save = FALSE) {
-  if (length(treat) == 0) {
-    stop("Treatment groups can not be null ...", call. = FALSE)
-  }
-  DEGs.List <- lapply(treat, function(x){
-    Res <- as.data.frame(results(dds, contrast = c("condition", x, ctrl)))
-    Des <- subset(Res, padj < p.adjust & abs(log2FoldChange) > abs.lfc)
-    if (save == TRUE) {
-      if (!dir.exists("REGs")) {
-        dir.create("REGs")
-      }
-      write.csv(Res, paste0("REGs/", x, "_vs_", ctrl, ".csv"))
-
-      if (!dir.exists("DEGs")) {
-        dir.create("DEGs")
-      }
-      write.csv(Des, paste0("DEGs/", x, "_vs_", ctrl, ".csv"))
-    }
-    return(Res)
-  })
-  names(DEGs.List) <- paste(treat, ctrl, sep = "_vs_")
-  return(DEGs.List)
-}
-
-load.DEGs <- function(filesName) {
-  DEGs.files <- paste0("DEGs/", filesName, ".csv")
-  DEGs.List <- lapply(DEGs.files, function(x){
-    read.csv(x, row.names = 1, header = T)
-  })
-  names(DEGs.List) <- filesName
-  return(DEGs.List)
-}
-
-load.REGs <- function(filesName) {
-  REGs.files <- paste0("REGs/", filesName, ".csv")
-  REGs.List <- lapply(REGs.files, function(x){
-    read.csv(x, row.names = 1, header = T)
-  })
-  names(REGs.List) <- filesName
-  return(REGs.List)
-}
-
-subset.Tab <- function(dds, condition) {
-  sampleTable <- as.data.frame(colData(dds))
-  rownames(sampleTable) <- sampleTable$samples
-  idx <- lapply(condition, function(x){
-    sampleTable[sampleTable$condition == x, "samples"]
-  }) %>% unlist
-  idx <- idx[idx %in% rownames(sampleTable)]
-  sampleTable <- sampleTable[idx, ]
-  return(sampleTable)
-}
-
-
+# 
+# get.DEGs <- function(dds, ctrl, treat, p.adjust = 0.05, abs.lfc = 1, save = FALSE) {
+#   if (length(treat) == 0) {
+#     stop("Treatment groups can not be null ...", call. = FALSE)
+#   }
+#   DEGs.List <- lapply(treat, function(x){
+#     Res <- as.data.frame(results(dds, contrast = c("condition", x, ctrl)))
+#     Des <- subset(Res, padj < p.adjust & abs(log2FoldChange) > abs.lfc)
+#     if (save == TRUE) {
+#       if (!dir.exists("REGs")) {
+#         dir.create("REGs")
+#       }
+#       write.csv(Res, paste0("REGs/", x, "_vs_", ctrl, ".csv"))
+# 
+#       if (!dir.exists("DEGs")) {
+#         dir.create("DEGs")
+#       }
+#       write.csv(Des, paste0("DEGs/", x, "_vs_", ctrl, ".csv"))
+#     }
+#     return(Res)
+#   })
+#   names(DEGs.List) <- paste(treat, ctrl, sep = "_vs_")
+#   return(DEGs.List)
+# }
+# 
+# load.DEGs <- function(filesName) {
+#   DEGs.files <- paste0("DEGs/", filesName, ".csv")
+#   DEGs.List <- lapply(DEGs.files, function(x){
+#     read.csv(x, row.names = 1, header = T)
+#   })
+#   names(DEGs.List) <- filesName
+#   return(DEGs.List)
+# }
+# 
+# load.REGs <- function(filesName) {
+#   REGs.files <- paste0("REGs/", filesName, ".csv")
+#   REGs.List <- lapply(REGs.files, function(x){
+#     read.csv(x, row.names = 1, header = T)
+#   })
+#   names(REGs.List) <- filesName
+#   return(REGs.List)
+# }
+# 
+# subset.Tab <- function(dds, condition) {
+#   sampleTable <- as.data.frame(colData(dds))
+#   rownames(sampleTable) <- sampleTable$samples
+#   idx <- lapply(condition, function(x){
+#     sampleTable[sampleTable$condition == x, "samples"]
+#   }) %>% unlist
+#   idx <- idx[idx %in% rownames(sampleTable)]
+#   sampleTable <- sampleTable[idx, ]
+#   return(sampleTable)
+# }
+# 
+# 
