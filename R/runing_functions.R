@@ -91,10 +91,10 @@ transform_value <- function(object, blind, fitType, nsub, trans.method, batch.me
   }
 
   if (batch.method != 'NULL') {
-    cor.expr <- remove.Batch(expr.data = assay(trans_data), designTable = subset(trans_data@colData, select = -sizeFactor),
+    cor.expr <- remove.Batch(expr.data = SummarizedExperiment::assay(trans_data), designTable = subset(trans_data@colData, select = -sizeFactor),
                                  batch = batch, batch2 = batch2, design = "condition", method = batch.method)
 
-    assay(trans_data) <- cor.expr
+    SummarizedExperiment::assay(trans_data) <- cor.expr
   }
 
   if (!dir.exists('./Cache')) {

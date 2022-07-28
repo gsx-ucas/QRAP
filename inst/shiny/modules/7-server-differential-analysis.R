@@ -38,8 +38,7 @@ observeEvent(input$get_DEGs,{
   if ('try-error' %in% class(DesList())) {
     shinyalert(title = "error", text = DesList()[1], type = "error", confirmButtonText = "Close")
   }else {
-    shinyalert(title = "success", text = "Differentially expressed genes which you have selected
-               have been generated and saved to 'DEGs' directory !", type = "success")
+    shinyalert(title = "success", text = "DEGs have been generated and saved to the 'DEGs' directory !", type = "success")
   }
 })
 
@@ -78,6 +77,13 @@ observeEvent(input$get_DEGs,{
     choices = dir("DEGs") %>% stringr::str_remove_all(".csv"),
     selected = stringr::str_remove_all(dir("DEGs"), ".csv")[1]
   )
+  
+})
+
+observe({
+  if (length(input$dea_genes) == 0 & input$showDEVis) {
+    sendSweetAlert(session = session, title = "No DEGs was calculated!", type = "warning")
+  }
 })
 
 # # Volcano Plot

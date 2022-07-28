@@ -4,9 +4,6 @@
 
 <h2 id="features" style="width:100%; text-align:left;font-family:&#39;Times New Roman&#39;, Times, serif;">Workflow</h2>
 
-<p style="text-align:center;">
-  <strong>The main Features was showed below:</strong>
-</p>
 <img src="../shiny/www/images/workflow.jpg" width="100%" style="clear: both;display: block;margin: auto;"/>
 
 <h2 id="features" style="width:100%; text-align:left;font-family:&#39;Times New Roman&#39;, Times, serif;">Features</h2>

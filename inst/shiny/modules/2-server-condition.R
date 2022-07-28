@@ -29,7 +29,12 @@ sampleTable <- reactive({
 output$conditionTab <- renderDataTable({
   sampleTable()
 },rownames = T, editable = TRUE,
-options = list(pageLength = 10, autoWidth = F, scrollX=TRUE, scrollY="228px")
+options = list(pageLength = 10, autoWidth = F, scrollX=TRUE, 
+               scrollY= if (input$reset_condition == 'Auto produce') {
+                 "228px"
+               }else {
+                 "308px"
+               })
 )
 
 output$ConditionTab <- downloadHandler(
@@ -57,6 +62,7 @@ output$batch_col2 <- renderUI({
 })
 
 output$formula <- renderUI({
+  req(input$batch_methods, input$batch_methods)
   if (input$batch_methods == 'NULL') {
     textInput("formula", "Design formula:", value = "~ condition", width = "100%")
   }else if (input$batch_methods == "removeBatchEffect") {

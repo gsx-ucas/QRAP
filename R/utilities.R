@@ -164,20 +164,21 @@ load.REGs <- function(filesName) {
 #' @param dds object of produced by DESeq
 #' @param vars columns names
 #' @param selected variable to keep
-#' @importFrom SummarizedExperiment colData
 #'
 #' @return Data.Frame
 #' @export
 #'
 
-subset_Tab <- function(dds, vars, selected) {
-  sampleTable <- as.data.frame(colData(dds))
+subset_Tab <- function(dds, vars, selected = NULL) {
+  sampleTable <- as.data.frame(SummarizedExperiment::colData(dds))
   rownames(sampleTable) <- sampleTable$samples
-  idx <- lapply(selected, function(x){
-    sampleTable[sampleTable[, vars] == x, "samples"]
-  }) %>% unlist
-  idx <- idx[idx %in% rownames(sampleTable)]
-  sampleTable <- sampleTable[idx, ]
+  if (!is.null(selected)) {
+    idx <- lapply(selected, function(x){
+      sampleTable[sampleTable[, vars] == x, "samples"]
+    }) %>% unlist
+    idx <- idx[idx %in% rownames(sampleTable)]
+    sampleTable <- sampleTable[idx, ]
+  }
   return(sampleTable)
 }
 

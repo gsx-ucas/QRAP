@@ -2,12 +2,12 @@ fluidPage(
   style = "margin-left:10px;margin-right:10px;",
   box(
     title = "Experiment Design Table", width = 7, status = NULL, solidHeader = TRUE,
-    conditionalPanel(
-      "input.reset_condition == 'Re-upload'",
-      fileInput("ds_file", "Upload group info tab:",
-                accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv"),
-                placeholder = "upload your design tab ...", width = "100%")
-    ),
+    # conditionalPanel(
+    #   "input.reset_condition == 'Re-upload'",
+    #   fileInput("ds_file", "Upload group info tab:",
+    #             accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv"),
+    #             placeholder = "upload your design tab ...", width = "100%")
+    # ),
     withSpinner(dataTableOutput("conditionTab")),
     conditionalPanel(
       "input.reset_condition != 'Re-upload'",
@@ -16,12 +16,38 @@ fluidPage(
   ),
   box(
     title = "DESeq2 Running Table", width = 5, status = NULL, solidHeader = TRUE, collapsible = TRUE,
-    switchInput("run_cache", "Use Cache", value = F,
-                onStatus = "success", offStatus = "danger", inline = T,labelWidth = "100px"),
-    prettyRadioButtons(
-      inputId = "reset_condition", label = "How to generate design table:",
-      choices = c("Auto produce", "Re-upload"), icon = icon("check"),
-      status = "info", animation = "jelly", inline = TRUE),
+    # switchInput("run_cache", "Use Cache", value = F,
+    #             onStatus = "success", offStatus = "danger", inline = T,labelWidth = "100px"),
+    tags$table(
+      style = "width: 100%",
+      tags$td(
+        # style = "width: 100%",
+        prettyRadioButtons(
+          inputId = "reset_condition", label = "How to generate design table:",
+          choices = c("Auto produce", "Re-upload"), icon = icon("check"),
+          status = "info", animation = "jelly", inline = TRUE)
+      ),
+      tags$td(
+        style = "text-align: right",
+        switchInput("run_cache", "Use Cache", value = F,
+                    onStatus = "success", offStatus = "danger", inline = T,labelWidth = "100px")
+      )
+    ),
+    conditionalPanel(
+      "input.reset_condition == 'Auto produce'",
+      style = "color: rgb(255, 135, 0); border: 1px dashed grey; padding: 10px; margin-bottom: 10px; border-radius: 10px;",
+      strong("Note. Do not change the column name 'condition'")
+    ),
+    conditionalPanel(
+      "input.reset_condition == 'Re-upload'",
+      fileInput("ds_file", "Upload group info tab:",
+                accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv"),
+                placeholder = "upload your design tab ...", width = "100%")
+    ),
+    # prettyRadioButtons(
+    #   inputId = "reset_condition", label = "How to generate design table:",
+    #   choices = c("Auto produce", "Re-upload"), icon = icon("check"),
+    #   status = "info", animation = "jelly", inline = TRUE),
     uiOutput("formula"),
     selectInput(inputId = "trans_method", label = "Transformation functions:", width = "100%",
                 choices = c("Regularized log transformation (rlog)" = "rlog", "Variance stabilizing transformation (vst)" = "vst")),
