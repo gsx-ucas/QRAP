@@ -1,8 +1,12 @@
 ## QRseq
-Here we developed QRseq, an R shiny application that can be launched easily from a local web browser for analyzing sequenced or published RNA-seq data. QRseq allows users to upload RNA-seq data from local or to input some keywords or an accession number of GEO DataSets within the app to start their analysis. This application is started from data input, followed by preprocessing data by filtering low expressed genes and poorly reproducible samples, correcting batch effects, normalizing and transforming data, identifying differential expressed genes and other biological patterns, exploring the enrichment of functions, analyzing and visualizing the protein to protein networks or gene regulation networks. QRseq provides a clear analysis flow and a user-friendly GUI interface but keeps the most important parameters of involved functions, which suit both non-programming experience researchers and expert bioinformatics researchers. User can accomplish a standard RNA-seq analysis in hours depending on the size of their dataset and requires using QRseq.
+RNA-Sequencing (RNA-seq) has become the most commonly used tool in life science researches for exploring whole transcript profiles. The advance of second-generation sequencing (NGS) has promoted a large number of RNA-seq data. However, the popularity of bioinformatics lags far behind the generation of sequencing data, resulting in the inability of most researchers to analyze RNA-seq data. Although a large number of tools are currently available for RNA-seq analysis, data uploading, analysis, and visualization through an interactive interface are more acceptable to researchers than command-line code. Therefore, we have designed an interactive analysis platform based on Shiny, named QRAP, which can easily accomplish RNA-seq data analysis through an intuitive graphical interface on the web page. QRAP support to analysis publicly available and user generated data, including multiple RNA-seq analysis modules, and provide more than 500 species’s function annotation.
+
+## Workflow
+![The main Features](https://github.com/gsx-ucas/QRAP/blob/main/inst/shiny/myApp/www/images/workflow.jpg)
 
 ## Features
-![The main Features](https://github.com/goushixue/QRseq/blob/main/inst/shiny/myApp/www/images/workflow.jpg)
+
+![The main Features](https://github.com/gsx-ucas/QRAP/blob/main/inst/shiny/myApp/www/images/features.jpg)
 
 ## Installing
 
@@ -68,26 +72,26 @@ file.remove(c("DOSE_3.16.0.tar.gz", "enrichplot_1.10.0.tar.gz", "fgsea_1.16.0.ta
 >4. Install the QRseq package from github:
 ```
 ## install.packages("devtools") ## you may need install devtools first
-devtools::install_github("goushixue/QRseq")
+devtools::install_github("gsx-ucas/QRAP")
 ```
 ## Getting Start
 
 ### Launching QRseq
 ```
-library(QRseq)
-startQRseq()
+library(QRAP)
+startQRAP()
 ```
 ### Start your anlysis
-There are two action buttons in the home page above, click `Get Started Local` if you want upload your own data, or click `Get started GEO` to explore the published data sets.
-![Screenshot of home page](https://github.com/goushixue/QRseq/blob/main/inst/shiny/myApp/www/images/get-start-button.jpeg)
+
+![Screenshot of home page](https://github.com/gsx-ucas/QRAP/blob/main/inst/shiny/www/images/page_demo.jpg)
 
 ## Documentation
 The documentation is available at <a href="https://gsx-ucas.github.io/QRAP" target="_blank"> here </a>, the doc include a tutorial and example gallery.
 
 ## Development
 
-QRseq development takes place on Github: <a href="https://github.com/goushixue/QRseq" target="_blank">https://github.com/goushixue/QRseq</a>
+QRAP development takes place on Github: <a href="https://github.com/gsx-ucas/QRAP" target="_blank">https://github.com/gsx-ucas/QRAP</a>
 
-Please submit any reproducible bugs you encounter to the <a href="https://github.com/goushixue/QRseq/issues" target="_blank">issue tracker</a>
+Please submit any reproducible bugs you encounter to the <a href="https://github.com/gsx-ucas/QRAP/issues" target="_blank">issue tracker</a>
 
 We will also put most commonly encountered issues in the ***FAQ*** page.

@@ -3,7 +3,7 @@
 #' @export
 #'
 get_supported_species <- function(datasets = "gprofiler") {
-  ids <- readRDS(system.file("extdata", "species.rds", package = "QRseq"))
+  ids <- readRDS(system.file("extdata", "species.rds", package = "QRAP"))
   ids$display_name <- paste0(ids$scientific_name, " (", ids$display_name, ")")
   ids <- ids[, -2]
   return(ids)
