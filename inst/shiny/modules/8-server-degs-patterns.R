@@ -42,11 +42,11 @@ output$degp_col <- renderUI({
 degsp_object <- eventReactive(input$run_degsp, {
   withProgress(message = "", min = 0, max = 1, value = 0, {
     if (!isTRUE(input$degsp_switch) | !file.exists("Cache/des_patterns.rds")) {
-      conditions <- strsplit(input$degsp_group, "_vs_") %>% unlist %>% unique
-      sampleTable <- subset_Tab(dds(), conditions)
 
-      # sampleTable <- as.data.frame(colData(dds()))[dds()$condition %in% conditions, ]
-      # rownames(sampleTable) <- sampleTable$samples
+      sampleTable <- subset_Tab(dds(), input$degp_time)
+
+      print(sampleTable)
+
       incProgress(0.2, detail = "Extract differential genes ...")
       GeneList <- load.DEGs(input$degsp_group)
       DeGenes <- lapply(GeneList, function(x){
@@ -61,6 +61,8 @@ degsp_object <- eventReactive(input$run_degsp, {
 
       incProgress(0.2, detail = "Subset transformed exprs table ...")
       DeAssay <- SummarizedExperiment::assay(trans_value())[DeGenes, sampleTable$samples %>% as.character]
+      
+      print(head(DeAssay))
       incProgress(0.4, detail = "Calculating co-expression genes, this will take a while ...")
       if (dim(DeAssay)[1] < input$degsp_minc) {
         des_patterns <- DEGreport::degPatterns(ma = DeAssay, metadata = sampleTable,reduce = input$degsp_reduce, col = input_degp_col,
