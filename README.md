@@ -1,4 +1,4 @@
-## QRseq
+## QRAP
 RNA-Sequencing (RNA-seq) has become the most commonly used tool in life science researches for exploring whole transcript profiles. The advance of second-generation sequencing (NGS) has promoted a large number of RNA-seq data. However, the popularity of bioinformatics lags far behind the generation of sequencing data, resulting in the inability of most researchers to analyze RNA-seq data. Although a large number of tools are currently available for RNA-seq analysis, data uploading, analysis, and visualization through an interactive interface are more acceptable to researchers than command-line code. Therefore, we have designed an interactive analysis platform based on Shiny, named QRAP, which can easily accomplish RNA-seq data analysis through an intuitive graphical interface on the web page. QRAP support to analysis publicly available and user generated data, including multiple RNA-seq analysis modules, and provide more than 500 species’s function annotation.
 
 ## Workflow
