@@ -19,13 +19,7 @@ RNA-Sequencing (RNA-seq) has become the most commonly used tool in life science 
 - clusterProfiler (>= 3.18.0)
 
 ### Installation
->1. Install BiocManager from Bioconductor:
-```
-## try http:// if https:// URLs are not supported
-if (!requireNamespace("BiocManager", quietly=TRUE))
-    install.packages("BiocManager")
-```
->2. Install the QRAP from github:
+Install the QRAP from github:
 ```
 ## install.packages("devtools") ## you may need install devtools first
 devtools::install_github("gsx-ucas/QRAP")
