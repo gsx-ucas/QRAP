@@ -37,7 +37,7 @@ startQRAP()
 ![Screenshot of home page](/inst/shiny/www/images/page_demo.jpg)
 
 ## Documentation
-The documentation is available at <a href="https://gsx-ucas.github.io/QRAP" target="_blank"> here </a>, the doc include a tutorial and example gallery.
+The documentation is available at <a href="https://gsx-ucas.github.io/QRAP/" target="_blank"> here </a>, the doc include a tutorial and example gallery.
 
 ## Development
 
