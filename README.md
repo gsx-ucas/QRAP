@@ -17,6 +17,7 @@ RNA-Sequencing (RNA-seq) has become the most commonly used tool in life science 
 - enrichplot (>= 1.10.0)
 - fgsea (>= 1.16.0)
 - clusterProfiler (>= 3.18.0)
+> Unpredictable errors may occur if these packages are lower than the specified version
 
 ### Installation
 Install the QRAP from github:
@@ -26,7 +27,7 @@ devtools::install_github("gsx-ucas/QRAP")
 ```
 ## Getting Start
 
-### Launching QRseq
+### Launch the QRAP
 ```
 library(QRAP)
 startQRAP()
