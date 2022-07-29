@@ -9,9 +9,10 @@ observe({
 ## module detection
 SoftThreshold <- eventReactive(input$cal_power,{
   withProgress(message = "", value = 0, {
+    require(ggplot2)
     incProgress(0.2, detail = "Calculating SoftThreshold ...")
     powers = c(c(1:10), seq(from = 12, to=30, by=2))
-    sft = pickSoftThreshold(datExpr(), powerVector = powers)
+    sft = WGCNA::pickSoftThreshold(datExpr(), powerVector = powers)
     incProgress(0.6, detail = "Detecting module genes ...")
     cor <- WGCNA::cor
 

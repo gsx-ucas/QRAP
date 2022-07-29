@@ -14,9 +14,7 @@ fluidRow(
       "input.WGCNA_Heatmap_method == 'pheatmap (external function)'",
       numericInput("WGCNA_heatmap_fontsize", "Fontsize for legends:", value = 15, width = "100%"),
       numericInput("WGCNA_heatmap_fontsize_col", "Fontsize  for colnames:", value = 15, width = "100%"),
-      numericInput("WGCNA_heatmap_fontsize_num", "Fontsize  for fill text:", value = 8, width = "100%"),
-      checkboxInput("WGCNA_heatmap_cluster_cols", "Specifying if columns should be clustered.", value = TRUE, width = "100%"),
-      checkboxInput("WGCNA_heatmap_cluster_rows", "Specifying if rows should be clustered.", value = TRUE, width = "100%")
+      numericInput("WGCNA_heatmap_fontsize_num", "Fontsize  for fill text:", value = 8, width = "100%")
     ),
     textInput("module_colors", "Colors:", width = "100%", value = "blue,white,red"),
     uiOutput("module_showRows"),
@@ -54,6 +52,13 @@ fluidRow(
     wellPanel(
       sliderInput("wgcna_heatmap_width", "Figure Width (%):", min = 50, max = 100, value = 100, step = 2, width = "100%"),
       sliderInput("wgcna_heatmap_height", "Figure Height (px):", min = 200, max = 1000, value = 550, step = 20, width = "100%")
+    ),
+    conditionalPanel(
+      "input.WGCNA_Heatmap_method == 'pheatmap (external function)'",
+      wellPanel(
+        checkboxInput("WGCNA_heatmap_cluster_cols", "clustering columns ?", value = TRUE, width = "100%"),
+        checkboxInput("WGCNA_heatmap_cluster_rows", "clustering rows ?", value = TRUE, width = "100%")
+      )
     )
   ),
   column(

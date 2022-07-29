@@ -5,24 +5,24 @@ observe({
 })
 
 ## -------------------------------- Module-Traits Relationship ---------------------------------------##
-moduleColors <- reactive({
-  moduleColors = labels2colors(net()$colors)
-  names(moduleColors) <- names(net()$colors)
-  return(moduleColors)
-})
+# moduleColors <- reactive({
+#   moduleColors = WGCNA::labels2colors(net()$colors)
+#   names(moduleColors) <- names(net()$colors)
+#   return(moduleColors)
+# })
 
 
 moduleTraitCor <- eventReactive(input$plot_mtrs, {
   traitDataTab <- traitDataTab()
-  MEs0 = moduleEigengenes(datExpr(), moduleColors())$eigengenes
-  MEs = orderMEs(MEs0)
-  moduleTraitCor = cor(MEs, traitDataTab, use = "p");
+  MEs0 = WGCNA::moduleEigengenes(datExpr(), moduleColors())$eigengenes
+  MEs = WGCNA::orderMEs(MEs0)
+  moduleTraitCor = WGCNA::cor(MEs, traitDataTab, use = "p");
   return(moduleTraitCor)
 })
 
 moduleTraitPvalue <- eventReactive(input$plot_mtrs, {
   nSamples = nrow(datExpr());
-  moduleTraitPvalue = corPvalueStudent(moduleTraitCor(), nSamples);
+  moduleTraitPvalue = WGCNA::corPvalueStudent(moduleTraitCor(), nSamples);
   return(moduleTraitPvalue)
 })
 
@@ -52,8 +52,8 @@ output$module_showCols <- renderUI({
 
 LabeledHeatmap <- eventReactive(input$plot_mtrs, {
   traitDataTab <- traitDataTab()
-  MEs0 = moduleEigengenes(datExpr(), moduleColors())$eigengenes
-  MEs = orderMEs(MEs0)
+  MEs0 = WGCNA::moduleEigengenes(datExpr(), moduleColors())$eigengenes
+  MEs = WGCNA::orderMEs(MEs0)
 
   color = colorRampPalette(strsplit(input$module_colors, ",")[[1]])(100)
 
@@ -67,7 +67,7 @@ LabeledHeatmap <- eventReactive(input$plot_mtrs, {
     par(mar=c(10,10,1,1))
 
     # Display the correlation values within a heatmap plot
-    labeledHeatmap(Matrix = moduleTraitCor(), xLabels = names(traitDataTab), yLabels = names(MEs),
+    WGCNA::labeledHeatmap(Matrix = moduleTraitCor(), xLabels = names(traitDataTab), yLabels = names(MEs),
                    ySymbols = names(MEs), textMatrix = textMatrix(), colorLabels = FALSE, colors = color,
                    setStdMargins = F, cex.text = input$cex_text, xLabelsAngle = 45, yColorWidth = input$yColorWidth,
                    yColorOffset = 0.005, font.lab.x = input$font_lab %>% as.integer, font.lab.y = input$font_lab  %>% as.integer,
@@ -114,8 +114,8 @@ output$mtrs_heatmap_Pdf <- downloadHandler(
   content = function(file) {
     pdf(file, width = input$mtrs_heatmap_width, height = input$mtrs_heatmap_height)
     traitDataTab <- traitDataTab()
-    MEs0 = moduleEigengenes(datExpr(), moduleColors())$eigengenes
-    MEs = orderMEs(MEs0)
+    MEs0 = WGCNA::moduleEigengenes(datExpr(), moduleColors())$eigengenes
+    MEs = WGCNA::orderMEs(MEs0)
 
     color = colorRampPalette(strsplit(input$module_colors, ",")[[1]])(100)
 
@@ -129,7 +129,7 @@ output$mtrs_heatmap_Pdf <- downloadHandler(
       par(mar=c(10,10,1,1))
 
       # Display the correlation values within a heatmap plot
-      labeledHeatmap(Matrix = moduleTraitCor(), xLabels = names(traitDataTab), yLabels = names(MEs),
+      WGCNA::labeledHeatmap(Matrix = moduleTraitCor(), xLabels = names(traitDataTab), yLabels = names(MEs),
                      ySymbols = names(MEs), textMatrix = textMatrix(), colorLabels = FALSE, colors = color,
                      setStdMargins = F, cex.text = input$cex_text, xLabelsAngle = 45, yColorWidth = input$yColorWidth,
                      yColorOffset = 0.005, font.lab.x = input$font_lab %>% as.integer, font.lab.y = input$font_lab  %>% as.integer,

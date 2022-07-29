@@ -3,8 +3,8 @@
 output$wgcna_exp_trait <- renderUI({
   pickerInput(
     inputId = "wgcna_exp_trait", label = "Select trait to order samples:",
-    choices = colnames(colData(dds()))[!colnames(colData(dds())) %in% c("sizeFactor", "replaceable", "samples")],
-    selected = colnames(colData(dds()))[!colnames(colData(dds())) %in% c("sizeFactor", "replaceable", "samples")][1],
+    choices = colnames(dds()@colData)[!colnames(dds()@colData) %in% c("sizeFactor", "replaceable", "samples")],
+    selected = colnames(dds()@colData)[!colnames(dds()@colData) %in% c("sizeFactor", "replaceable", "samples")][1],
     multiple = F, width = "100%", options = list(`live-search` = TRUE, size = 5)
   )
 })
@@ -12,8 +12,8 @@ output$wgcna_exp_trait <- renderUI({
 output$wgcna_exp_anno <- renderUI({
   pickerInput(
     inputId = "wgcna_exp_anno", label = "Select more info for column annotation:",
-    choices = colnames(colData(dds()))[!colnames(colData(dds())) %in% c("sizeFactor", "replaceable", "samples", input$wgcna_exp_trait)],
-    selected = colnames(colData(dds()))[!colnames(colData(dds())) %in% c("sizeFactor", "replaceable", "samples", input$wgcna_exp_trait)][1],
+    choices = colnames(dds()@colData)[!colnames(dds()@colData) %in% c("sizeFactor", "replaceable", "samples", input$wgcna_exp_trait)],
+    selected = colnames(dds()@colData)[!colnames(dds()@colData) %in% c("sizeFactor", "replaceable", "samples", input$wgcna_exp_trait)][1],
     multiple = T, width = "100%", options = list(`live-search` = TRUE, size = 5)
   )
 })
@@ -27,7 +27,7 @@ output$wgcna_exp_module <- renderUI({
 })
 
 wgcna_expression <- eventReactive(input$wgcna_plot_exp, {
-  sampleTable <- as.data.frame(colData(dds()))[rownames(datExpr()), ]
+  sampleTable <- as.data.frame(dds()@colData)[rownames(datExpr()), ]
 
   sampleTable <- sampleTable[order(sampleTable[, input$wgcna_exp_trait], na.last = FALSE), ]
 
@@ -45,7 +45,7 @@ wgcna_expression <- eventReactive(input$wgcna_plot_exp, {
   # print(head(sampleTable, 10))
 
   module_genes <- names(moduleColors())[moduleColors() == input$wgcna_exp_module]
-  expression_df <- as.data.frame(assay(trans_value()))[module_genes, rownames(sampleTable)]
+  expression_df <- as.data.frame(SummarizedExperiment::assay(trans_value()))[module_genes, rownames(sampleTable)]
 
   # print(head(expression_df, 10))
 
@@ -61,14 +61,14 @@ wgcna_expression <- eventReactive(input$wgcna_plot_exp, {
     annotation_colors <- set_anno_color(anno_row = NULL, anno_col = annotation_col)
 
     color = colorRampPalette(strsplit(input$wgcna_hiera_color, ",")[[1]])(100)
-    pheatmap(expression_df, border_color = NA, scale = "row", show_rownames = F,
+    pheatmap::pheatmap(expression_df, border_color = NA, scale = "row", show_rownames = F,
              show_colnames = input$wgcna_hiera_colname, treeheight_row = 20,
              annotation_col = annotation_col, annotation_colors = annotation_colors,
              cluster_cols = F, col = color, fontsize_col = input$wgcna_hiera_fontsize_col,
              fontsize = input$wgcna_hiera_fontsize, angle_col = input$wgcna_hiera_angle)
   }else {
-    MEs0 = moduleEigengenes(datExpr(), moduleColors())$eigengenes
-    MEs = orderMEs(MEs0)[rownames(sampleTable), ]
+    MEs0 = WGCNA::moduleEigengenes(datExpr(), moduleColors())$eigengenes
+    MEs = WGCNA::orderMEs(MEs0)[rownames(sampleTable), ]
 
     ggplot(data = NULL)+
       geom_bar(aes(x = factor(rownames(MEs), levels = rownames(MEs)), y = MEs[, paste0("ME", input$wgcna_exp_module)]), stat = "identity", fill = input$wgcna_exp_module)+

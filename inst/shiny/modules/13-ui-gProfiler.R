@@ -3,17 +3,22 @@ fluidPage(
   box(
     title = "Runing gProfiler:", id = "gprofiler_tab", width = 12, collapsible = TRUE, solidHeader = TRUE,
     fluidRow(
-      column(3, selectInput("gprofiler_genes", "What genes to used:",  c("DEGs", "DEG Patterns", "WGCNA Modules"),width = "100%")),
-      column(3, uiOutput('gprofiler_gsets')),
-      column(3, numericInput("gprofiler_pval", "Pvalue threshold:", value = 0.05,  min = 0, max = 1, width = "100%")),
-      column(3, selectInput("gprofiler_cor_method", "Correction method:",
+      column(3, style = "height:74px", selectInput("gprofiler_genes", "What genes to used:",  c("DEGs", "DEG Patterns", "WGCNA Modules"),width = "100%")),
+      column(3, style = "height:74px", uiOutput('gprofiler_gsets')),
+      column(3, style = "height:74px", numericInput("gprofiler_pval", "Pvalue threshold:", value = 0.05,  min = 0, max = 1, width = "100%")),
+      column(3, style = "height:74px", selectInput("gprofiler_cor_method", "Correction method:",
                             c("g_SCS", "bonferroni", "fdr", "false_discovery_rate", "gSCS","analytical"), width = "100%")),
-      column(3, selectInput("gprofiler_evcodes", "Show evidence:", c("TRUE", "FALSE"), width = "100%")),
-      column(3, selectInput("gprofiler_sources", "Data sources to use:",
-                            choices = c("GO:BP", "GO:MF", "GO:CC", "KEGG", "REAC", "TF", "MIRNA", "CORUM", "HP", "HPA", "WP"),
-                            selected = c("GO:BP", "GO:MF", "GO:CC", "KEGG", "REAC"), multiple = T, width = "100%")),
-      column(3, selectInput("gprofiler_significant", "Only return significant results:", choices = c("TRUE", "FALSE"), width = "100%")),
-      column(3, selectInput("gprofiler_excludeIEA", "Exclude GO electronic annotations:", choices = c("FALSE","TRUE"), width = "100%")),
+      column(3, style = "height:74px", selectInput("gprofiler_evcodes", "Show evidence:", c("TRUE", "FALSE"), width = "100%")),
+      column(
+        3, style = "height:74px",
+        virtualSelectInput(
+          inputId = "gprofiler_sources",  label = "Data sources to use::", 
+          choices = c("GO:BP", "GO:MF", "GO:CC", "KEGG", "REAC", "TF", "MIRNA", "CORUM", "HP", "HPA", "WP"),
+          selected = c("GO:BP", "GO:MF", "GO:CC", "KEGG", "REAC"),  multiple = T, search = F, width = "100%"
+        )
+      ),
+      column(3, style = "height:74px", selectInput("gprofiler_significant", "Only return significant results:", choices = c("TRUE", "FALSE"), width = "100%")),
+      column(3, style = "height:74px", selectInput("gprofiler_excludeIEA", "Exclude GO electronic annotations:", choices = c("FALSE","TRUE"), width = "100%")),
       column( 12, align = "center", actionButton("runGprofiler", "Run gProfiler", class = "run-button", width = "30%") )
     )
   ),
@@ -30,10 +35,10 @@ fluidPage(
             prettyRadioButtons(inputId = "gprofiler_type", label = "Plot types:", animation = "jelly", inline = TRUE,
                                choices = c("dotplot", "gostplot", "gosttable", "exprs_heatmap"), icon = icon("check"), status = "info"),
             uiOutput("sourceTypes"),
-            conditionalPanel(
-              "input.gprofiler_type != 'exprs_heatmap'",
-              uiOutput("gprofiler_termID")
-            ),
+            # conditionalPanel(
+            #   "input.gprofiler_type != 'exprs_heatmap'",
+            #   uiOutput("gprofiler_termID")
+            # ),
             conditionalPanel(
               "input.gprofiler_type=='dotplot'",
               selectInput("gprofiler_orderBy", "Order results by:", c("precision", "recall"), width = "100%"),
@@ -41,11 +46,15 @@ fluidPage(
               conditionalPanel(
                 "input.gprofiler_Top=='use topN terms'",
                 numericInput("gprofiler_n_terms", "TopN terms:", value = 15, width = "100%")
-              ),
-              # conditionalPanel(
-              #   "input.gprofiler_Top=='custom select terms'",
-              #   uiOutput("gprofiler_termID")
-              # ),
+              )
+              # numericInput("gprofiler_fontsize", "Fontsize of Plots:", value = 15, width = "100%")
+            ),
+            conditionalPanel(
+              "input.gprofiler_type != 'exprs_heatmap'",
+              uiOutput("gprofiler_termID")
+            ),
+            conditionalPanel(
+              "input.gprofiler_type=='dotplot'",
               numericInput("gprofiler_fontsize", "Fontsize of Plots:", value = 15, width = "100%")
             ),
             conditionalPanel(

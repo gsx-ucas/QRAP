@@ -44,9 +44,9 @@ fluidRow(
     conditionalPanel(
       "input.wgcna_meta_source == 'generate from designTab'",
       uiOutput("wgcna_chcol"),
-      uiOutput("wgcna_nucol"),
-      p("*Conditions will be used to generate a trait data table, which value 1 means sample belongs to this condition and 0 means not!",
-        style = "font-weight: 800; padding-top: 3px; color: orange;")
+      uiOutput("wgcna_nucol")
+      # p("*Conditions will be used to generate a trait data table, which value 1 means sample belongs to this condition and 0 means not!",
+      #   style = "font-weight: 800; padding-top: 3px; color: orange;")
     ),
     actionButton("get_wgcna_exprs", "Get Expression Data >>", class = "run-button", width = "100%")
   ),

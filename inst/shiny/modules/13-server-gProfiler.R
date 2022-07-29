@@ -7,35 +7,53 @@ observe({
 output$gprofiler_gsets <- renderUI({
   if (input$gprofiler_genes=="DEGs") {
     shinyjs::enable("start_clpr")
-    selectInput(
-      inputId = "gprofiler_degs", label = "DEGs:",
+    # selectInput(
+    #   inputId = "gprofiler_degs", label = "DEGs:",
+    #   choices = dir("DEGs") %>% stringr::str_remove_all(".csv"),
+    #   selected = stringr::str_remove_all(dir("DEGs"), ".csv")[1],
+    #   width = "100%", multiple = T
+    # )
+    virtualSelectInput(
+      inputId = "gprofiler_degs",  label = "Select DEGs:",
       choices = dir("DEGs") %>% stringr::str_remove_all(".csv"),
-      selected = stringr::str_remove_all(dir("DEGs"), ".csv")[1],
-      width = "100%", multiple = T
+      selected = stringr::str_remove_all(dir("DEGs"), ".csv")[1], 
+      multiple = T, search = F, width = "100%"
     )
   }else if (input$gprofiler_genes=="DEG Patterns") {
     if (input$run_degsp == 0) {
       shinyjs::disable("start_clpr")
-      selectInput(inputId = "gprofiler_patterns", label = "Select Patterns ID:", width = "100%", multiple = T,
+      selectInput(inputId = "gprofiler_patterns", label = "Select Patterns ID:", width = "100%", multiple = F,
                   choices = "*Please Run DEGs Patterns First !!!", selected = "*Please Run DEGs Patterns First !!!")
       # p("*Please Run DEGs Patterns First!", style = "color: red; padding-top: 30px; padding-bttom: 30px; font-weight: 700px; width: 100%")
     }else {
       shinyjs::enable("start_clpr")
-      selectInput(inputId = "gprofiler_patterns", label = "Select Patterns ID:", width = "100%", multiple = T,
-                  choices = degsp_object()$normalized$cluster %>% unique %>% as.character)
+      # selectInput(inputId = "gprofiler_patterns", label = "Select Patterns ID:", width = "100%", multiple = T,
+      #             choices = degsp_object()$normalized$cluster %>% unique %>% as.character)
+      virtualSelectInput(
+        inputId = "gprofiler_patterns",  label = "Select Patterns ID:",
+        choices = degsp_object()$normalized$cluster %>% unique %>% as.character,
+        selected = (degsp_object()$normalized$cluster %>% unique %>% as.character)[1], 
+        multiple = T, search = F, width = "100%"
+      )
     }
   }else if (input$gprofiler_genes=="WGCNA Modules") {
     if (input$moldue_detect == 0) {
       shinyjs::disable("start_clpr")
-      selectInput(inputId = "gprofiler_modules", label = "Select WGCNA Modules ID:", width = "100%", multiple = T,
+      selectInput(inputId = "gprofiler_modules", label = "Select WGCNA Modules ID:", width = "100%", multiple = F,
                   choices = "*Please Run WGCNA First !!!", selected = "*Please Run WGCNA First !!!")
       # p("*Please Run WGCNA First!", style = "color: red; padding-top: 30px; padding-bttom: 30px; font-weight: 700px; width: 100%")
     }else {
       shinyjs::enable("start_clpr")
-      MEs0 = moduleEigengenes(datExpr(), moduleColors())$eigengenes
-      MEs = orderMEs(MEs0)
-      selectInput(inputId = "gprofiler_modules", label = "Select WGCNA Modules ID:",
-                  choices = substring(names(MEs), first = 3), width = "100%", multiple = T)
+      MEs0 = WGCNA::moduleEigengenes(datExpr(), moduleColors())$eigengenes
+      MEs = WGCNA::orderMEs(MEs0)
+      # selectInput(inputId = "gprofiler_modules", label = "Select WGCNA Modules ID:",
+      #             choices = substring(names(MEs), first = 3), width = "100%", multiple = T)
+      virtualSelectInput(
+        inputId = "gprofiler_modules",  label = "Select WGCNA Modules ID:",
+        choices = substring(names(MEs), first = 3),
+        selected = substring(names(MEs), first = 3)[1], 
+        multiple = T, search = F, width = "100%"
+      )
     }
   }
 })
@@ -60,7 +78,7 @@ gprofiler_object <- eventReactive(input$runGprofiler,{
 
     if (length(GeneList) > 1) {
       incProgress(0.6, detail = "Running gProfiler ...")
-      gostres <- try(gost(query = GeneList,
+      gostres <- try(gprofiler2::gost(query = GeneList,
                       sources = input$gprofiler_sources,
                       organism = species()$id[species()$display_name == input$gprofiler_species],
                       user_threshold = input$gprofiler_pval,
@@ -70,7 +88,7 @@ gprofiler_object <- eventReactive(input$runGprofiler,{
                       significant = as.logical(input$gprofiler_significant)), silent = TRUE)
     }else {
       incProgress(0.6, detail = "Running gProfiler ...")
-      gostres <- try(gost(query = GeneList %>% unlist,
+      gostres <- try(gprofiler2::gost(query = GeneList %>% unlist,
                       sources = input$gprofiler_sources,
                       organism = species()$id[species()$display_name == input$gprofiler_species],
                       user_threshold = input$gprofiler_pval,
@@ -111,6 +129,10 @@ output$sourceTypes <- renderUI({
     result_data <- gprofiler_object()$result
     source <- result_data$source %>% unique()
     selectInput("sourceTypes", "Source to show", choices = source, selected = source[1], multiple = F, width = "100%")
+    # virtualSelectInput(
+    #   inputId = "sourceTypes",  label = "Source to show:", choices = source,
+    #   selected = source[1],  multiple = T, search = F, width = "100%"
+    # )
   }
 })
 
@@ -172,7 +194,7 @@ gprofilerPlot <- eventReactive(input$Plot_gprofiler,{
 
   par(mar=c(2,2,2,2))
   if (input$gprofiler_type == "gostplot") {
-    p <- gostplot(gostres, capped = FALSE, interactive = FALSE)
+    p <- gprofiler2::gostplot(gostres, capped = FALSE, interactive = FALSE)
     pp <- publish_gostplot2(p, highlight_terms = input$gprofiler_termID, filename = NULL,
                             fontsize = input$gprofiler_tbfontsize, show_link = input$gprofiler_showLink  %>% as.logical,
                             show_columns = input$gprofiler_showColumns)
@@ -191,9 +213,9 @@ gprofilerPlot <- eventReactive(input$Plot_gprofiler,{
   }else {
     if (dim(gostres$result)[1] != 0) {
       geneID <- gostres$result[gostres$result$term_name %in% input$gprofiler_termID2, "intersection"]
-      genes <- str_split(geneID, pattern = ",")[[1]]
+      genes <- stringr::str_split(geneID, pattern = ",")[[1]]
 
-      sampleTable <- as.data.frame(colData(dds()))[dds()$condition %in% input$gprofiler_exprs_group, ]
+      sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% input$gprofiler_exprs_group, ]
       rownames(sampleTable) <- sampleTable$samples
 
       # data <- assay(trans_value())
@@ -201,7 +223,7 @@ gprofilerPlot <- eventReactive(input$Plot_gprofiler,{
       if (input$gprofiler_data_use == "rel_value") {
         data <- log2(norm_value() + 1) %>% as.data.frame()
       }else if(input$gprofiler_data_use == "trans_value"){
-        data <- assay(trans_value()) %>% as.data.frame()
+        data <- SummarizedExperiment::assay(trans_value()) %>% as.data.frame()
       }else if(input$gprofiler_data_use == "norm_value"){
         data <- norm_value() %>% as.data.frame()
       }
@@ -217,7 +239,7 @@ gprofilerPlot <- eventReactive(input$Plot_gprofiler,{
       rownames(annotation_col) = sampleTable$samples
       color = colorRampPalette(c("navy", "white", "red"))(50)
 
-      pp <- pheatmap(Sub_data, col=color,
+      pp <- pheatmap::pheatmap(Sub_data, col=color,
                      cluster_col=F, cluster_row=input$gprofiler_cluster_row,
                      scale = 'row', show_rownames = T,
                      show_colnames = F, breaks=seq(input$gprofiler_cluster_break[1], input$gprofiler_cluster_break[2],
@@ -244,7 +266,7 @@ output$gprofiler_Pdf <- downloadHandler(
   filename = function()  {paste0("gProfiler_Plot",".pdf")},
   content = function(file) {
     p <- gprofilerPlot()
-    ggsave(file, p, width = input$gprofiler_width, height = input$gprofiler_height, limitsize = FALSE)
+    ggplot2::ggsave(file, p, width = input$gprofiler_width, height = input$gprofiler_height, limitsize = FALSE)
   }
 )
 
