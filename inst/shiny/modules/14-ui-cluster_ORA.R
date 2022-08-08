@@ -11,16 +11,13 @@ fluidPage(
         "input.clp_ora_source=='GO'",
         column(3, selectInput("GO_ont", "Sub Ontologies:", c("BP", "CC", "MF"),width = "100%"))
       ),
-      # conditionalPanel(
-      #   "input.clp_ora_source=='KEGG'",
-      #   column(3, uiOutput("ora_kegg_organism"))
-      # ),
       conditionalPanel(
         "input.clp_ora_source=='Reactome'",
         column(3, selectInput("ora_reactome_organism", "Select organism:", c("human", "mouse", "rat", "celegans", "fly", "yeast", "zebrafish"),width = "100%"))
       ),
       column(3, selectInput("clp_ora_pAdjustMethod", "pAdjustMethod:", width = "100%", c("BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr", "none"))),
       column(3, numericInput("clp_ora_pval", "Pvalue threshold:", value = 0.05,  min = 0, max = 1, width = "100%")),
+      column(3, numericInput("clp_ora_qval", "Qvalue threshold:", value = 0.2,  min = 0, max = 1, width = "100%")),
       column(3,numericInput("clp_ora_minGSSize", "minGSSize:", value = 10, width = "100%")),
       # column(3,numericInput("clp_ora_maxGSSize", "maxGSSize:", value = 500, width = "100%")),
       column(12, align = 'center', actionButton("start_clp_ora", "Start ClusterProfiler",

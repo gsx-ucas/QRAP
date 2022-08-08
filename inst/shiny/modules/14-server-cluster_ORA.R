@@ -104,10 +104,12 @@ clp_ora_object <- eventReactive(input$start_clp_ora, {
       incProgress(0.4, detail = paste("Runing enrichGO ...."))
       if (length(GeneList) > 1) {
         objects <- compareCluster(geneClusters = GeneList, fun = "enrichGO", OrgDb = OrgDb(), ont = input$GO_ont, keyType = keyType(),
-                                  pAdjustMethod = input$clp_ora_pAdjustMethod, minGSSize = input$clp_ora_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clp_ora_pval, readable = readable)
+                                  pAdjustMethod = input$clp_ora_pAdjustMethod, qvalueCutoff = input$clp_ora_qval,
+                                  minGSSize = input$clp_ora_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clp_ora_pval, readable = readable)
       }else {
         objects <- enrichGO(gene = GeneList[[1]], OrgDb = OrgDb(), ont = input$GO_ont, keyType = keyType(),
-                            pAdjustMethod = input$clp_ora_pAdjustMethod, minGSSize = input$clp_ora_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clp_ora_pval, readable = readable)
+                            pAdjustMethod = input$clp_ora_pAdjustMethod, qvalueCutoff = input$clp_ora_qval,
+                            minGSSize = input$clp_ora_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clp_ora_pval, readable = readable)
       }
     }else if (input$clp_ora_source=='KEGG' | input$clp_ora_source=='Reactome') {
       if (keyType() != "ENTREZID") {
@@ -120,19 +122,19 @@ clp_ora_object <- eventReactive(input$start_clp_ora, {
         incProgress(0.4, detail = paste("Runing enrichGO ...."))
         if (length(GeneList) > 1) {
           objects <- compareCluster(geneClusters = GeneList, fun = "enrichKEGG", organism = species()$kegg_code[species()$display_name == input$gprofiler_species],
-                                    pAdjustMethod = input$clp_ora_pAdjustMethod, minGSSize = input$clp_ora_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clp_ora_pval)
+                                    pAdjustMethod = input$clp_ora_pAdjustMethod, qvalueCutoff = input$clp_ora_qval, minGSSize = input$clp_ora_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clp_ora_pval)
         }else {
           objects <- enrichKEGG(gene = GeneList[[1]], organism = species()$kegg_code[species()$display_name == input$gprofiler_species],
-                                pAdjustMethod = input$clp_ora_pAdjustMethod, minGSSize = input$clp_ora_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clp_ora_pval)
+                                pAdjustMethod = input$clp_ora_pAdjustMethod, qvalueCutoff = input$clp_ora_qval, minGSSize = input$clp_ora_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clp_ora_pval)
         }
       }else {
         incProgress(0.4, detail = paste("Runing enrichGO ...."))
         if (length(GeneList) > 1) {
           objects <- compareCluster(geneClusters = GeneList, fun = "enrichPathway", organism = input$ora_reactome_organism, pAdjustMethod = input$clp_ora_pAdjustMethod,
-                                    minGSSize = input$clp_ora_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clp_ora_pval)
+                                    qvalueCutoff = input$clp_ora_qval, minGSSize = input$clp_ora_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clp_ora_pval)
         }else {
           objects <- enrichPathway(gene = GeneList[[1]], organism = input$ora_reactome_organism, pAdjustMethod = input$clp_ora_pAdjustMethod,
-                                   minGSSize = input$clp_ora_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clp_ora_pval)
+                                   qvalueCutoff = input$clp_ora_qval, minGSSize = input$clp_ora_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clp_ora_pval)
         }
       }
     }

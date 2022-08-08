@@ -86,7 +86,7 @@ body > div > div.container-fluid > .tab-content {
 }
 
 /* 设置主页左侧导航栏格式*/
-#home_nav {
+/* #home_nav {
   position: fixed;
   width: auto;
   text-align: right;
@@ -98,6 +98,7 @@ body > div > div.container-fluid > .tab-content {
   color: purple;
   border-radius: 5px;
 }
+*/
 /*------------------body--------------------------*/
 body {
   height: 100%;

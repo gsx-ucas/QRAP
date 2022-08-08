@@ -75,7 +75,7 @@ clp_gsea_object <- eventReactive(input$start_clp_gsea, {
       if (input$clp_gsea_source=='KEGG') {
         incProgress(0.4, detail = paste("Runing gseKEGG..."))
         objects <- gseKEGG(geneList = GeneList, organism = species()$kegg_code[species()$display_name == input$gprofiler_species],
-                           by = input$gsea_method, pAdjustMethod = input$clp_gsea_pAdjustMethod, nPerm = 1000,
+                           by = input$gsea_method, pAdjustMethod = input$clp_gsea_pAdjustMethod,
                            minGSSize = input$clp_gsea_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clp_gsea_pval)
       }else if (input$clp_gsea_source=='Reactome') {
         incProgress(0.4, detail = paste("Runing gsePathway..."))

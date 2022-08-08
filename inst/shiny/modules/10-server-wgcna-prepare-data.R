@@ -82,7 +82,7 @@ output$wgcna_warning <- renderUI({
 output$wgcna_exprs <- renderDataTable({
   datExpr()[, 1:20]
 },rownames = T, editable = TRUE,
-options = list(pageLength = 5, autoWidth = F, scrollX=TRUE, scrollY=TRUE)
+options = list(pageLength = 10, autoWidth = F, scrollX=TRUE, scrollY="400px")
 )
 
 # observeEvent(input$start_wgcna_meta, {
@@ -118,14 +118,14 @@ output$wgcna_nucol <- renderUI({
 
 # # upload or generate a clinical trait data
 traitDataTab <- eventReactive(input$get_wgcna_exprs,{
-  if (input$wgcna_meta_source == 'upload from local') {
-    sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% input$wgcna_condition, ]
-
-    inFile <- input$traitfile
-    traitData <- vroom::vroom(inFile$datapath, col_names = input$trait_header) %>% as.data.frame
-    rownames(traitData) <- traitData[, 1]
-    traitData <- traitData[sampleTable$samples, -1]
-  }else {
+  # if (input$wgcna_meta_source == 'upload from local') {
+  #   sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% input$wgcna_condition, ]
+  # 
+  #   inFile <- input$traitfile
+  #   traitData <- vroom::vroom(inFile$datapath, col_names = input$trait_header) %>% as.data.frame
+  #   rownames(traitData) <- traitData[, 1]
+  #   traitData <- traitData[sampleTable$samples, -1]
+  # }else {
     sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% input$wgcna_condition, ]
     rownames(sampleTable) <- sampleTable$samples
     sampleTable <- sampleTable[rownames(datExpr()), ]
@@ -145,12 +145,12 @@ traitDataTab <- eventReactive(input$get_wgcna_exprs,{
     if (!is.null(input$wgcna_nucol)) {
       traitData <- cbind(traitData, sampleTable[, input$wgcna_nucol])
     }
-  }
+  # }
   return(traitData)
 })
 
 output$wgcna_meta <- renderDataTable({
   traitDataTab()
 },rownames = T, editable = TRUE,
-options = list(pageLength = 5, autoWidth = F, scrollX=TRUE, scrollY=TRUE)
+options = list(pageLength = 10, autoWidth = F, scrollX=TRUE, scrollY="400px")
 )

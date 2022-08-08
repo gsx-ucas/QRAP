@@ -12,10 +12,20 @@ SoftThreshold <- eventReactive(input$cal_power,{
     require(ggplot2)
     incProgress(0.2, detail = "Calculating SoftThreshold ...")
     powers = c(c(1:10), seq(from = 12, to=30, by=2))
-    sft = WGCNA::pickSoftThreshold(datExpr(), powerVector = powers)
-    incProgress(0.6, detail = "Detecting module genes ...")
     cor <- WGCNA::cor
-
+    if (input$power_corFnc == "cor") {
+      sft = WGCNA::pickSoftThreshold(datExpr(), powerVector = powers, corFnc = cor, 
+                                     RsquaredCut = input$power_RsquaredCut, nBreaks = input$power_nBreaks, 
+                                     blockSize = input$power_BlockSize, networkType = input$power_networkType, 
+                                     moreNetworkConcepts = as.logical(input$moreNetworkConcepts))
+    }else {
+      sft = WGCNA::pickSoftThreshold(datExpr(), powerVector = powers, corFnc = bicor, 
+                                     RsquaredCut = input$power_RsquaredCut, nBreaks = input$power_nBreaks, 
+                                     blockSize = input$power_BlockSize, networkType = input$power_networkType, 
+                                     moreNetworkConcepts = as.logical(input$moreNetworkConcepts))
+    }
+    
+    incProgress(0.6, detail = "generating plots ...")
     df <- sft$fitIndices
     p1 <- ggplot(df, aes(x = Power, y = -sign(slope)*SFT.R.sq))+
       geom_text(aes(label = Power), col = "red")+
