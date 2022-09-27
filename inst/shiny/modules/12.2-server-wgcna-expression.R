@@ -64,19 +64,27 @@ wgcna_expression <- eventReactive(input$wgcna_plot_exp, {
     pheatmap::pheatmap(expression_df, border_color = NA, scale = "row", show_rownames = F,
              show_colnames = input$wgcna_hiera_colname, treeheight_row = 20,
              annotation_col = annotation_col, annotation_colors = annotation_colors,
-             cluster_cols = F, col = color, fontsize_col = input$wgcna_hiera_fontsize_col,
-             fontsize = input$wgcna_hiera_fontsize, angle_col = input$wgcna_hiera_angle)
+             cluster_cols = F, col = color,  fontsize = input$wgcna_hiera_fontsize, angle_col = input$wgcna_hiera_angle)
   }else {
     MEs0 = WGCNA::moduleEigengenes(datExpr(), moduleColors())$eigengenes
     MEs = WGCNA::orderMEs(MEs0)[rownames(sampleTable), ]
 
-    ggplot(data = NULL)+
+    p <- ggplot(data = NULL)+
       geom_bar(aes(x = factor(rownames(MEs), levels = rownames(MEs)), y = MEs[, paste0("ME", input$wgcna_exp_module)]), stat = "identity", fill = input$wgcna_exp_module)+
       labs(x = "array samples", y = "eigengene expression")+
       theme_classic()+
       theme(text = element_text(size = input$wgcna_bar_cex),
             axis.title = element_text(size = input$wgcna_bar_lab),
-            axis.text = element_text(size = input$wgcna_bar_axis, angle = input$wgcna_bar_ang, hjust = 1))
+            axis.text.y = element_text(size = input$wgcna_bar_axis),
+            axis.text.x = element_text(size = input$wgcna_bar_axis, angle = 45, hjust = 1))
+    
+    if (nchar(input$wgcna_expr_ggText != 0)) {
+      add_funcs <- strsplit(input$wgcna_expr_ggText, "\\+")[[1]]
+      p <- p + lapply(add_funcs, function(x){
+        eval(parse(text = x))
+      })
+    }
+    return(p)
   }
 })
 

@@ -82,7 +82,7 @@ degsp_object <- eventReactive(input$run_degsp, {
 observeEvent(input$run_degsp, {
   js$collapse("degsp_run")
   degsp_object()
-  shinyalert(title = "Run of degPatterns finished!", type = "success")
+  sendSweetAlert(title = "success", text = "DEG Patterns completed!", type = "success")
 })
 
 ## -----------------------------------------

@@ -5,13 +5,18 @@
 #' @importFrom shiny shinyUI fluidPage navbarPage tabPanel icon includeHTML br hr navbarMenu fluidRow strong p tags
 #' @importFrom shinyalert useShinyalert
 #' @importFrom shinydashboard box
+#' @importFrom shinyBS bsModal
 #' @import shinyjs
 #'
 #' @export
 #'
 mainUI <- function() {
+  require(DT)
   require(shiny)
+  require(plotly)
+  require(shinyBS)
   require(shinyjs)
+  require(shinyalert)
   require(shinyWidgets)
   require(shinydashboard)
   

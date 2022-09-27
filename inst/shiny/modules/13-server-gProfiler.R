@@ -59,7 +59,7 @@ output$gprofiler_gsets <- renderUI({
 })
 
 observeEvent(input$get_DEGs,{
-  updateSelectInput( session = session, inputId = "gprofiler_degs", choices = dir("DEGs") %>% stringr::str_remove_all(".csv") )
+  updateVirtualSelect(session = session, inputId = "gprofiler_degs", choices = dir("DEGs") %>% stringr::str_remove_all(".csv"))
 })
 
 gprofiler_object <- eventReactive(input$runGprofiler,{
@@ -106,33 +106,55 @@ observeEvent(input$runGprofiler,{
   js$collapse("gprofiler_tab")
   gprofiler_object()
   if ('try-error' %in% class(gprofiler_object())) {
-    shinyalert(title = "error", text = paste0(gprofiler_object()[1], "Please try again later!"), type = "error", confirmButtonText = "Close")
+    sendSweetAlert(title = "error", text = paste0(gprofiler_object()[1], "please try again later!"), type = "error", btn_labels = "Close")
   }else {
     if (dim(gprofiler_object()$result)[1] != 0) {
       shinyjs::enable("Plot_gprofiler")
-      shinyalert(title = "Run of gProfiler finished!", type = "success")
+      sendSweetAlert(title = "gProfiler completed!", type = "success")
     }else {
       shinyjs::disable("Plot_gprofiler")
-      shinyalert(title = "warning", text = "No Tems Was Enriched !!!", type = "warning")
+      sendSweetAlert(title = "warning", text = "No terms were enriched!", type = "warning")
     }
   }
 })
 
 ##-----------------------------------------------------------
 ## Visualize Enrichment results
+output$gprofiler_plot_type <- renderUI({
+  req(input$gprofiler_genes)
+  if (input$gprofiler_genes=="DEGs") {
+    req(input$gprofiler_degs)
+    DeGenes <- load.DEGs(input$gprofiler_degs)
+    GeneList <- lapply(DeGenes, function(x){ genes <- rownames(x) })
+  }else if (input$gprofiler_genes=="DEG Patterns") {
+    req(degsp_object(), input$gprofiler_patterns)
+    GeneList <- lapply(input$gprofiler_patterns, function(x){ degsp_object()$df[degsp_object()$df$cluster == x, "genes"] })
+    names(GeneList) <- input$gprofiler_patterns
+  }else if (input$gprofiler_genes=="WGCNA Modules") {
+    req(moduleColors(), input$gprofiler_modules)
+    GeneList <- lapply(input$gprofiler_modules, function(x){ names(moduleColors())[moduleColors() == x] })
+    names(GeneList) <- input$gprofiler_modules
+  }
+  
+  if (length(GeneList) == 1) {
+    prettyRadioButtons(inputId = "gprofiler_type", label = "Plot types:", animation = "jelly", inline = TRUE,
+                       choices = c("dotplot", "gostplot", "gosttable", "exprs_heatmap"), icon = icon("check"), status = "info")
+  }else {
+    prettyRadioButtons(inputId = "gprofiler_type", label = "Plot types:", animation = "jelly", inline = TRUE,
+                       choices = c("dotplot", "exprs_heatmap"), icon = icon("check"), status = "info")
+  }
+})
+
 output$sourceTypes <- renderUI({
   if(is.null(gprofiler_object()))
     return(NULL)
   if ('try-error' %in% class(gprofiler_object()))
     return(NULL)
+  req(input$gprofiler_type)
   if (input$gprofiler_type=='dotplot' | input$gprofiler_type=='exprs_heatmap') {
     result_data <- gprofiler_object()$result
     source <- result_data$source %>% unique()
     selectInput("sourceTypes", "Source to show", choices = source, selected = source[1], multiple = F, width = "100%")
-    # virtualSelectInput(
-    #   inputId = "sourceTypes",  label = "Source to show:", choices = source,
-    #   selected = source[1],  multiple = T, search = F, width = "100%"
-    # )
   }
 })
 
@@ -141,28 +163,25 @@ output$gprofiler_termID <- renderUI({
     return(NULL)
   if ('try-error' %in% class(gprofiler_object()))
     return(NULL)
+  req(input$gprofiler_type)
   if (input$gprofiler_type=='gostplot' | input$gprofiler_type=='gosttable') {
     result_data <- gprofiler_object()$result
     id <- result_data$term_id
     names(id) <- paste0("(", result_data$source, ")", result_data$term_name)
     if (length(id) != 0) {
-      pickerInput("gprofiler_termID", "Terms to highlight:", choices = id, selected = id[1:10], options = list(`live-search` = TRUE, `actions-box` = TRUE, size = 5), multiple = T, width = "100%")
+      pickerInput("gprofiler_termID", "Terms to highlight:", choices = id, selected = id[1:10], 
+                  options = list(`live-search` = TRUE, `actions-box` = TRUE, size = 5), multiple = T, width = "100%")
     }
   }else if (input$gprofiler_Top=='custom select terms') {
     result_data <- gprofiler_object()$result[gprofiler_object()$result$source == input$sourceTypes, ]
     id <- result_data$term_name
     if (length(id) != 0) {
-      pickerInput("gprofiler_termID", "Terms to Plot:", choices = id, selected = id[1:10], options = list(`live-search` = TRUE, `actions-box` = TRUE, size = 5),multiple = T,width = "100%")
+      pickerInput("gprofiler_termID", "Terms to Plot:", choices = id, selected = id[1:10], 
+                  options = list(`live-search` = TRUE, `actions-box` = TRUE, size = 5),multiple = T,width = "100%")
     }
   }
 })
 
-# output$sourceTypes2 <- renderUI({
-#   result_data <- gprofiler_object()$result
-#   source <- result_data$source %>% unique()
-#   selectInput("sourceTypes2","Source to show",choices = source,selected = source[1],multiple = F,width = "100%")
-# })
-#
 output$gprofiler_termID2 <- renderUI({
   if(is.null(gprofiler_object()))
     return(NULL)
@@ -171,7 +190,7 @@ output$gprofiler_termID2 <- renderUI({
   result_data <- gprofiler_object()$result[gprofiler_object()$result$source == input$sourceTypes, ]
   id <- result_data$term_name
   if (length(id) != 0) {
-    selectInput("gprofiler_termID2","Terms to Plot", choices = id, multiple = F,width = "100%")
+    selectInput("gprofiler_termID2","Terms to Plot", choices = id, multiple = F, width = "100%")
   }
 })
 
@@ -198,10 +217,22 @@ gprofilerPlot <- eventReactive(input$Plot_gprofiler,{
     pp <- publish_gostplot2(p, highlight_terms = input$gprofiler_termID, filename = NULL,
                             fontsize = input$gprofiler_tbfontsize, show_link = input$gprofiler_showLink  %>% as.logical,
                             show_columns = input$gprofiler_showColumns)
+    if (nchar(input$gprofiler_gostplot_ggText != 0)) {
+      add_funcs <- strsplit(input$gprofiler_gostplot_ggText, "\\+")[[1]]
+      pp <- pp + lapply(add_funcs, function(x){
+        eval(parse(text = x))
+      })
+    }
   }else if (input$gprofiler_type == "gosttable") {
     pp <- publish_gosttable2(gostres, highlight_terms = input$gprofiler_termID, use_colors = TRUE,filename = NULL,
                             fontsize = input$gprofiler_tbfontsize, show_link = input$gprofiler_showLink %>% as.logical,
                             show_columns = input$gprofiler_showColumns)
+    if (nchar(input$gprofiler_gosttable_ggText != 0)) {
+      add_funcs <- strsplit(input$gprofiler_gosttable_ggText, "\\+")[[1]]
+      pp <- pp + lapply(add_funcs, function(x){
+        eval(parse(text = x))
+      })
+    }
   }else if (input$gprofiler_type == "dotplot") {
     if (input$gprofiler_Top=='custom select terms') {
       plot_terms <- input$gprofiler_termID
@@ -209,7 +240,13 @@ gprofilerPlot <- eventReactive(input$Plot_gprofiler,{
       plot_terms <- NULL
     }
     pp <- publish_gostdot(object = gostres, by = input$gprofiler_orderBy, terms = plot_terms,
-                             source = input$sourceTypes, showCategory = input$gprofiler_n_terms, font.size = input$gprofiler_fontsize)
+                             source = input$sourceTypes, showCategory = input$gprofiler_n_terms)
+    if (nchar(input$gprofiler_dotplot_ggText != 0)) {
+      add_funcs <- strsplit(input$gprofiler_dotplot_ggText, "\\+")[[1]]
+      pp <- pp + lapply(add_funcs, function(x){
+        eval(parse(text = x))
+      })
+    }
   }else {
     if (dim(gostres$result)[1] != 0) {
       geneID <- gostres$result[gostres$result$term_name %in% input$gprofiler_termID2, "intersection"]
@@ -239,13 +276,12 @@ gprofilerPlot <- eventReactive(input$Plot_gprofiler,{
       rownames(annotation_col) = sampleTable$samples
       color = colorRampPalette(c("navy", "white", "red"))(50)
 
-      pp <- pheatmap::pheatmap(Sub_data, col=color,
-                     cluster_col=F, cluster_row=input$gprofiler_cluster_row,
-                     scale = 'row', show_rownames = T,
-                     show_colnames = F, breaks=seq(input$gprofiler_cluster_break[1], input$gprofiler_cluster_break[2],
+      pp <- pheatmap::pheatmap(Sub_data, col=color, cluster_col = F, cluster_row = T, border_color = NA,
+                     scale = 'row', show_rownames = input$gprofiler_heat_rowname, show_colnames = input$gprofiler_heat_colname, 
+                     breaks = seq(input$gprofiler_cluster_break[1], input$gprofiler_cluster_break[2],
                                                    (input$gprofiler_cluster_break[2] - input$gprofiler_cluster_break[1])/50),
                      annotation_col = annotation_col, fontsize = input$gprofiler_heatmap_fontsize,
-                     main = paste0(input$sourceTypes, ": ", input$gprofiler_termID2))
+                     angle_col = input$gprofiler_heat_angle,main = paste0(input$sourceTypes, ": ", input$gprofiler_termID2))
 
     }else {
       return(NULL)

@@ -15,6 +15,25 @@ jsCode <- "shinyjs.collapse = function(boxid) {
       $('#' + boxid).closest('.box').find('[data-widget=collapse]').click();
 };"
 
+# jsCode2 <- "shinyjs.fig_zoom = function() {
+#   var modal = document.getElementById('myModal');
+#   
+#   var img = document.getElementById('myImg');
+#   var modalImg = document.getElementById('caption');
+#   var captionText = document.getElementById('caption);
+#   img.onclick = function(){
+#     modal.style.display = 'block';
+#     modalImg.src = this.src;
+#     captionText.innerHTML = this.alt;
+#   }
+#   
+#   var span = document.getElementsByClassName('close')[0];
+#   
+#   span.onclick = function() { 
+#     modal.style.display = 'none';
+#   }
+# }"
+
 
 shinyUI(
   fluidPage(
@@ -25,10 +44,13 @@ shinyUI(
 
     useShinyjs(),
     extendShinyjs(text = jsCode, functions = "collapse"),
+    # extendShinyjs(text = jsCode2, functions = "fig_zoom"),
 
+    tags$head(HTML("<title>QRAP</title>")),
     navbarPage(
       id = "mainMenu",
-      title = "QRAP",
+      # title = "QRAP",
+      title = img(src = "images/logo_img.png", height = "30px", style = "margin-top: -2px"),
       theme = "style/style.css",
       # theme = "style/layui.css",
       # footer = includeHTML("footer.html"),

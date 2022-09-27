@@ -88,12 +88,20 @@ verboseScatter <- eventReactive(input$plot_wgcna_scatter, {
       pch <- 16
       cols <- module
     }
-    ggplot()+
+    p <- ggplot()+
       geom_point(aes(x = x, y = y), color = cols, size = input$wgcna_scatter_size, alpha = input$wgcna_scatter_alpha, pch = pch)+
       labs(x = paste("Module Membership in", module, "module"),
            y = paste("Gene significance for", input$trait), title = mainX)+
       theme_bw()+
       theme(plot.title = element_text(hjust = 0.5), text = element_text(size = input$wgcna_scatter_fontsize))
+    
+    if (nchar(input$wgcna_scatter_ggText != 0)) {
+      add_funcs <- strsplit(input$wgcna_scatter_ggText, "\\+")[[1]]
+      p <- p + lapply(add_funcs, function(x){
+        eval(parse(text = x))
+      })
+    }
+    return(p)
   }
 })
 
@@ -101,7 +109,16 @@ output$verboseScatter <- renderPlot({
   verboseScatter()
 })
 
+output$render_wgcna_scatter_height <- renderUI({
+  if (input$WGCNA_scatter_method=='verboseScatterplot (WGCNA function)') {
+    sliderInput("wgcna_scatter_height", "Figure Height (px):", min = 200, max = 1000, value = 542, step = 2, width = "100%")
+  }else {
+    sliderInput("wgcna_scatter_height", "Figure Height (px):", min = 200, max = 1000, value = 512, step = 2, width = "100%")
+  }
+})
+
 output$verboseScatterUI <- renderUI({
+  req(input$wgcna_scatter_width, input$wgcna_scatter_height)
   withSpinner(plotOutput("verboseScatter", width = paste0(input$wgcna_scatter_width, "%"), height = paste0(input$wgcna_scatter_height, "px")))
 })
 
@@ -181,12 +198,20 @@ output$verboseScatter_Pdf <- downloadHandler(
         pch <- 16
         cols <- module
       }
-      ggplot()+
+      p <- ggplot()+
         geom_point(aes(x = x, y = y), color = cols, size = input$wgcna_scatter_size, alpha = input$wgcna_scatter_alpha, pch = pch)+
         labs(x = paste("Module Membership in", module, "module"),
              y = paste("Gene significance for", input$trait), title = mainX)+
         theme_bw()+
         theme(plot.title = element_text(hjust = 0.5), text = element_text(size = input$wgcna_scatter_fontsize))
+      
+      if (nchar(input$wgcna_scatter_ggText != 0)) {
+        add_funcs <- strsplit(input$wgcna_scatter_ggText, "\\+")[[1]]
+        p <- p + lapply(add_funcs, function(x){
+          eval(parse(text = x))
+        })
+      }
+      return(p)
     }
     dev.off()
   }

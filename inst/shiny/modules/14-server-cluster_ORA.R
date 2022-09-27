@@ -6,10 +6,10 @@ observe({
 
 observeEvent(input$start_clp_ora,{
   if (is.null(OrgDb())) {
-    shinyalert(title = "warning", text = "The organism you selected was not surpported now, please use gProfiler!", type = "warning")
+    sendSweetAlert(title = "warning", text = "The organism you selected was not surpported now, please use gProfiler!", type = "warning")
   }else {
     if (!requireNamespace(OrgDb(), quietly=TRUE)) {
-      shinyalert(title = "warning", text = paste0("Can not find package ", OrgDb(), ", please install first!"), type = "warning")
+      sendSweetAlert(title = "warning", text = paste0("Can not find package ", OrgDb(), ", please install first!"), type = "warning")
     }
   }
 })
@@ -17,59 +17,55 @@ observeEvent(input$start_clp_ora,{
 output$clp_ora_gsets <- renderUI({
   if (input$clp_ora_genes=="DEGs") {
     shinyjs::enable("start_clp_ora")
-    selectInput(
-      inputId = "clp_ora_degs", label = "DEGs:",
+    virtualSelectInput(
+      inputId = "clp_ora_degs",  label = "DEGs:",
       choices = dir("DEGs") %>% stringr::str_remove_all(".csv"),
       selected = stringr::str_remove_all(dir("DEGs"), ".csv")[1],
-      width = "100%", multiple = T
+      multiple = T, search = F, width = "100%"
     )
   }else if (input$clp_ora_genes=="DEG Patterns") {
     if (input$run_degsp == 0) {
       shinyjs::disable("start_clp_ora")
-      selectInput(inputId = "clp_ora_patterns", label = "Select Patterns ID:", width = "100%", multiple = T,
+      selectInput(inputId = "clp_ora_patterns", label = "Select Patterns ID:", width = "100%", 
                   choices = "*Please Run DEGs Patterns First !!!", selected = "*Please Run DEGs Patterns First !!!")
       # p("*Please Run DEGs Patterns First!", style = "color: red; padding-top: 30px; padding-bttom: 30px; font-weight: 700px; width: 100%")
     }else {
       shinyjs::enable("start_clp_ora")
-      selectInput(inputId = "clp_ora_patterns", label = "Select Patterns ID:", width = "100%", multiple = T,
+      selectInput(inputId = "clp_ora_patterns", label = "Select Patterns ID:", width = "100%", 
                   choices = degsp_object()$normalized$cluster %>% unique %>% as.character)
+      virtualSelectInput(
+        inputId = "clp_ora_patterns",  label = "Select Patterns ID:",
+        choices = degsp_object()$normalized$cluster %>% unique %>% as.character,
+        selected = (degsp_object()$normalized$cluster %>% unique %>% as.character)[1],
+        multiple = T, search = F, width = "100%"
+      )
     }
   }else if (input$clp_ora_genes=="WGCNA Modules") {
     if (input$moldue_detect == 0) {
       shinyjs::disable("start_clp_ora")
-      selectInput(inputId = "clp_ora_modules", label = "Select WGCNA Modules ID:", width = "100%", multiple = T,
+      selectInput(inputId = "clp_ora_modules", label = "Select WGCNA Modules ID:", width = "100%", 
                   choices = "*Please Run WGCNA First !!!", selected = "*Please Run WGCNA First !!!")
       # p("*Please Run WGCNA First!", style = "color: red; padding-top: 30px; padding-bttom: 30px; font-weight: 700px; width: 100%")
     }else {
       shinyjs::enable("start_clp_ora")
       MEs0 = moduleEigengenes(datExpr(), moduleColors())$eigengenes
       MEs = orderMEs(MEs0)
-      selectInput(inputId = "clp_ora_modules", label = "Select WGCNA Modules ID:",
-                  choices = substring(names(MEs), first = 3), width = "100%", multiple = T)
+      virtualSelectInput(
+        inputId = "clp_ora_modules",  label = "Select WGCNA Modules ID:",
+        choices = substring(names(MEs), first = 3),
+        selected = substring(names(MEs), first = 3)[1],
+        multiple = T, search = F, width = "100%"
+      )
     }
   }
 })
 
 observeEvent(input$get_DEGs,{
-  if (input$clp_ora_genes=="DEGs") {
-    updateSelectInput(
-      session = session, inputId = "clp_ora_degs",
-      choices = stringr::str_remove_all(dir("DEGs"), ".csv")[1]
-    )
-  }else if (input$clp_ora_types == 'GSEA') {
-    updateSelectInput(
-      session = session, inputId = "clp_ora_regs",
-      choices = stringr::str_remove_all(dir("REGs"), ".csv")[1]
-    )
-  }
+  updateVirtualSelect(
+    session = session, inputId = "clp_ora_degs",
+    choices = stringr::str_remove_all(dir("DEGs"), ".csv")[1]
+  )
 })
-
-# output$ora_kegg_organism <- renderUI({
-#   kegg_species <- readRDS(system.file("shiny", "myApp/www/Species/kegg_species.rds", package = "QRseq"))
-#   choices <- kegg_species$kegg_code
-#   names(choices) <- kegg_species$scientific_name
-#   selectInput(inputId = "ora_kegg_organism", label = "KEGG organism:", choices = choices, width = "100%", multiple = F)
-# })
 
 clp_ora_geneList <- eventReactive(input$start_clp_ora, {
   withProgress(message = "", value = 0,{
@@ -100,6 +96,7 @@ clp_ora_object <- eventReactive(input$start_clp_ora, {
       GeneList <- clp_ora_geneList()
     }
 
+    require(clusterProfiler)
     if (input$clp_ora_source=='GO') {
       incProgress(0.4, detail = paste("Runing enrichGO ...."))
       if (length(GeneList) > 1) {
@@ -148,10 +145,10 @@ observeEvent(input$start_clp_ora,{
   clp_ora_object()
   if (dim(as.data.frame(clp_ora_object()))[1] != 0) {
     shinyjs::enable("plotORA")
-    shinyalert(title = "Run of ORA finished!", type = "success")
+    sendSweetAlert(title = "clusterProfiler (ORA) completed!", type = "success")
   }else {
     shinyjs::disable("plotORA")
-    shinyalert(title = "warning", text = "No Tems Was Enriched !!!", type = "warning")
+    sendSweetAlert(title = "warning", text = "No terms were enriched!", type = "warning")
   }
 })
 
@@ -162,21 +159,14 @@ output$oraPlot_type <- renderUI({
     fluidRow(
       column(
         12,
-        # radioButtons(
-        #   "oraPlot_type", "Methods to visualize:", c("dotplot", "barplot", "ggtable", "exprs_heatmap"), inline = T, width = "100%"
-        # ),
         prettyRadioButtons(inputId = "oraPlot_type", label = "Methods to visualize:", animation = "jelly", inline = TRUE,
                            choices = c("dotplot", "barplot", "ggtable", "exprs_heatmap"), icon = icon("check"), status = "info"),
         tags$em("cnetplot and emapplot currently do not support multi-group comparison enrich analysis !", style = "color:brown")
       )
     )
   }else {
-    # radioButtons(
-    #   "oraPlot_type", "Methods to visualize:", c("dotplot", "barplot", "ggtable", "cnetplot", "emapplot", "exprs_heatmap"),
-    #   inline = T, width = "100%"
-    # )
     prettyRadioButtons(inputId = "oraPlot_type", label = "Methods to visualize:", animation = "jelly", inline = TRUE,
-                       choices = c("dotplot", "barplot", "ggtable", "cnetplot", "emapplot", "exprs_heatmap"), icon = icon("check"), status = "info")
+                       choices = c("dotplot", "barplot", "cnetplot", "emapplot", "exprs_heatmap"), icon = icon("check"), status = "info")
   }
 })
 
@@ -185,7 +175,7 @@ output$ora_termID <- renderUI({
     pickerInput("ora_termID", "Select terms from results:",
                 choices = as.data.frame(clp_ora_object())$Description,
                 selected = as.data.frame(clp_ora_object())$Description[1:10],
-                options = list(`actions-box` = TRUE), width = "100%", multiple = T)
+                options = list(`actions-box` = TRUE, `live-search` = TRUE, size = 5), width = "100%", multiple = T)
   }else {
     p("no terms enriched ...", style = "color:red")
   }
@@ -220,15 +210,27 @@ oraPlots <- eventReactive(input$plotORA, {
   } else {
     terms = input$ora_termID
   }
+  require(ggplot2)
   if (input$oraPlot_type == 'dotplot') {
-    dotplotResults(object = clp_ora_object(), showCategory = input$n_terms, color = input$ora_colorBy,
-                   terms = terms, font.size = input$ora_fontsize, size = input$ora_orderBy)
+    p <- dotplotResults(object = clp_ora_object(), showCategory = input$n_terms, color = input$ora_colorBy,
+                   terms = terms, size = input$ora_orderBy)
+    if (nchar(input$cl_ora_ggText != 0)) {
+      add_funcs <- strsplit(input$cl_ora_ggText, "\\+")[[1]]
+      p <- p + lapply(add_funcs, function(x){
+        eval(parse(text = x))
+      })
+    }
+    return(p)
   }else if (input$oraPlot_type == 'barplot') {
-    barplotResults(object = clp_ora_object(), x = input$ora_orderBy, showCategory = input$n_terms, color = input$ora_colorBy,
+    p <- barplotResults(object = clp_ora_object(), x = input$ora_orderBy, showCategory = input$n_terms, color = input$ora_colorBy,
                    terms = terms, font.size = input$ora_fontsize)
-  }else if (input$oraPlot_type == 'ggtable') {
-    ggtableResults(object = clp_ora_object(), by = input$ora_orderBy, showCategory = input$n_terms, color = input$ora_colorBy,
-                   terms = terms, font.size = input$ora_fontsize)
+    if (nchar(input$cl_ora_ggText != 0)) {
+      add_funcs <- strsplit(input$cl_ora_ggText, "\\+")[[1]]
+      p <- p + lapply(add_funcs, function(x){
+        eval(parse(text = x))
+      })
+    }
+    return(p)
   }else if (input$oraPlot_type == 'cnetplot') {
     if (inherits(clp_ora_object(), "enrichResult")) {
       if (input$clp_ora_genes=="DEGs") {
@@ -246,7 +248,8 @@ oraPlots <- eventReactive(input$plotORA, {
       }else {
         log2FoldChange = NULL
       }
-      enrichplot::cnetplot(clp_ora_object(), showCategory = input$n_terms, circular = as.logical(input$ora_circular), foldChange = log2FoldChange)
+      enrichplot::cnetplot(clp_ora_object(), showCategory = input$n_terms, node_label = input$ora_node_label, 
+                           circular = as.logical(input$ora_circular), foldChange = log2FoldChange)
     }
   }else if (input$oraPlot_type == 'emapplot') {
     if (inherits(clp_ora_object(), "enrichResult")) {
@@ -256,11 +259,11 @@ oraPlots <- eventReactive(input$plotORA, {
       }else {
         compare_emap <- enrichplot::pairwise_termsim(clp_ora_object())
       }
-      enrichplot::emapplot(compare_emap, showCategory = input$n_terms, color = input$ora_colorBy)
+      enrichplot::emapplot(compare_emap, showCategory = input$n_terms, color = input$ora_colorBy, cex_label_category = input$cex_label_category / 10)
     }
   }else if (input$oraPlot_type == 'exprs_heatmap') {
     geneID <- as.data.frame(clp_ora_object())[as.data.frame(clp_ora_object())$Description %in% input$ora_termID2, "geneID"]
-    genes <- str_split(geneID, pattern = "/")[[1]]
+    genes <- stringr::str_split(geneID, pattern = "/")[[1]]
 
     if (input$clp_ora_source != 'GO' & keyType() != "ENTREZID") {
       if (keyType() == "ENSEMBL") {
@@ -271,14 +274,14 @@ oraPlots <- eventReactive(input$plotORA, {
       genes <- genes.df[, keyType()]
     }
 
-    sampleTable <- as.data.frame(colData(dds()))[dds()$condition %in% input$ora_exprs_group, ]
+    sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% input$ora_exprs_group, ]
     rownames(sampleTable) <- sampleTable$samples
 
     # data <- assay(trans_value())
     if (input$ora_data_use == "rel_value") {
       data <- log2(norm_value() + 1) %>% as.data.frame()
     }else if(input$ora_data_use == "trans_value"){
-      data <- assay(trans_value()) %>% as.data.frame()
+      data <- SummarizedExperiment::assay(trans_value()) %>% as.data.frame()
     }else if(input$ora_data_use == "norm_value"){
       data <- norm_value() %>% as.data.frame()
     }
@@ -301,14 +304,12 @@ oraPlots <- eventReactive(input$plotORA, {
     annotation_col = data.frame(condition = factor(sampleTable$condition))
     rownames(annotation_col) = sampleTable$samples
     color = colorRampPalette(c("navy", "white", "red"))(50)
-    # Sub_data <- Sub_data - rowMeans(Sub_data)
-    pheatmap(Sub_data, col=color,
-             cluster_col=F, cluster_row=input$ora_cluster_row,
-             scale = 'row', show_rownames = T,
-             show_colnames = F, breaks=seq(input$ora_cluster_break[1], input$ora_cluster_break[2],
+    pheatmap::pheatmap(Sub_data, col = color, cluster_col = F, cluster_row = T, scale = 'row', 
+             show_rownames = input$ora_heat_rowname,  show_colnames = input$ora_heat_colname, 
+             breaks=seq(input$ora_cluster_break[1], input$ora_cluster_break[2],
                                            (input$ora_cluster_break[2] - input$ora_cluster_break[1])/50),
              annotation_col = annotation_col, fontsize_row = input$ora_heatmap_fontsize,
-             main = paste0(main1, input$ora_termID2))
+             angle_col = input$ora_heat_angle, main = paste0(main1, input$ora_termID2))
   }
 })
 

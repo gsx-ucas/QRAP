@@ -39,10 +39,10 @@ net <- eventReactive(input$moldue_detect,{
 observeEvent(input$moldue_detect, {
   net()
   if ('try-error' %in% class(net())) {
-    shinyalert(title = "error", text = paste0(net()[1], " Consider remove batch effects or your data are not suitable for WGCNA analysis !"),
-               type = "error", confirmButtonText = "Close")
+    sendSweetAlert(title = "error", text = paste0(net()[1], " Consider remove batch effects or your data are not suitable for WGCNA analysis !"),
+               type = "error", btn_labels = "Close")
   }else {
-    shinyalert(title = "success", text = "WGCNA Moudule Detection Finished !", type = "success")
+    sendSweetAlert(title = "success", text = "Detection of WGCNA Moudule complete!", type = "success")
   }
 })
 
@@ -99,7 +99,7 @@ moduleGene_table <- reactive({
 
 output$moduleGene_table <- renderDataTable({
   moduleGene_table()
-},rownames = T, options = list(pageLength = 10, autoWidth = F, scrollX=TRUE))
+},rownames = T, options = list(pageLength = 5, autoWidth = F, scrollX=TRUE))
 
 output$moduleGene_table_csv <- downloadHandler(
   filename = function()  {paste0("moduleGene_table",".csv")},

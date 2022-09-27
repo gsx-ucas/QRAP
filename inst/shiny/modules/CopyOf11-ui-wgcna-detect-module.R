@@ -3,7 +3,7 @@ fluidRow(
   box(
     title = "SoftThreshold:", width = 4, collapsible = TRUE, solidHeader = TRUE,
     numericInput("power_RsquaredCut", "desired minimum scale free topology fitting index R^2:", value = 0.85, width = "100%"),
-    numericInput("power_BlockSize", "block size:", value = 1000, width = "100%"),
+    # numericInput("power_BlockSize", "block size:", value = 1000, width = "100%"),
     numericInput("power_nBreaks", "number of bins in connectivity histograms:", value = 10, width = "100%"),
     selectInput("power_networkType", "networkType:", choices = c("unsigned", "signed", "signed hybrid"), width = "100%"),
     selectInput("power_corFnc", "corFnc:", choices = c("cor", "bicor"), width = "100%"),
@@ -41,7 +41,7 @@ fluidRow(
     2,
     wellPanel(
       sliderInput("wgcna_power_width", "Figure Width (%):", min = 50, max = 100, value = 100, step = 2, width = "100%"),
-      sliderInput("wgcna_power_height", "Figure Height (px):", min = 200, max = 1000, value = 450, step = 20, width = "100%")
+      sliderInput("wgcna_power_height", "Figure Height (px):", min = 200, max = 1000, value = 428, step = 2, width = "100%")
     )
   ),
   column(

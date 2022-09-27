@@ -13,16 +13,15 @@ SoftThreshold <- eventReactive(input$cal_power,{
     incProgress(0.2, detail = "Calculating SoftThreshold ...")
     powers = c(c(1:10), seq(from = 12, to=30, by=2))
     cor <- WGCNA::cor
+    bicor <- WGCNA::bicor
     if (input$power_corFnc == "cor") {
       sft = WGCNA::pickSoftThreshold(datExpr(), powerVector = powers, corFnc = cor, 
                                      RsquaredCut = input$power_RsquaredCut, nBreaks = input$power_nBreaks, 
-                                     blockSize = input$power_BlockSize, networkType = input$power_networkType, 
-                                     moreNetworkConcepts = as.logical(input$moreNetworkConcepts))
+                                     networkType = input$power_networkType, moreNetworkConcepts = as.logical(input$moreNetworkConcepts))
     }else {
       sft = WGCNA::pickSoftThreshold(datExpr(), powerVector = powers, corFnc = bicor, 
                                      RsquaredCut = input$power_RsquaredCut, nBreaks = input$power_nBreaks, 
-                                     blockSize = input$power_BlockSize, networkType = input$power_networkType, 
-                                     moreNetworkConcepts = as.logical(input$moreNetworkConcepts))
+                                     networkType = input$power_networkType, moreNetworkConcepts = as.logical(input$moreNetworkConcepts))
     }
     
     incProgress(0.6, detail = "generating plots ...")

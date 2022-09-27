@@ -97,7 +97,7 @@ LabeledHeatmap <- eventReactive(input$plot_mtrs, {
              annotation_colors = list(` ` = re_color), cluster_rows = input$WGCNA_heatmap_cluster_rows,
              cluster_cols = input$WGCNA_heatmap_cluster_cols, fontsize = input$WGCNA_heatmap_fontsize,
              fontsize_col = input$WGCNA_heatmap_fontsize_col, fontsize_number = input$WGCNA_heatmap_fontsize_num,
-             angle_col = "315")
+             treeheight_row = 15, treeheight_col = 15, angle_col = "315")
   }
 })
 
@@ -164,4 +164,3 @@ output$mtrs_heatmap_Pdf <- downloadHandler(
     dev.off()
   }
 )
-
