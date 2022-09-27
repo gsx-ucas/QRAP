@@ -13,7 +13,7 @@ startQRAP <- function(launch.browser = TRUE, port = 4986) {
   source(system.file("shiny", "global.R", package = "QRAP"), local = T)
   addResourcePath(prefix = "www", directoryPath = system.file("shiny", "www", package = "QRAP"))
   addResourcePath(prefix = "images", directoryPath = system.file("shiny", "www/images", package = "QRAP"))
-  # addResourcePath(prefix = "Kegg_dir", directoryPath = system.file("shiny", "www/Kegg_dir", package = "QRAP"))
+  addResourcePath(prefix = "Kegg_dir", directoryPath = system.file("shiny", "www/Kegg_dir", package = "QRAP"))
 
   # kegg_dir <- system.file("shiny", "www/Kegg_dir", package = "QRAP")
   # lapply(dir(kegg_dir, full.names = TRUE), function(x){file.remove(x)})

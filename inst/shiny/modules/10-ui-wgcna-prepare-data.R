@@ -32,36 +32,46 @@ fluidRow(
       numericInput("sample_prop", "The proportion of samples over minimum reads:", value = 0.5, width = "100%")
     ),
     uiOutput("wgcna_condition"),
-    selectizeInput("wgcna_meta_source", "Generate clinical traits data :",
-                   choices = c("generate from designTab", "upload from local"), width = "100%"),
-    conditionalPanel(
-      "input.wgcna_meta_source == 'upload from local'",
-      fileInput("traitfile", label = "Upload traitData", width = "100%"),
-      checkboxInput("trait_header", "First row as header ?", value = TRUE, width = "100%"),
-      p("*Clinical traits data format should be samples in the rownames, clinical conditions in the column names
-        and numeric values in the content of this table.", style = "font-weight: 800; padding-top: 3px; color: orange;")
-      ),
-    conditionalPanel(
-      "input.wgcna_meta_source == 'generate from designTab'",
-      uiOutput("wgcna_chcol"),
-      uiOutput("wgcna_nucol"),
-      p("*Conditions will be used to generate a trait data table, which value 1 means sample belongs to this condition and 0 means not!",
-        style = "font-weight: 800; padding-top: 3px; color: orange;")
-    ),
+    uiOutput("wgcna_chcol"),
+    uiOutput("wgcna_nucol"),
     actionButton("get_wgcna_exprs", "Get Expression Data >>", class = "run-button", width = "100%")
   ),
   column(
     8,
-    box(
-      width = 12, title = "WGCNA Expression Data", solidHeader = TRUE,
-      # p("*please note that the expression matrix have been transformed to genes in the column and sample in the row,
-      #   so we only present the first 20 genes in the column."),
-      uiOutput("wgcna_warning"),
-      withSpinner(dataTableOutput("wgcna_exprs"))
+    tabsetPanel(
+      tabPanel(
+        "WGCNA Meta Data", style = "padding: 10px",
+        withSpinner(dataTableOutput("wgcna_meta"))
       ),
-    box(
-      width = 12, title = "WGCNA Meta Data", solidHeader = TRUE,
-      withSpinner(dataTableOutput("wgcna_meta"))
+      tabPanel(
+        "WGCNA Expression Data", style = "padding: 10px",
+        uiOutput("wgcna_warning"),
+        withSpinner(dataTableOutput("wgcna_exprs"))
+      )
+    )
+  ),
+  column(
+    12, style = "padding:0px;",
+    fluidRow(
+      style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
+      column(
+        4, style = "text-align:center;border-right: 2px solid white;",
+        tags$img(src = "images/dist_demo.png",
+                 width = "100%")
+      ),
+      column(
+        8, style = "text-align:justify;",
+        h3("What is sample-to-sample distance (SSD) ?"),
+        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
+          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
+          distance metrics, which specify how the distance between the input samples. A commonly used approach for
+          measuring sample distance in RNA-seq data is to use Euclidean distance."),
+        h3("How to interpret the SSD analysis results ?"),
+        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
+          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
+          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
+          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
+      )
     )
   ),
   column(

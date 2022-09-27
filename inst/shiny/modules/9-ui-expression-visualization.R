@@ -2,7 +2,7 @@ fluidPage(
   style = "margin-left: 10px; margin-right:10px;",
   box(
     title = "Plot Parameters:", width = 4, collapsible = TRUE, solidHeader = TRUE,
-    textAreaInput("input_gene", "Input genes:", rows = 5, width = "100%", placeholder = "Gene1,Gene2,Gene3 ..."),
+    textAreaInput("input_gene", "Input genes:", rows = 5, width = "100%", placeholder = "Gene1,Gene2,Gene3 ... or Gene1\nGene2\nGene3 ..."),
     selectInput("data_use", "Values Used To Visualize:", width = "100%",
                 c("rlog or vst transformed value" = "trans_value", "log2(normalized_counts + 1)" = "rel_value",
                   "DESeq2 normalized counts" = "norm_value", "log2 FoldChange" = "log2flc")),
@@ -34,14 +34,10 @@ fluidPage(
         selectInput("Expr_error", "Error bar values:", width = "100%",
                     choices = c('standard error (SE)' = 'se',  'standard deviation (SD)' = 'sd', 'confidence interval (CI)' = 'ci')),
         numericInput("Expr_error_lwd", "Error bar line width:", value = 0.6, width = "100%"),
-        HTML(
-          paste0(
-            '<div class="form-group shiny-input-container" style="width: 100%;">',
-            '<label class="control-label" for="exprs_ggText">ggplot2 codes:</label>',
-            '<textarea id="exprs_ggText" class="form-control" placeholder="theme(text = element_text(face = &#39;bold&#39;))" style="width: 100%;" rows="12"></textarea>',
-            '</div>'
-          )
-        )
+        textAreaInput("exprs_ggText", "ggplot2 codes:", value = 'scale_color_brewer(palette = "Set1")+
+        theme(axis.title = element_text(size = 21, face = "bold", color = "black", family = "Times"),
+        axis.text = element_text(size = 18, face = "bold", color = "black", family = "Times"),
+        text = element_text(size = 18, face = "bold", color = "black", family = "Times"))', width = "100%", rows = 12)
       ),
       column(
         6,
@@ -92,7 +88,7 @@ fluidPage(
     2,
     wellPanel(
       sliderInput("epv_plot_width", "Figure Width (%):", min = 50, max = 100, value = 100, step = 2, width = "100%"),
-      sliderInput("epv_plot_height", "Figure Height (px):", min = 200, max = 1000, value = 518, step = 10, width = "100%")
+      sliderInput("epv_plot_height", "Figure Height (px):", min = 200, max = 1000, value = 520, step = 2, width = "100%")
     ),
     conditionalPanel(
       "input.expr_plotType=='BarPlot' | input.expr_plotType=='BoxPlot'",

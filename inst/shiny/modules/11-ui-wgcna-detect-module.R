@@ -8,64 +8,51 @@ fluidRow(
     # numericInput("maxBlockSize", "Maximum block size for module detection:", value = 5000, width = "100%"),
     numericInput("minModuleSize", "Minimum module size for module detection:", value = 30, width = "100%"),
     selectInput("blockwise_networkType", "networkType:", choices = c("unsigned", "signed", "signed hybrid"), width = "100%"),
-    actionButton("blockwise_modal_but", "Additional Parameters for Normalization ...", width = "100%",
+    actionButton("blockwise_modal_but", "Additional Parameters...", width = "100%",
                  style = "background-color: rgb(255,255,255);text-align:left;margin-bottom:10px", icon = icon("plus-square")),
     br(),
     actionButton("moldue_detect", "Start moldue detect", width = "100%", class = "run-button")
   ),
   column(
-    6,
-    wellPanel(
-      style = "padding-top:5px",
-      fluidRow(
+    8,
+    tabsetPanel(
+      tabPanel(
+        "Cluster Dendrogram",
         column(
-          12, style = "padding-left:0px;margin-left:0px;padding-right:0px;margin-right:0px;border-bottom:solid 1px rgb(224,224,224)",
-          column(
-            6, style = "padding-left:10px;",
-            tags$h4("Cluster Dendrogram:")
-          ),
-          column(
-            6, align = "right", style = "padding-top:5px;",
-            dropdownButton(
-              numericInput('plotDendro_width', 'Figure Width:', value = 10, width = "100%"),
-              numericInput('plotDendro_height', 'Figure Height:', value = 5, width = "100%"),
-              downloadButton('plotDendro_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
-              circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
-              right = TRUE, tooltip = tooltipOptions(title = "Click to download figures !")
+          9,
+          fluidRow(
+            column(
+              12, style = "padding-top:5px;",
+              column(6),
+              column(
+                6, align = "right", 
+                dropdownButton(
+                  numericInput('plotDendro_width', 'Figure Width:', value = 10, width = "100%"),
+                  numericInput('plotDendro_height', 'Figure Height:', value = 5, width = "100%"),
+                  downloadButton('plotDendro_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
+                  circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
+                  right = TRUE, tooltip = tooltipOptions(title = "Click to download figures !")
+                )
+              )
             )
+          ),
+          uiOutput("wgcna_dendroUI")
+        ),
+        column(
+          3, style = "padding-top:5px;",
+          wellPanel(
+            sliderInput("wgcna_dendro_width", "Figure Width (%):", min = 50, max = 100, value = 100, step = 2, width = "100%"),
+            sliderInput("wgcna_dendro_height", "Figure Height (px):", min = 200, max = 1000, value = 358, step = 2, width = "100%")
           )
         )
       ),
-      # fluidRow(
-      #   column(6, uiOutput("block_id")),
-      #   column(
-      #     6, align = "right", style = "padding-top: 10px;",
-      #     dropdownButton(
-      #       numericInput('plotDendro_width', 'Figure Width:', value = 10, width = "100%"),
-      #       numericInput('plotDendro_height', 'Figure Height:', value = 5, width = "100%"),
-      #       downloadButton('plotDendro_Pdf','Download .pdf', class = "btn btn-warning", width = "100%"),
-      #       circle = FALSE, status = "danger", size = "sm", icon = icon("save"), width = "200px",
-      #       right = TRUE, tooltip = tooltipOptions(title = "Click to download figures !")
-      #     )
-      #   )
-      # )
-      uiOutput("wgcna_dendroUI")
-    )
-  ),
-  column(
-    2,
-    wellPanel(
-      sliderInput("wgcna_dendro_width", "Figure Width (%):", min = 50, max = 100, value = 100, step = 2, width = "100%"),
-      sliderInput("wgcna_dendro_height", "Figure Height (px):", min = 200, max = 1000, value = 350, step = 20, width = "100%")
-    )
-  ),
-  column(
-    12,
-    conditionalPanel(
-      "input.moldue_detect",
-      wellPanel(
-        withSpinner(dataTableOutput("moduleGene_table")),
-        downloadButton('moduleGene_table_csv','Download .csv', class = "btn", width = "100%")
+      tabPanel(
+        "ModuleGene to color table",
+        conditionalPanel(
+          "input.moldue_detect", style = "padding:10px;",
+          withSpinner(dataTableOutput("moduleGene_table")),
+          downloadButton('moduleGene_table_csv','Download .csv', class = "btn", width = "100%")
+        )
       )
     )
   ),
@@ -97,6 +84,30 @@ fluidRow(
           selectInput("deepSplit", "deepSplit:", choices = c(0, 1, 2, 3, 4), selected = 2, width = "100%"),
           selectInput("pearsonFallback", "pearsonFallback:", choices = c("individual", "all", "none"), width = "100%")
         )
+      )
+    )
+  ),
+  column(
+    12, style = "padding:0px;",
+    fluidRow(
+      style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
+      column(
+        4, style = "text-align:center;border-right: 2px solid white;",
+        tags$img(src = "images/dist_demo.png",
+                 width = "100%")
+      ),
+      column(
+        8, style = "text-align:justify;",
+        h3("What is sample-to-sample distance (SSD) ?"),
+        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
+          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
+          distance metrics, which specify how the distance between the input samples. A commonly used approach for
+          measuring sample distance in RNA-seq data is to use Euclidean distance."),
+        h3("How to interpret the SSD analysis results ?"),
+        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
+          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
+          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
+          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
       )
     )
   ),

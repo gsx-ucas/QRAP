@@ -9,12 +9,22 @@ observe({
 ## module detection
 SoftThreshold <- eventReactive(input$cal_power,{
   withProgress(message = "", value = 0, {
+    require(ggplot2)
     incProgress(0.2, detail = "Calculating SoftThreshold ...")
     powers = c(c(1:10), seq(from = 12, to=30, by=2))
-    sft = pickSoftThreshold(datExpr(), powerVector = powers)
-    incProgress(0.6, detail = "Detecting module genes ...")
     cor <- WGCNA::cor
-
+    bicor <- WGCNA::bicor
+    if (input$power_corFnc == "cor") {
+      sft = WGCNA::pickSoftThreshold(datExpr(), powerVector = powers, corFnc = cor, 
+                                     RsquaredCut = input$power_RsquaredCut, nBreaks = input$power_nBreaks, 
+                                     networkType = input$power_networkType, moreNetworkConcepts = as.logical(input$moreNetworkConcepts))
+    }else {
+      sft = WGCNA::pickSoftThreshold(datExpr(), powerVector = powers, corFnc = bicor, 
+                                     RsquaredCut = input$power_RsquaredCut, nBreaks = input$power_nBreaks, 
+                                     networkType = input$power_networkType, moreNetworkConcepts = as.logical(input$moreNetworkConcepts))
+    }
+    
+    incProgress(0.6, detail = "generating plots ...")
     df <- sft$fitIndices
     p1 <- ggplot(df, aes(x = Power, y = -sign(slope)*SFT.R.sq))+
       geom_text(aes(label = Power), col = "red")+

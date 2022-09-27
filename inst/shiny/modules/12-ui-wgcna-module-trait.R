@@ -14,9 +14,7 @@ fluidRow(
       "input.WGCNA_Heatmap_method == 'pheatmap (external function)'",
       numericInput("WGCNA_heatmap_fontsize", "Fontsize for legends:", value = 15, width = "100%"),
       numericInput("WGCNA_heatmap_fontsize_col", "Fontsize  for colnames:", value = 15, width = "100%"),
-      numericInput("WGCNA_heatmap_fontsize_num", "Fontsize  for fill text:", value = 8, width = "100%"),
-      checkboxInput("WGCNA_heatmap_cluster_cols", "Specifying if columns should be clustered.", value = TRUE, width = "100%"),
-      checkboxInput("WGCNA_heatmap_cluster_rows", "Specifying if rows should be clustered.", value = TRUE, width = "100%")
+      numericInput("WGCNA_heatmap_fontsize_num", "Fontsize  for fill text:", value = 8, width = "100%")
     ),
     textInput("module_colors", "Colors:", width = "100%", value = "blue,white,red"),
     uiOutput("module_showRows"),
@@ -53,7 +51,38 @@ fluidRow(
     2,
     wellPanel(
       sliderInput("wgcna_heatmap_width", "Figure Width (%):", min = 50, max = 100, value = 100, step = 2, width = "100%"),
-      sliderInput("wgcna_heatmap_height", "Figure Height (px):", min = 200, max = 1000, value = 550, step = 20, width = "100%")
+      sliderInput("wgcna_heatmap_height", "Figure Height (px):", min = 200, max = 1000, value = 541, step = 20, width = "100%")
+    ),
+    conditionalPanel(
+      "input.WGCNA_Heatmap_method == 'pheatmap (external function)'",
+      wellPanel(
+        checkboxInput("WGCNA_heatmap_cluster_cols", "clustering columns ?", value = TRUE, width = "100%"),
+        checkboxInput("WGCNA_heatmap_cluster_rows", "clustering rows ?", value = TRUE, width = "100%")
+      )
+    )
+  ),
+  column(
+    12, style = "padding:0px;",
+    fluidRow(
+      style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
+      column(
+        4, style = "text-align:center;border-right: 2px solid white;",
+        tags$img(src = "images/dist_demo.png",
+                 width = "100%")
+      ),
+      column(
+        8, style = "text-align:justify;",
+        h3("What is sample-to-sample distance (SSD) ?"),
+        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
+          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
+          distance metrics, which specify how the distance between the input samples. A commonly used approach for
+          measuring sample distance in RNA-seq data is to use Euclidean distance."),
+        h3("How to interpret the SSD analysis results ?"),
+        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
+          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
+          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
+          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
+      )
     )
   ),
   column(

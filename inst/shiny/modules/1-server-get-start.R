@@ -212,7 +212,7 @@ local_data <- eventReactive(input$filter_local, {
 })
 
 # show expression data matrix
-output$rawTable <- renderDataTable({
+output$rawTable <- DT::renderDataTable({
   if (isTRUE(use.example$use)) {
     data <- example()
   }else {
@@ -280,7 +280,7 @@ output$local_matrix <- renderUI({
   if (show_local_mat$data == "filtered_data") {
     shinycssloaders::withSpinner(plotOutput("filter_density", height = "355px"))
   }else {
-    shinycssloaders::withSpinner(dataTableOutput("rawTable"))
+    shinycssloaders::withSpinner(DT::dataTableOutput("rawTable"))
   }
 })
 
@@ -330,7 +330,8 @@ results_select <- eventReactive(input$fetch_geo, {
 observe({
   geo_results()
   results_select()
-  shinyalert(title = "Fetch geo data finished!", type = "success")
+  # shinyalert(title = "Fetch geo data finished!", type = "success")
+  sendSweetAlert(title = "Fetch geo data finished!", type = "success", btn_labels = "Ok")
 })
 
 
@@ -406,7 +407,7 @@ geo_matrix <- eventReactive(input$preview_geo, {
   return(matrix)
 })
 
-output$geo_matrix <- renderDataTable({
+output$geo_matrix <- DT::renderDataTable({
   geo_matrix()
 },rownames = T,
 options = list(pageLength = 10, autoWidth = F, scrollX=TRUE, scrollY="225px")
@@ -475,7 +476,7 @@ output$geo_expr_matrix <- renderUI({
   if (show_geo_mat$data == "filtered_data") {
     shinycssloaders::withSpinner(plotOutput("GEO_density", height = "355px"))
   }else {
-    shinycssloaders::withSpinner(dataTableOutput("geo_matrix"))
+    shinycssloaders::withSpinner(DT::dataTableOutput("geo_matrix"))
   }
 })
 

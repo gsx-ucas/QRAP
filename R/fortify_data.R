@@ -47,7 +47,6 @@ fortify_results <- function(model, showCategory = 10, terms = NULL, by="geneRati
       if (is.null(terms)) {
         enrp <- loadNamespace("enrichplot")
         result <- enrp$fortify.enrichResult(model, showCategory = showCategory, by = by, order = T)
-        # result <- fortify(model, showCategory = showCategory, by = by, order = T)
       }else {
         result <- as.data.frame(model)
 
@@ -65,6 +64,30 @@ fortify_results <- function(model, showCategory = 10, terms = NULL, by="geneRati
         result$Description <- factor(result$Description,
                                      levels=rev(unique(result$Description)))
       }
+    }else if (inherits(model, "gseaResult")) {
+      result <- as.data.frame(model)
+      
+      result <- result[!is.na(result$Description), ]
+      if (is.null(terms)) {
+        result <- result %>% head(showCategory)
+      }else {
+        result <- result[result$Description %in% terms, ]
+      }
+
+      result$Count <- stringr::str_count(result$core_enrichment, "/")
+      result$GeneRatio <- result$Count / result$setSize
+      
+      if (by == "Count") {
+        idx <- order(result$Count, decreasing=TRUE)
+      }else if (by == "NES") {
+        idx <- order(result$NES, decreasing=TRUE)
+      }else {
+        idx <- order(result$GeneRatio, decreasing=TRUE)
+      }
+      result <- result[idx,]
+      
+      result$Description <- factor(result$Description,
+                                   levels=rev(unique(result$Description)))
     }
     return(result)
   }else {

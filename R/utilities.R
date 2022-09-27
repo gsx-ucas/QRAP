@@ -9,7 +9,8 @@ set_anno_color <- function(anno_row, anno_col) {
   require(RColorBrewer)
   annocolor <- c(as.list(anno_row), as.list(anno_col))
 
-  annocolor <- lapply(annocolor,function(x){if(is.factor(x)){x=levels(x);return(x)}else{x=unique(x);return(x)}})
+  # annocolor <- lapply(annocolor,function(x){if(is.factor(x)){x=levels(x);return(x)}else{x=unique(x);return(x)}})
+  annocolor <- lapply(annocolor,function(x){x=unique(x);return(x)})
 
   qual_color_df <- brewer.pal.info[brewer.pal.info$category == "qual", ]
   qual_idx <- lapply(1:length(annocolor), function(x){if (is.character(annocolor[[x]])) {return(x)} else {return(NULL)}}) %>% unlist()

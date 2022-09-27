@@ -50,46 +50,45 @@ observeEvent(input$get_DEGs,{
   )
 })
 
-output$ppi_subGene <- renderUI({
-  if (input$ppi_genes=="DEGs") {
-    if (is.null(input$ppi_group))
-      return(NULL)
-    identifiers <- load.DEGs(input$ppi_group)[[1]] %>% rownames()
-  }else if (input$ppi_genes=="WGCNA Modules") {
-    if (is.null(input$ppi_modules))
-      return(NULL)
-    identifiers <- names(moduleColors())[moduleColors() == input$ppi_modules]
-  }else if (input$ppi_genes=="DEG Patterns") {
-    if (is.null(input$ppi_patterns))
-      return(NULL)
-    identifiers <- degsp_object()$df[degsp_object()$df$cluster == as.integer(input$ppi_patterns), "genes"]
-  }
+# output$ppi_subGene <- renderUI({
+#   if (input$ppi_genes=="DEGs") {
+#     if (is.null(input$ppi_group))
+#       return(NULL)
+#     identifiers <- load.DEGs(input$ppi_group)[[1]] %>% rownames()
+#   }else if (input$ppi_genes=="WGCNA Modules") {
+#     if (is.null(input$ppi_modules))
+#       return(NULL)
+#     identifiers <- names(moduleColors())[moduleColors() == input$ppi_modules]
+#   }else if (input$ppi_genes=="DEG Patterns") {
+#     if (is.null(input$ppi_patterns))
+#       return(NULL)
+#     identifiers <- degsp_object()$df[degsp_object()$df$cluster == as.integer(input$ppi_patterns), "genes"]
+#   }
+# 
+#   if (length(identifiers) > 400) {
+#     fluidPage(
+#       style = "padding-top:0px; padding-left:0px; padding-right:0px; padding-bottom:10px; margin-top:0px; margin-left:0px; margin-right:0px",
+#       strong(paste("Note: Only use the first 400 highest connective genes."), style = "text-align:justify; color:orange;")
+#     )
+#   }
+# })
 
-  if (length(identifiers) > 400) {
-    fluidPage(
-      style = "padding-top:0px; padding-left:0px; padding-right:0px; padding-bottom:10px; margin-top:0px; margin-left:0px; margin-right:0px",
-      strong(paste("Selected", length(identifiers), "genes, but only first 400
-                 highest connective genes will be used to perform PPI analysis."), style = "text-align:justify; color:orange;")
-    )
-  }
-})
-
-output$required_score <- renderUI({
-  if (input$ppi_genes=="DEGs") {
-    if (is.null(input$ppi_group))
-      return(NULL)
-    identifiers <- load.DEGs(input$ppi_group)[[1]] %>% rownames()
-  }else if (input$ppi_genes=="WGCNA Modules") {
-    if (is.null(input$ppi_modules))
-      return(NULL)
-    identifiers <- names(moduleColors())[moduleColors() == input$ppi_modules]
-  }else if (input$ppi_genes=="DEG Patterns") {
-    if (is.null(input$ppi_patterns))
-      return(NULL)
-    identifiers <- degsp_object()$df[degsp_object()$df$cluster == as.integer(input$ppi_patterns), "genes"]
-  }
-  numericInput("required_score", "Threshold of significance to include an interaction:", value = 400, width = "100%")
-})
+# output$required_score <- renderUI({
+#   if (input$ppi_genes=="DEGs") {
+#     if (is.null(input$ppi_group))
+#       return(NULL)
+#     identifiers <- load.DEGs(input$ppi_group)[[1]] %>% rownames()
+#   }else if (input$ppi_genes=="WGCNA Modules") {
+#     if (is.null(input$ppi_modules))
+#       return(NULL)
+#     identifiers <- names(moduleColors())[moduleColors() == input$ppi_modules]
+#   }else if (input$ppi_genes=="DEG Patterns") {
+#     if (is.null(input$ppi_patterns))
+#       return(NULL)
+#     identifiers <- degsp_object()$df[degsp_object()$df$cluster == as.integer(input$ppi_patterns), "genes"]
+#   }
+#   numericInput("required_score", "Threshold of significance to include an interaction:", value = 400, width = "100%")
+# })
 
 string_db <- eventReactive(input$Init_STRINGdb, {
   withProgress(message = "", {
@@ -112,14 +111,14 @@ string_db <- eventReactive(input$Init_STRINGdb, {
       incProgress(0.1, detail = "Loading WGCNA module genes ...")
       identifiers <- names(moduleColors())[moduleColors() == input$ppi_modules]
       if (length(identifiers) > 400) {
-        IMConn = softConnectivity(datExpr()[, identifiers])
+        IMConn = WGCNA::softConnectivity(datExpr()[, identifiers])
         identifiers <- identifiers[rank(-IMConn) <= 400]
       }
     }else if (input$ppi_genes=="DEG Patterns") {
       incProgress(0.1, detail = "Loading expression pattern genes ...")
       identifiers <- degsp_object()$df[degsp_object()$df$cluster == as.integer(input$ppi_patterns), "genes"]
       if (length(identifiers) > 400) {
-        IMConn = softConnectivity(t(assay(trans_value()))[ ,rownames(trans_value()) %in% identifiers])
+        IMConn = WGCNA::softConnectivity(t(SummarizedExperiment::assay(trans_value()))[ ,rownames(trans_value()) %in% identifiers])
         identifiers <- identifiers[rank(-IMConn) <= 400]
       }
     }
@@ -139,7 +138,7 @@ string_db <- eventReactive(input$Init_STRINGdb, {
                              ppi_identifiers, "&species=", string_species) %>% url() %>% read.table(colClasses = "character"))
 
     if ('try-error' %in% class(string_url)) {
-      shinyalert(title = "error", text = "Failed to connect to stringdb web, Please try again !", type = "error", confirmButtonText = "Close")
+      sendSweetAlert(title = "error", text = "Failed to connect to stringdb web, Please try again later!", type = "error", btn_labels = "Close")
     }
 
     string_list <- list(image_url = image_url, string_url = string_url)
@@ -148,16 +147,20 @@ string_db <- eventReactive(input$Init_STRINGdb, {
 })
 
 output$PPI_Image <- renderUI({
-  wellPanel(
-    fluidRow(
-      column(
-        12,
-        tags$image(type="text/html",
-                   width = paste0(input$ppi_plot_width, "%"),
-                   height = paste0(input$ppi_plot_height, "px"),
-                   alt = "Oops, something wrong!",
-                   src = string_db()$image_url),
-      )
+  fluidRow(
+    column(
+      12,
+      # tags$iframe(type="text/html",
+      #             src = string_db()$image_url,
+      #             width = paste0(input$ppi_plot_width, "%"),
+      #             height = paste0(input$ppi_plot_height, "px"),
+      #             scrolling = "yes", sandbox = "allow-same-origin allow-top-navigation allow-forms allow-scripts")
+      # )
+      tags$image(type="text/html",
+                 width = paste0(input$ppi_plot_width, "%"),
+                 height = paste0(input$ppi_plot_height, "px"),
+                 alt = "Oops, something wrong!",
+                 src = string_db()$image_url)
     )
   )
 })

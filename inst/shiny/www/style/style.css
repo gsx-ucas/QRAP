@@ -15,6 +15,8 @@
   /*background-color: grey;*/
   color: rgb(140, 146, 153);
   height: 58px;
+  padding-top: 18px;
+  padding-bottom: 15px;
 }
 /* 设置激活的导航栏属性*/
 #mainMenu > li.active > a {
@@ -86,7 +88,7 @@ body > div > div.container-fluid > .tab-content {
 }
 
 /* 设置主页左侧导航栏格式*/
-#home_nav {
+/* #home_nav {
   position: fixed;
   width: auto;
   text-align: right;
@@ -98,6 +100,7 @@ body > div > div.container-fluid > .tab-content {
   color: purple;
   border-radius: 5px;
 }
+*/
 /*------------------body--------------------------*/
 body {
   height: 100%;
@@ -296,3 +299,4 @@ button ~ ul.dropdown-menu {
   align-content: right;
   align-items: right;
 }
+

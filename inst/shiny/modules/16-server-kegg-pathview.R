@@ -28,7 +28,7 @@ pathview_geneList <- eventReactive(input$show_pathview, {
   }else if (species()$ENTREZGENE[species()$display_name == input$gprofiler_species] == 'yes') {
     convert_df <- gprofiler2::gconvert(degs$input, organism = species()$id[species()$display_name == input$gprofiler_species], target = "ENTREZGENE")
   }
-  joined_df <- left_join(degs, convert_df, by = "input") %>% filter(target != "nan")
+  joined_df <- dplyr::left_join(degs, convert_df, by = "input") %>% filter(target != "nan")
   genes <- joined_df$log2FoldChange
   names(genes) <- joined_df$target
   return(genes)
@@ -39,24 +39,24 @@ output$pathview_id <- renderUI({
   if (input$pathview_inherit == "gProfiler2") {
     if (!input$runGprofiler) {
       shinyjs::disable("show_pathview")
-      shinyalert(title = "warning", text = "Please run enrich KEGG using gProfiler2 first !!!", type = "warning")
+      sendSweetAlert(title = "warning", text = "Please run enrich KEGG using gProfiler2 first!", type = "warning")
       return(NULL)
     }else {
       if ('try-error' %in% class(gprofiler_object()))
         return(NULL)
       shinyjs::enable("show_pathview")
-      id <- (gprofiler_object()$result %>% filter(source == "KEGG") %>% select(term_id))[,1] %>% str_remove_all(pattern = "KEGG:")
-      names(id) <- (gprofiler_object()$result %>% filter(source == "KEGG") %>% select(term_name))[, 1]
+      id <- (gprofiler_object()$result %>% dplyr::filter(source == "KEGG") %>% dplyr::select(term_id))[,1] %>% stringr::str_remove_all(pattern = "KEGG:")
+      names(id) <- (gprofiler_object()$result %>% dplyr::filter(source == "KEGG") %>% dplyr::select(term_name))[, 1]
       selectInput("pathview_id", "Pathway to show:", choices = id, selected = id[1], multiple = F, width = "100%")
     }
   }else if (input$pathview_inherit == "clusterProfiler"){
     if (!input$start_clp_ora | input$clp_ora_source != 'KEGG') {
       shinyjs::disable("show_pathview")
-      shinyalert(title = "warning", text = "Please run enrich KEGG using clusterProfiler first !!!", type = "warning")
+      sendSweetAlert(title = "warning", text = "Please run enrich KEGG using clusterProfiler first!", type = "warning")
       return(NULL)
     }else {
       shinyjs::enable("show_pathview")
-      id <- as.data.frame(clp_ora_object())$ID %>% str_remove_all(pattern = species()$kegg_code[species()$display_name == input$gprofiler_species])
+      id <- as.data.frame(clp_ora_object())$ID %>% stringr::str_remove_all(pattern = species()$kegg_code[species()$display_name == input$gprofiler_species])
       names(id) <- as.data.frame(clp_ora_object())$Description
       selectInput("pathview_id", "Pathway to show:", choices = id, selected = id[1], multiple = F, width = "100%")
     }
@@ -65,31 +65,42 @@ output$pathview_id <- renderUI({
 
 observeEvent(input$show_pathview, {
   withProgress(message = "", value = 0,{
-    if (!dir.exists("www/Kegg_dir/")) {
-      dir.create("www/Kegg_dir", recursive = T)
-    }
+    # if (!dir.exists("www/Kegg_dir/")) {
+    #   dir.create("www/Kegg_dir", recursive = T)
+    # }
+    kegg_dir <- system.file("shiny", "www/Kegg_dir", package = "QRAP")
+    lapply(dir(kegg_dir, full.names = TRUE), function(x){file.remove(x)})
+    
     kegg_id <- species()$kegg_code[species()$display_name == input$gprofiler_species]
+    
+    lapply(dir("./", pattern = paste0(kegg_id, input$pathview_id, "*")), function(x){file.remove(x)})
+    
+    require(pathview)
     incProgress(0.5, detail = paste("Generating pathway png figure ...."))
-    pathview(gene.data = pathview_geneList(), pathway.id = input$pathview_id,
+    pathview::pathview(gene.data = pathview_geneList(), pathway.id = input$pathview_id,
              species = kegg_id, out.suffix = "pathview", kegg.native = TRUE, res = 500, new.signature = FALSE,
              pdf.size = c(input$pathview_pdfsize[1], input$pathview_pdfsize[2]), cex = input$pathview_cex,
              key.pos = input$key_pos, limit = list(gene = input$colorbar_limit[1]),
              bins = list(gene = input$colorbar_limit[2]))
+    # file.copy(paste0(kegg_id, input$pathview_id, ".pathview.png"),
+    #           paste0("www/Kegg_dir/", kegg_id, input$pathview_id, ".pathview.png"), overwrite = TRUE)
     file.copy(paste0(kegg_id, input$pathview_id, ".pathview.png"),
-              paste0("www/Kegg_dir/", kegg_id, input$pathview_id, ".pathview.png"), overwrite = TRUE)
+              paste0(kegg_dir, "/", kegg_id, input$pathview_id, ".pathview.png"), overwrite = TRUE)
 
     incProgress(0.5, detail = paste("Generating pathway pdf figure ...."))
-    pathview(gene.data = pathview_geneList(), pathway.id = input$pathview_id,
+    pathview::pathview(gene.data = pathview_geneList(), pathway.id = input$pathview_id,
              species = kegg_id, out.suffix = "pathview", kegg.native = FALSE, new.signature = FALSE,
              pdf.size = c(input$pathview_pdfsize[1], input$pathview_pdfsize[2]), cex = input$pathview_cex,
              key.pos = input$key_pos, limit = list(gene = input$colorbar_limit[1]),
              bins = list(gene = input$colorbar_limit[2]))
+    # file.copy(paste0(kegg_id, input$pathview_id, ".pathview.pdf"),
+    #           paste0("www/Kegg_dir/", kegg_id, input$pathview_id, ".pathview.pdf"), overwrite = TRUE)
     file.copy(paste0(kegg_id, input$pathview_id, ".pathview.pdf"),
-              paste0("www/Kegg_dir/", kegg_id, input$pathview_id, ".pathview.pdf"), overwrite = TRUE)
+              paste0(kegg_dir, kegg_id, input$pathview_id, ".pathview.pdf"), overwrite = TRUE)
     lapply(dir("./", pattern = paste0(kegg_id, input$pathview_id, "*")), function(x){file.remove(x)})
 
     output$pathview_iframe <- renderUI({
-      if (file.exists(paste0("www/Kegg_dir/", kegg_id, input$pathview_id, ".pathview.png"))) {
+      if (file.exists(paste0(kegg_dir, "/", kegg_id, input$pathview_id, ".pathview.png"))) {
         tags$image(style = paste0("width:", input$pathview_plot_width, "%;",
                                   "height:", input$pathview_plot_height, "px;scrolling=no"),
                    alt = "Oops, something wrong...",

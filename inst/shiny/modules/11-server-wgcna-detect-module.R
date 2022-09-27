@@ -17,7 +17,7 @@ net <- eventReactive(input$moldue_detect,{
 
     if (input$wgcna_cache != T | !file.exists("./Cache/WGCNA_net.rds")) {
       net <- try(
-        blockwiseModules(datExpr(), power = input$soft_power, maxBlockSize = dim(datExpr())[2],
+        WGCNA::blockwiseModules(datExpr(), power = input$soft_power, maxBlockSize = dim(datExpr())[2],
                          minModuleSize = input$minModuleSize, blockSizePenaltyPower = input$blockSizePenaltyPower,
                          maxPOutliers = input$maxPOutliers, quickCor = input$quickCor, detectCutHeight = input$detectCutHeight,
                          reassignThreshold = input$reassignThreshold, minCoreKME = input$minCoreKME,
@@ -39,10 +39,10 @@ net <- eventReactive(input$moldue_detect,{
 observeEvent(input$moldue_detect, {
   net()
   if ('try-error' %in% class(net())) {
-    shinyalert(title = "error", text = paste0(net()[1], " Consider remove batch effects or your data are not suitable for WGCNA analysis !"),
-               type = "error", confirmButtonText = "Close")
+    sendSweetAlert(title = "error", text = paste0(net()[1], " Consider remove batch effects or your data are not suitable for WGCNA analysis !"),
+               type = "error", btn_labels = "Close")
   }else {
-    shinyalert(title = "success", text = "WGCNA Moudule Detection Finished !", type = "success")
+    sendSweetAlert(title = "success", text = "Detection of WGCNA Moudule complete!", type = "success")
   }
 })
 
@@ -55,10 +55,10 @@ plotDendro <- reactive({
     # if (is.null(input$block_id))
     #   return(NULL)
     # Convert labels to colors for plotting
-    mergedColors = labels2colors(net()$colors)
+    mergedColors = WGCNA::labels2colors(net()$colors)
     incProgress(0.6, detail = "Plotting module genes ...")
     # Plot the dendrogram and the module colors underneath
-    p <- plotDendroAndColors(net()$dendrograms[[1]], mergedColors[net()$blockGenes[[1]]],
+    p <- WGCNA::plotDendroAndColors(net()$dendrograms[[1]], mergedColors[net()$blockGenes[[1]]],
                              "Module colors", dendroLabels = FALSE, hang = 0.03, addGuide = TRUE, guideHang = 0.05)
   })
   return(p)
@@ -76,9 +76,9 @@ output$plotDendro_Pdf <- downloadHandler(
   filename = function()  {paste0("WGCNA_Cluster_Dendrogram_Plot",".pdf")},
   content = function(file) {
     pdf(file, width = input$plotDendro_width, height = input$plotDendro_height)
-    mergedColors = labels2colors(net()$colors)
+    mergedColors = WGCNA::labels2colors(net()$colors)
     # Plot the dendrogram and the module colors underneath
-    plotDendroAndColors(net()$dendrograms[[1]], mergedColors[net()$blockGenes[[1]]],
+    WGCNA::plotDendroAndColors(net()$dendrograms[[1]], mergedColors[net()$blockGenes[[1]]],
                         "Module colors", dendroLabels = FALSE, hang = 0.03, addGuide = TRUE, guideHang = 0.05)
     dev.off()
   }
@@ -88,7 +88,7 @@ output$plotDendro_Pdf <- downloadHandler(
 ## Gene Table
 
 moduleColors <- reactive({
-  moduleColors = labels2colors(net()$colors)
+  moduleColors = WGCNA::labels2colors(net()$colors)
   names(moduleColors) <- names(net()$colors)
   return(moduleColors)
 })
@@ -99,7 +99,7 @@ moduleGene_table <- reactive({
 
 output$moduleGene_table <- renderDataTable({
   moduleGene_table()
-},rownames = T, options = list(pageLength = 10, autoWidth = F, scrollX=TRUE))
+},rownames = T, options = list(pageLength = 5, autoWidth = F, scrollX=TRUE))
 
 output$moduleGene_table_csv <- downloadHandler(
   filename = function()  {paste0("moduleGene_table",".csv")},

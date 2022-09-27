@@ -26,7 +26,7 @@ sampleTable <- reactive({
   return(df)
 })
 
-output$conditionTab <- renderDataTable({
+output$conditionTab <- DT::renderDataTable({
   sampleTable()
 },rownames = T, editable = TRUE,
 options = list(pageLength = 10, autoWidth = F, scrollX=TRUE, 
@@ -56,16 +56,17 @@ output$batch_col2 <- renderUI({
   if (input$batch_methods == "removeBatchEffect") {
     selectInput(
       inputId = "batch_col2", label = "Group as batch factor:", selected = "NULL", width = "100%",
-      choices = c("NULL", sampleTable()[, !colnames(sampleTable()) %in% c("samples", "condition", input$batch_col)] %>% colnames)
+      choices = c("NULL", colnames(sampleTable())[!colnames(sampleTable()) %in% c("samples", "condition", input$batch_col)])
     )
   }
 })
 
 output$formula <- renderUI({
-  req(input$batch_methods, input$batch_methods)
+  req(input$batch_methods)
   if (input$batch_methods == 'NULL') {
     textInput("formula", "Design formula:", value = "~ condition", width = "100%")
   }else if (input$batch_methods == "removeBatchEffect") {
+    req(input$batch_col2)
     if (input$batch_col2 != "NULL") {
       textInput("formula", "Design formula:", value = paste0('~ ', input$batch_col, " + ", input$batch_col2, " + condition"), width = "100%")
     }else {
@@ -156,13 +157,13 @@ norm_value <- eventReactive(input$runDESeq,{
 observeEvent(input$runDESeq,{
   dds()
   if ('try-error' %in% class(dds())) {
-    shinyalert(title = "error", text = dds()[1], type = "error", confirmButtonText = "Close")
+    sendSweetAlert(title = "error", text = dds()[1], type = "error", btn_labels = "Close")
   }else {
     trans_value()
     if ('try-error' %in% class(trans_value())) {
-      shinyalert(title = "error", text = trans_value()[1], type = "error", confirmButtonText = "Close")
+      sendSweetAlert(title = "error", text = trans_value()[1], type = "error", btn_labels = "Close")
     }else {
-      shinyalert(title = "success", text = "Data normalization and transformation completed !", type = "success")
+      sendSweetAlert(title = "success", text = "Data normalization and transformation completed !", type = "success")
     }
     norm_value()
   }

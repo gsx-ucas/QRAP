@@ -4,7 +4,7 @@
 \alias{subset_Tab}
 \title{Subset The Experiment design Table and keep the order}
 \usage{
-subset_Tab(dds, vars, selected)
+subset_Tab(dds, vars, selected = NULL)
 }
 \arguments{
 \item{dds}{object of produced by DESeq}

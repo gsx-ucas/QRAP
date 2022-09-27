@@ -74,11 +74,6 @@ observe({
   }
 })
 
-observe({
-  print(input$input_gene)
-  print(grepl("\n", input$input_gene))
-})
-
 ##-----------------Plotting genes expression----------------------------##
 Expr_plot <- eventReactive(input$plot_geneExpr,{
   

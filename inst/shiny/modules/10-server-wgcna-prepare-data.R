@@ -30,7 +30,7 @@ output$wgcna_condition <- renderUI({
 
 datExpr <- eventReactive(input$get_wgcna_exprs,{
   withProgress(message = "", value = 0, min = 0, max = 1, {
-    sampleTable <- as.data.frame(colData(dds()))[dds()$condition %in% input$wgcna_condition, ]
+    sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% input$wgcna_condition, ]
 
     if (input$filter_wgcna_genes == "differential genes") {
       incProgress(0.2, detail = "Getting DEGs ...")
@@ -40,17 +40,17 @@ datExpr <- eventReactive(input$get_wgcna_exprs,{
       }) %>% unlist %>% unique
       incProgress(0.2, detail = "getting expression data ...")
       # exprs <- log2(norm_value() + 1)[DeGenes , sampleTable$samples] %>% as.data.frame()
-      exprs <- assay(trans_value())[DeGenes, sampleTable$samples] %>% as.data.frame()
+      exprs <- SummarizedExperiment::assay(trans_value())[DeGenes, sampleTable$samples] %>% as.data.frame()
     }else {
       incProgress(0.2, detail = "filtering low expression genes ...")
       # exprs <- log2(norm_value() + 1)[, sampleTable$samples] %>% as.data.frame()
-      counts <- counts(dds())[, sampleTable$samples] %>% as.data.frame()
-      ffun=filterfun(pOverA(p = input$sample_prop, A = input$mini_reads))
-      filt=genefilter(counts,ffun)
-      exprs = assay(trans_value())[filt,]
+      counts <- DESeq2::counts(dds())[, sampleTable$samples] %>% as.data.frame()
+      ffun = genefilter::filterfun(genefilter::pOverA(p = input$sample_prop, A = input$mini_reads))
+      filt = genefilter::genefilter(counts,ffun)
+      exprs = SummarizedExperiment::assay(trans_value())[filt,]
 
       incProgress(0.2, detail = "testing good genes ...")
-      gsg <- goodSamplesGenes(as.data.frame(t(exprs)), verbose = 3)
+      gsg <- WGCNA::goodSamplesGenes(as.data.frame(t(exprs)), verbose = 3)
       if (!gsg$allOK) {
         # Optionally, print the gene and sample names that were removed:
         if (sum(!gsg$goodGenes)>0)
@@ -82,7 +82,7 @@ output$wgcna_warning <- renderUI({
 output$wgcna_exprs <- renderDataTable({
   datExpr()[, 1:20]
 },rownames = T, editable = TRUE,
-options = list(pageLength = 5, autoWidth = F, scrollX=TRUE, scrollY=TRUE)
+options = list(pageLength = 10, autoWidth = F, scrollX=TRUE, scrollY="400px")
 )
 
 # observeEvent(input$start_wgcna_meta, {
@@ -93,9 +93,9 @@ options = list(pageLength = 5, autoWidth = F, scrollX=TRUE, scrollY=TRUE)
 ## WGCNA meta data
 
 output$wgcna_chcol <- renderUI({
-  colNames <- colnames(colData(dds()))[!colnames(colData(dds())) %in% c("sizeFactor", "replaceable", "samples")]
+  colNames <- colnames(dds()@colData)[!colnames(dds()@colData) %in% c("sizeFactor", "replaceable", "samples")]
   selects <- lapply(colNames, function(x){
-    if (is.factor(as.data.frame(colData(dds()))[,x]) | is.character(as.data.frame(colData(dds()))[,x])) {
+    if (is.factor(as.data.frame(dds()@colData)[,x]) | is.character(as.data.frame(dds()@colData)[,x])) {
       return(x)
     }
   }) %>% unlist()
@@ -105,9 +105,9 @@ output$wgcna_chcol <- renderUI({
 })
 
 output$wgcna_nucol <- renderUI({
-  colNames <- colnames(colData(dds()))[!colnames(colData(dds())) %in% c("sizeFactor", "replaceable", "samples")]
+  colNames <- colnames(dds()@colData)[!colnames(dds()@colData) %in% c("sizeFactor", "replaceable", "samples")]
   selects <- lapply(colNames, function(x){
-    if (is.numeric(as.data.frame(colData(dds()))[,x])) {
+    if (is.numeric(as.data.frame(dds()@colData)[,x])) {
       return(x)
     }
   }) %>% unlist()
@@ -118,15 +118,15 @@ output$wgcna_nucol <- renderUI({
 
 # # upload or generate a clinical trait data
 traitDataTab <- eventReactive(input$get_wgcna_exprs,{
-  if (input$wgcna_meta_source == 'upload from local') {
-    sampleTable <- as.data.frame(colData(dds()))[dds()$condition %in% input$wgcna_condition, ]
-
-    inFile <- input$traitfile
-    traitData <- vroom::vroom(inFile$datapath, col_names = input$trait_header) %>% as.data.frame
-    rownames(traitData) <- traitData[, 1]
-    traitData <- traitData[sampleTable$samples, -1]
-  }else {
-    sampleTable <- as.data.frame(colData(dds()))[dds()$condition %in% input$wgcna_condition, ]
+  # if (input$wgcna_meta_source == 'upload from local') {
+  #   sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% input$wgcna_condition, ]
+  # 
+  #   inFile <- input$traitfile
+  #   traitData <- vroom::vroom(inFile$datapath, col_names = input$trait_header) %>% as.data.frame
+  #   rownames(traitData) <- traitData[, 1]
+  #   traitData <- traitData[sampleTable$samples, -1]
+  # }else {
+    sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% input$wgcna_condition, ]
     rownames(sampleTable) <- sampleTable$samples
     sampleTable <- sampleTable[rownames(datExpr()), ]
 
@@ -139,18 +139,18 @@ traitDataTab <- eventReactive(input$get_wgcna_exprs,{
           sampleTable[which(is.na(sampleTable[, x])), paste0(x, "_", i)] <- NA
         }
         sampleTable[, paste0(x, "_", sampleTable[,x] %>% unique %>% as.character %>% sort)]
-      }) %>% bind_cols()
+      }) %>% dplyr::bind_cols()
     }
 
     if (!is.null(input$wgcna_nucol)) {
       traitData <- cbind(traitData, sampleTable[, input$wgcna_nucol])
     }
-  }
+  # }
   return(traitData)
 })
 
 output$wgcna_meta <- renderDataTable({
   traitDataTab()
 },rownames = T, editable = TRUE,
-options = list(pageLength = 5, autoWidth = F, scrollX=TRUE, scrollY=TRUE)
+options = list(pageLength = 10, autoWidth = F, scrollX=TRUE, scrollY="400px")
 )

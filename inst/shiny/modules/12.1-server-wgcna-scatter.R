@@ -20,20 +20,20 @@ verboseScatter <- eventReactive(input$plot_wgcna_scatter, {
   trait_condition = as.data.frame(traitDataTab()[, input$trait])
   names(trait_condition) = input$trait
 
-  MEs0 = moduleEigengenes(datExpr(), moduleColors())$eigengenes
-  MEs = orderMEs(MEs0)
+  MEs0 = WGCNA::moduleEigengenes(datExpr(), moduleColors())$eigengenes
+  MEs = WGCNA::orderMEs(MEs0)
 
   modNames = substring(names(MEs), 3)
 
   nSamples <- dim(datExpr())[1]
   geneModuleMembership = as.data.frame(cor(datExpr(), MEs, use = "p"))
-  MMPvalue = as.data.frame(corPvalueStudent( as.matrix(geneModuleMembership), nSamples))
+  MMPvalue = as.data.frame(WGCNA::corPvalueStudent( as.matrix(geneModuleMembership), nSamples))
 
   names(geneModuleMembership) = paste("MM", modNames, sep="");
   names(MMPvalue) = paste("p.MM", modNames, sep="");
 
-  geneTraitSignificance = as.data.frame(cor(datExpr(), trait_condition, use = "p"));
-  GSPvalue = as.data.frame(corPvalueStudent(as.matrix(geneTraitSignificance), nSamples));
+  geneTraitSignificance = as.data.frame(WGCNA::cor(datExpr(), trait_condition, use = "p"));
+  GSPvalue = as.data.frame(WGCNA::corPvalueStudent(as.matrix(geneTraitSignificance), nSamples));
 
   names(geneTraitSignificance) = paste("GS.", names(trait_condition), sep="");
   names(GSPvalue) = paste("p.GS.", names(trait_condition), sep="");
@@ -44,7 +44,7 @@ verboseScatter <- eventReactive(input$plot_wgcna_scatter, {
 
   if (input$WGCNA_scatter_method=='verboseScatterplot (WGCNA function)') {
     par(mar=c(5,5,5,5))
-    verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
+    WGCNA::verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
                        abs(geneTraitSignificance[moduleGenes, 1]),
                        xlab = paste("Module Membership in", module, "module"),
                        ylab = paste("Gene significance for ", input$trait),
@@ -62,13 +62,13 @@ verboseScatter <- eventReactive(input$plot_wgcna_scatter, {
 
     x = as.numeric(as.character(x))
     y = as.numeric(as.character(y))
-    corExpr = parse(text = paste(corFnc, "(x, y ", prepComma(corOptions), ")"))
+    corExpr = parse(text = paste(corFnc, "(x, y ", WGCNA::prepComma(corOptions), ")"))
 
     cor = signif(eval(corExpr), 2)
     if (is.finite(cor))
       if (abs(cor) < displayAsZero)
         cor = 0
-    corp = signif(corPvalueStudent(cor, sum(is.finite(x) & is.finite(y))), 2)
+    corp = signif(WGCNA::corPvalueStudent(cor, sum(is.finite(x) & is.finite(y))), 2)
 
     if (is.finite(corp) && corp < 10^(-200)) {
       corp = "<1e-200"
@@ -76,7 +76,7 @@ verboseScatter <- eventReactive(input$plot_wgcna_scatter, {
       corp = paste("=", corp, sep = "")
     }
     if (!is.na(corLabel)) {
-      mainX = paste(main, " ", corLabel, "=", cor, if (is.finite(cor)) {spaste(", p", corp)} else {""}, sep = "")
+      mainX = paste(main, " ", corLabel, "=", cor, if (is.finite(cor)) {WGCNA::spaste(", p", corp)} else {""}, sep = "")
     }else {
       mainX = main
     }
@@ -88,12 +88,20 @@ verboseScatter <- eventReactive(input$plot_wgcna_scatter, {
       pch <- 16
       cols <- module
     }
-    ggplot()+
+    p <- ggplot()+
       geom_point(aes(x = x, y = y), color = cols, size = input$wgcna_scatter_size, alpha = input$wgcna_scatter_alpha, pch = pch)+
       labs(x = paste("Module Membership in", module, "module"),
            y = paste("Gene significance for", input$trait), title = mainX)+
       theme_bw()+
       theme(plot.title = element_text(hjust = 0.5), text = element_text(size = input$wgcna_scatter_fontsize))
+    
+    if (nchar(input$wgcna_scatter_ggText != 0)) {
+      add_funcs <- strsplit(input$wgcna_scatter_ggText, "\\+")[[1]]
+      p <- p + lapply(add_funcs, function(x){
+        eval(parse(text = x))
+      })
+    }
+    return(p)
   }
 })
 
@@ -101,7 +109,16 @@ output$verboseScatter <- renderPlot({
   verboseScatter()
 })
 
+output$render_wgcna_scatter_height <- renderUI({
+  if (input$WGCNA_scatter_method=='verboseScatterplot (WGCNA function)') {
+    sliderInput("wgcna_scatter_height", "Figure Height (px):", min = 200, max = 1000, value = 542, step = 2, width = "100%")
+  }else {
+    sliderInput("wgcna_scatter_height", "Figure Height (px):", min = 200, max = 1000, value = 512, step = 2, width = "100%")
+  }
+})
+
 output$verboseScatterUI <- renderUI({
+  req(input$wgcna_scatter_width, input$wgcna_scatter_height)
   withSpinner(plotOutput("verboseScatter", width = paste0(input$wgcna_scatter_width, "%"), height = paste0(input$wgcna_scatter_height, "px")))
 })
 
@@ -113,20 +130,20 @@ output$verboseScatter_Pdf <- downloadHandler(
     trait_condition = as.data.frame(traitDataTab()[, input$trait])
     names(trait_condition) = input$trait
 
-    MEs0 = moduleEigengenes(datExpr(), moduleColors())$eigengenes
-    MEs = orderMEs(MEs0)
+    MEs0 = WGCNA::moduleEigengenes(datExpr(), moduleColors())$eigengenes
+    MEs = WGCNA::orderMEs(MEs0)
 
     modNames = substring(names(MEs), 3)
 
     nSamples <- dim(datExpr())[1]
-    geneModuleMembership = as.data.frame(cor(datExpr(), MEs, use = "p"))
-    MMPvalue = as.data.frame(corPvalueStudent( as.matrix(geneModuleMembership), nSamples))
+    geneModuleMembership = as.data.frame(WGCNA::cor(datExpr(), MEs, use = "p"))
+    MMPvalue = as.data.frame(WGCNA::corPvalueStudent( as.matrix(geneModuleMembership), nSamples))
 
     names(geneModuleMembership) = paste("MM", modNames, sep="");
     names(MMPvalue) = paste("p.MM", modNames, sep="");
 
-    geneTraitSignificance = as.data.frame(cor(datExpr(), trait_condition, use = "p"));
-    GSPvalue = as.data.frame(corPvalueStudent(as.matrix(geneTraitSignificance), nSamples));
+    geneTraitSignificance = as.data.frame(WGCNA::cor(datExpr(), trait_condition, use = "p"));
+    GSPvalue = as.data.frame(WGCNA::corPvalueStudent(as.matrix(geneTraitSignificance), nSamples));
 
     names(geneTraitSignificance) = paste("GS.", names(trait_condition), sep="");
     names(GSPvalue) = paste("p.GS.", names(trait_condition), sep="");
@@ -137,7 +154,7 @@ output$verboseScatter_Pdf <- downloadHandler(
 
     if (input$WGCNA_scatter_method=='verboseScatterplot (WGCNA function)') {
       par(mar=c(5,5,5,5))
-      verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
+      WGCNA::verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
                          abs(geneTraitSignificance[moduleGenes, 1]),
                          xlab = paste("Module Membership in", module, "module"),
                          ylab = paste("Gene significance for ", input$trait),
@@ -155,13 +172,13 @@ output$verboseScatter_Pdf <- downloadHandler(
 
       x = as.numeric(as.character(x))
       y = as.numeric(as.character(y))
-      corExpr = parse(text = paste(corFnc, "(x, y ", prepComma(corOptions), ")"))
+      corExpr = parse(text = paste(corFnc, "(x, y ", WGCNA::prepComma(corOptions), ")"))
 
       cor = signif(eval(corExpr), 2)
       if (is.finite(cor))
         if (abs(cor) < displayAsZero)
           cor = 0
-      corp = signif(corPvalueStudent(cor, sum(is.finite(x) & is.finite(y))), 2)
+      corp = signif(WGCNA::corPvalueStudent(cor, sum(is.finite(x) & is.finite(y))), 2)
 
       if (is.finite(corp) && corp < 10^(-200)) {
         corp = "<1e-200"
@@ -169,7 +186,7 @@ output$verboseScatter_Pdf <- downloadHandler(
         corp = paste("=", corp, sep = "")
       }
       if (!is.na(corLabel)) {
-        mainX = paste(main, " ", corLabel, "=", cor, if (is.finite(cor)) {spaste(", p", corp)} else {""}, sep = "")
+        mainX = paste(main, " ", corLabel, "=", cor, if (is.finite(cor)) {WGCNA::spaste(", p", corp)} else {""}, sep = "")
       }else {
         mainX = main
       }
@@ -181,12 +198,20 @@ output$verboseScatter_Pdf <- downloadHandler(
         pch <- 16
         cols <- module
       }
-      ggplot()+
+      p <- ggplot()+
         geom_point(aes(x = x, y = y), color = cols, size = input$wgcna_scatter_size, alpha = input$wgcna_scatter_alpha, pch = pch)+
         labs(x = paste("Module Membership in", module, "module"),
              y = paste("Gene significance for", input$trait), title = mainX)+
         theme_bw()+
         theme(plot.title = element_text(hjust = 0.5), text = element_text(size = input$wgcna_scatter_fontsize))
+      
+      if (nchar(input$wgcna_scatter_ggText != 0)) {
+        add_funcs <- strsplit(input$wgcna_scatter_ggText, "\\+")[[1]]
+        p <- p + lapply(add_funcs, function(x){
+          eval(parse(text = x))
+        })
+      }
+      return(p)
     }
     dev.off()
   }

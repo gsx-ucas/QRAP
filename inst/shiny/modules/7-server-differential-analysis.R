@@ -36,9 +36,9 @@ observeEvent(input$get_DEGs,{
   DesList()
   js$collapse("dea_tab")
   if ('try-error' %in% class(DesList())) {
-    shinyalert(title = "error", text = DesList()[1], type = "error", confirmButtonText = "Close")
+    sendSweetAlert(title = "error", text = DesList()[1], type = "error", btn_labels = "Close")
   }else {
-    shinyalert(title = "success", text = "DEGs have been generated and saved to the 'DEGs' directory !", type = "success")
+    sendSweetAlert(title = "success", text = "DEG files were saved to the 'DEGs' directory!", type = "success")
   }
 })
 
@@ -82,7 +82,7 @@ observeEvent(input$get_DEGs,{
 
 observe({
   if (length(dir("DEGs") %>% stringr::str_remove_all(".csv")) == 0 & input$showDEVis) {
-    sendSweetAlert(session = session, title = "No DEGs was calculated!", type = "warning")
+    sendSweetAlert(session = session, title = "Can not found DEG files!", type = "warning")
   }
 })
 
@@ -100,6 +100,7 @@ VolPlot <- eventReactive(input$plot_volcano,{
   xlims <- c(min(Res_list$log2FoldChange) - 1, max(Res_list$log2FoldChange) + 1)
   ylims <- -log10(min(Res_list$padj))
 
+  require(ggplot2)
   p <- ggplot(data = NULL) +
     geom_point(data = Res_list[Res_list$Regulation == "No Significant", ], aes(x=log2FoldChange, y=-log10(padj)), size = input$vol_size, alpha=input$vol_alpha)+
     geom_vline(xintercept = c(-input$vol_threasholds[2], input$vol_threasholds[2]), lty=3)+
@@ -116,15 +117,15 @@ VolPlot <- eventReactive(input$plot_volcano,{
     down_topn <- down[order(down$padj, -down$log2FoldChange), ] %>% head(input$show_topn)
     p <- p + geom_point(aes(x=up$log2FoldChange, y = -log10(up$padj)), color='red', size = input$vol_size, alpha=input$vol_alpha)+
       geom_point(aes(x=down$log2FoldChange, y = -log10(down$padj)), color='blue', size = input$vol_size, alpha=input$vol_alpha)+
-      geom_text(x=xlims[1]*0.9, y=ylims*0.9, aes(label=paste0('Down: ', dim(down)[1])), col='blue', size = 5, data=NULL)+
-      geom_text(x=xlims[2]*0.9, y=ylims*0.9, aes(label=paste0('Up: ', dim(up)[1])), col='red', size = 5, data=NULL)+
-      geom_label_repel(data = up_topn, aes(x = log2FoldChange, y = -log10(padj), label = rownames(up_topn)), size = input$vol_text_size, color = "red", max.overlaps = 100)+
-      geom_label_repel(data = down_topn, aes(x = log2FoldChange, y = -log10(padj), label = rownames(down_topn)), size = input$vol_text_size, color = "blue", max.overlaps = 100)
+      # geom_text(x=xlims[1]*0.9, y=ylims*0.9, aes(label=paste0('Down: ', dim(down)[1])), col='blue', size = 5, data=NULL)+
+      # geom_text(x=xlims[2]*0.9, y=ylims*0.9, aes(label=paste0('Up: ', dim(up)[1])), col='red', size = 5, data=NULL)+
+      ggrepel::geom_label_repel(data = up_topn, aes(x = log2FoldChange, y = -log10(padj), label = rownames(up_topn)), size = input$vol_text_size, color = "red", max.overlaps = 100)+
+      ggrepel::geom_label_repel(data = down_topn, aes(x = log2FoldChange, y = -log10(padj), label = rownames(down_topn)), size = input$vol_text_size, color = "blue", max.overlaps = 100)
   }else {
     p <- p + geom_point(aes(x=up$log2FoldChange, y = -log10(up$padj)), color='red', size = input$vol_size, alpha=input$vol_alpha)+
-      geom_point(aes(x=down$log2FoldChange, y = -log10(down$padj)), color='blue', size = input$vol_size, alpha=input$vol_alpha)+
-      geom_text(x=xlims[1]*0.9, y=ylims*0.9, aes(label=paste0('Down: ', dim(down)[1])), col='blue', size = 5, data=NULL)+
-      geom_text(x=xlims[2]*0.9, y=ylims*0.9, aes(label=paste0('Up: ', dim(up)[1])), col='red', size = 5, data=NULL)
+      geom_point(aes(x=down$log2FoldChange, y = -log10(down$padj)), color='blue', size = input$vol_size, alpha=input$vol_alpha)
+      # geom_text(x=xlims[1]*0.9, y=ylims*0.9, aes(label=paste0('Down: ', dim(down)[1])), col='blue', size = 5, data=NULL)+
+      # geom_text(x=xlims[2]*0.9, y=ylims*0.9, aes(label=paste0('Up: ', dim(up)[1])), col='red', size = 5, data=NULL)
   }
   
   if (nchar(input$deVol_ggText != 0)) {
@@ -248,7 +249,7 @@ VennGeneList <- eventReactive(input$plot_venn,{
 
 VennPlot <- eventReactive(input$plot_venn,{
   if (length(VennGeneList()) < 2) {
-    shinyalert(title = "error", text = "list `data` or vector `column` should be length between 2 and 4", type = "error", confirmButtonText = "Close")
+    sendSweetAlert(title = "error", text = "list `data` or vector `column` should be length between 2 and 4", type = "error", btn_labels = "Close")
   }
   
   p <- ggvenn::ggvenn(VennGeneList(), show_percentage = T, stroke_size = 0.5, set_name_size = input$venn_nsize, text_size = input$venn_lsize) 
