@@ -55,30 +55,37 @@ fluidRow(
     fluidRow(
       style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
       column(
-        4, style = "text-align:center;border-right: 2px solid white;",
-        tags$img(src = "images/dist_demo.png",
+        4, style = "text-align:center;border-right: 2px solid white; padding-top:15px",
+        tags$img(src = "images/demo/wgcna_table.png",
                  width = "100%")
       ),
       column(
         8, style = "text-align:justify;",
-        h3("What is sample-to-sample distance (SSD) ?"),
-        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
-          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
-          distance metrics, which specify how the distance between the input samples. A commonly used approach for
-          measuring sample distance in RNA-seq data is to use Euclidean distance."),
-        h3("How to interpret the SSD analysis results ?"),
-        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
-          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
-          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
-          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
+        h3("What is weighted correlation network analysis (WGCNA) ?"),
+        p("weighted correlation network analysis (WGCNA) can be used for finding modules of highly correlated genes, 
+          for relating modules to external sample traits and summarizing modules using an intramodular hub gene.
+          WGCNA is a friendly method for analyzing clinical related sequencing data. We introduce WGCNA package to 
+          our application for performing weighted correlation network analysis. We use the raw count matrix to filter 
+          out low expression genes and use the variance stabilizing transformation (VST) normalized value as input matrix. 
+          The clinical traits data can be upload when the experimental design session or transformed from the experimental condition.
+          If the clinical traits data is a string, we will classify it according to the fields it contains, and if it is a number, 
+          we will keep its value as the feature vector.")
+        # h3("How to interpret the SSD analysis results ?"),
+        # p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
+        #   so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
+        #   high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
+        #   The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
       )
     )
   ),
   column(
     12,
     hr(),
-    fluidRow(column(3, align = "right", actionLink("pWGCNA_1", "<< Previous", style = "font-size: 20px")),
-             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
-             column(3, align = "left", actionLink("nWGCNA_1", "Next >>", style = "font-size: 20px")))
+    fluidRow(
+      style = "margin-bottom:20px",
+      column(3, align = "right", actionLink("pWGCNA_1", "<< Previous", style = "font-size: 20px")),
+      column(6, align = "center"),
+      column(3, align = "left", actionLink("nWGCNA_1", "Next >>", style = "font-size: 20px"))
+    )
   )
 )

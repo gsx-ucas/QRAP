@@ -128,30 +128,34 @@ fluidPage(
     fluidRow(
       style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
       column(
-        4, style = "text-align:center;border-right: 2px solid white;",
-        tags$img(src = "images/dist_demo.png",
+        4, style = "text-align:center;border-right: 2px solid white; padding-top:15px",
+        tags$img(src = "images/demo/deg-pattern.png",
                  width = "100%")
       ),
       column(
         8, style = "text-align:justify;",
-        h3("What is sample-to-sample distance (SSD) ?"),
-        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
-          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
-          distance metrics, which specify how the distance between the input samples. A commonly used approach for
-          measuring sample distance in RNA-seq data is to use Euclidean distance."),
-        h3("How to interpret the SSD analysis results ?"),
-        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
-          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
-          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
-          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
+        h3("What is DEG expression pattern analysis ?"),
+        p("Research involved time series experiment would more interested in genes that differentially expressed along 
+          time points. We provide the DEGreport pacakge to distinguish different gene expression patterns of differentially 
+          expressed genes. For example, we group genes that expression increase over time into one expression pattern,
+          and group genes that expression decrease over time into another expression pattern. These differentially expressed genes 
+          show different expression patterns over time, suggesting that they may have different biological functions and meanings."),
+        h3("How to perform the DEG expression pattern analysis ?"),
+        p("To perform DEG expression pattern analysis, you need to specify the goup of DEGs, and we recommend that you select all the goups related
+          to the time point that you are interested in, and then specify the minimum number of genes of the detected expression patterns. Then, you need to
+          provide the variable that are identified as time point, such as time, experimental conditions, etc. If you do two or more experiments at the same
+          time, you can analyze them together, just need to provide another variable to distinguish the experimental groups.")
       )
     )
   ),
   column(
     12,
     hr(),
-    fluidRow(column(3, align = "right", actionLink("pDegsp", "<< Previous", style = "font-size: 20px")),
-             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
-             column(3, align = "left", actionLink("nDegsp", "Next >>", style = "font-size: 20px")))
+    fluidRow(
+      style = "margin-bottom:20px",
+      column(3, align = "right", actionLink("pDegsp", "<< Previous", style = "font-size: 20px")),
+      column(6, align = "center"),
+      column(3, align = "left", actionLink("nDegsp", "Next >>", style = "font-size: 20px"))
+    )
   )
 )

@@ -83,29 +83,32 @@ fluidPage(
       style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
       column(
         4, style = "text-align:center;border-right: 2px solid white;",
-        tags$img(src = "images/dist_demo.png",
+        tags$img(src = "images/demo/summarize_function.png",
                  width = "100%")
       ),
       column(
         8, style = "text-align:justify;",
-        h3("What is sample-to-sample distance (SSD) ?"),
-        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
-          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
-          distance metrics, which specify how the distance between the input samples. A commonly used approach for
-          measuring sample distance in RNA-seq data is to use Euclidean distance."),
-        h3("How to interpret the SSD analysis results ?"),
-        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
-          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
-          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
-          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
+        h3("Why should we summarize functions?"),
+        p("At present, there are many functional enrichment analysis methods and software, each of which has its own advantages. 
+          This application uses two kinds of software for functional enrichment analysis, namely g:Profiler and clusterProfiler. 
+          If you pay attention to it, you will find that although the input genes are the same, there are some differences in the 
+          enrichment results. In addition, different enrichment results can also be obtained by ORA and GSEA analysis methods of 
+          clusterProfiler software. Such a situation may confuse users."),
+        p("Based on the above considerations, we think that the results of functional enrichment analysis from different sources 
+          should be summarized. When a signal pathway repeatedly appears in two or three enrichment results, it shows that the enrichment 
+          result of the signal pathway is true and reliable. Otherwise, users should carefully consider whether to trust the enrichment 
+          results according to the experimental results and experience.")
       )
     )
   ),
   column(
     12,
     hr(),
-    fluidRow(column(3, align = "right", actionLink("psfunc", "<< Previous", style = "font-size: 20px")),
-             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
-             column(3, align = "left", actionLink("nsfunc", "Next >>", style = "font-size: 20px")))
+    fluidRow(
+      style = "margin-bottom:20px",
+      column(3, align = "right", actionLink("psfunc", "<< Previous", style = "font-size: 20px")),
+      column(6, align = "center"),
+      column(3, align = "left", actionLink("nsfunc", "Next >>", style = "font-size: 20px"))
+    )
   )
 )

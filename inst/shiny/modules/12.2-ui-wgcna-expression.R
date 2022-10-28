@@ -82,30 +82,36 @@ fluidRow(
     fluidRow(
       style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
       column(
-        4, style = "text-align:center;border-right: 2px solid white;",
-        tags$img(src = "images/dist_demo.png",
+        4, style = "text-align:center;border-right: 2px solid white; padding-top:15px",
+        tags$img(src = "images/demo/wgcna_heatmap.png",
                  width = "100%")
       ),
       column(
         8, style = "text-align:justify;",
-        h3("What is sample-to-sample distance (SSD) ?"),
-        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
-          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
-          distance metrics, which specify how the distance between the input samples. A commonly used approach for
-          measuring sample distance in RNA-seq data is to use Euclidean distance."),
-        h3("How to interpret the SSD analysis results ?"),
-        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
-          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
-          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
-          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
+        h3("What is Module eigengenes (ME) ?"),
+        p("ME can be considered the most representative gene expression profile of the module.
+          We can create a plot that explains the relationships between modules (heatmap) and the corresponding module eigengene (barplot).
+          Note that the module eigengene takes on low values in arrays where a lot of module genes are under-expressed (blue color in the heatmap). 
+          The ME takes on high values for arrays where a lot of module genes are over-expressed (red in the heatmap).
+          In the Module heatmap, the rows correspond to genes and the columns to samples; blue denotes under-expression and red over-expression.
+          the Module barplot shows the corresponding module eigengene expression values (y-axis) versus the same samples (x-axis)."),
+        p("For example, the heatmap on the left shows the eigengenes expression of module turquoise versus the samples that ordered by
+          HFD45 (hospital-free days at day 45) score of COVID-19 patients. Obviously, the expression of genes in this module 
+          are higly positively correlated with HFD45 score, and the expression of these genes increased with the increase of HFD45 score.
+          The expression of these genes is significantly related to the reduction of hospitalization days of patients. 
+          Indeed, functional enrichment analysis can find that these genes are mainly related to the immune system, 
+          so enhancing immunity can reduce the hospitalization days of patients.")
       )
     )
   ),
   column(
     12,
     hr(),
-    fluidRow(column(3, align = "right", actionLink("pWGCNA_expression", "<< Previous", style = "font-size: 20px")),
-             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
-             column(3, align = "left", actionLink("nWGCNA_expression", "Next >>", style = "font-size: 20px")))
+    fluidRow(
+      style = "margin-bottom:20px",
+      column(3, align = "right", actionLink("pWGCNA_expression", "<< Previous", style = "font-size: 20px")),
+      column(6, align = "center"),
+      column(3, align = "left", actionLink("nWGCNA_expression", "Next >>", style = "font-size: 20px"))
+    )
   )
 )

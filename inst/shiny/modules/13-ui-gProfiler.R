@@ -164,30 +164,35 @@ fluidPage(
     fluidRow(
       style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
       column(
-        4, style = "text-align:center;border-right: 2px solid white;",
-        tags$img(src = "images/dist_demo.png",
+        4, style = "text-align:center;border-right: 2px solid white; padding-top:15px",
+        tags$img(src = "images/demo/gProfiler_Plot.png",
                  width = "100%")
       ),
       column(
         8, style = "text-align:justify;",
-        h3("What is sample-to-sample distance (SSD) ?"),
-        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
-          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
-          distance metrics, which specify how the distance between the input samples. A commonly used approach for
-          measuring sample distance in RNA-seq data is to use Euclidean distance."),
-        h3("How to interpret the SSD analysis results ?"),
-        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
-          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
-          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
-          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
+        h3("What is g:Profiler ?"),
+        p("g:Profiler is a public web server for characterising and manipulating gene lists.
+          The R package gprofiler2 provides an R interface to the g:Profiler tools. 
+          g:Profiler is developed and maintained in Estonia, at the University of Tartu, 
+          Institute of Computer Science, Bioinformatics, Algorithmics and Data Mining Group BIIT. 
+          Currently g:Profiler is developed and maintained by a team of professional software developers, statistician and researchers."),
+        h3("Why should we use g:Profiler ?"),
+        p(
+          tags$li("Currently available for 400+ species, including mammals, plants, fungi, insects from Ensembl and Ensembl Genomes."),
+          tags$li("g:Profiler is updated approximately in every three months and follows quarterly releases of Ensembl databases."),
+          tags$li("g:Profiler supports up to 8 acknowledge database, including Gene Ontology, KEGG, Reactome, WikiPathways, miRTarBase, etc.")
+        )
       )
     )
   ),
   column(
     12,
     hr(),
-    fluidRow(column(3, align = "right", actionLink("pGprofiler", "<< Previous", style = "font-size: 20px")),
-             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
-             column(3, align = "left", actionLink("nGprofiler", "Next >>", style = "font-size: 20px")))
+    fluidRow(
+      style = "margin-bottom:20px",
+      column(3, align = "right", actionLink("pGprofiler", "<< Previous", style = "font-size: 20px")),
+      column(6, align = "center"),
+      column(3, align = "left", actionLink("nGprofiler", "Next >>", style = "font-size: 20px"))
+    )
   )
 )

@@ -102,30 +102,36 @@ fluidPage(
     fluidRow(
       style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
       column(
-        4, style = "text-align:center;border-right: 2px solid white;",
-        tags$img(src = "images/dist_demo.png",
+        4, style = "text-align:center;border-right: 2px solid white; padding-top:15px",
+        tags$img(src = "images/demo/expression_plot.png",
                  width = "100%")
       ),
       column(
         8, style = "text-align:justify;",
-        h3("What is sample-to-sample distance (SSD) ?"),
-        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
-          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
-          distance metrics, which specify how the distance between the input samples. A commonly used approach for
-          measuring sample distance in RNA-seq data is to use Euclidean distance."),
-        h3("How to interpret the SSD analysis results ?"),
-        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
-          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
-          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
-          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
+        h3("How to perform the gene expression visualization ?"),
+        p("The visualization of gene expression values is also an important part of RNA-seq anaysis. 
+        Choosing the appropriate visualization method can clearly observe the expression differences 
+        of interested genes under different experimental conditions. Common visualization methods of 
+        gene expression include bar-plot, box-plot, heatmap and so on."),
+        p("When visualizing gene expression, it is also very important to select the appropriate value. 
+          Usually, the original gene expression value is not normalized and is not suitable for direct visualization of gene expression.
+          In the analysis of DESeq2, it first standardizes the original gene expression values (DESeq2 normalized counts),
+          and then converts the normalized values through rlog or vst (rlog or vst transformed value).
+          These normalized and transformed values can be directly used for the visualization of gene expression.
+          The normalized value of DESeq2 may be relatively large, which requires logarithmic conversion (log2(normalized_count + 1)).
+          TO more intuitively observe the changes of genes in each group compared with those in the control group, 
+          foldchanges (log2 FoldChange) can be used to visualize gene expression.")
       )
     )
   ),
   column(
     12,
     hr(),
-    fluidRow(column(3, align = "right", actionLink("pEpv", "<< Previous", style = "font-size: 20px")),
-             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
-             column(3, align = "left", actionLink("nEpv", "Next >>", style = "font-size: 20px")))
+    fluidRow(
+      style = "margin-bottom:20px",
+      column(3, align = "right", actionLink("pEpv", "<< Previous", style = "font-size: 20px")),
+      column(6, align = "center"),
+      column(3, align = "left", actionLink("nEpv", "Next >>", style = "font-size: 20px"))
+    )
   )
 )
