@@ -125,8 +125,7 @@ output$verboseScatterUI <- renderUI({
 output$verboseScatter_Pdf <- downloadHandler(
   filename = function()  {paste0("WGCNA_GS-MM-verboseScatterplot",".pdf")},
   content = function(file) {
-    pdf(file, width = input$verboseScatter_width, height = input$verboseScatter_height)
-
+    
     trait_condition = as.data.frame(traitDataTab()[, input$trait])
     names(trait_condition) = input$trait
 
@@ -153,6 +152,7 @@ output$verboseScatter_Pdf <- downloadHandler(
     moduleGenes = moduleColors() == module;
 
     if (input$WGCNA_scatter_method=='verboseScatterplot (WGCNA function)') {
+      pdf(file, width = input$verboseScatter_width, height = input$verboseScatter_height)
       par(mar=c(5,5,5,5))
       WGCNA::verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
                          abs(geneTraitSignificance[moduleGenes, 1]),
@@ -161,6 +161,7 @@ output$verboseScatter_Pdf <- downloadHandler(
                          main = paste("Module membership vs. gene significance\n"),
                          cex = input$wgcna_scatter_cex, cex.main = input$wgcna_scatter_main,
                          cex.lab = input$wgcna_scatter_lab, cex.axis = input$wgcna_scatter_axis, col = module)
+      dev.off()
     }else {
       x = abs(geneModuleMembership[moduleGenes, column])
       y = abs(geneTraitSignificance[moduleGenes, 1])
@@ -211,9 +212,8 @@ output$verboseScatter_Pdf <- downloadHandler(
           eval(parse(text = x))
         })
       }
-      return(p)
+      ggsave(file, plot = p, width = input$verboseScatter_width, height = input$verboseScatter_height, limitsize = F)
     }
-    dev.off()
   }
 )
 

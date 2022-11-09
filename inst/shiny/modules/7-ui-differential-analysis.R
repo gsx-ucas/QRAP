@@ -11,7 +11,7 @@ fluidPage(
                                                 style = "height:40px;font-size:18px", class = "run-button", width = "300px"))
     )
   ),
-  column(12, align = "center", actionLink("showDEVis", label = NULL, icon = icon("angle-double-down", style = "font-size: 20px;"))),
+  column(12, align = "center", actionLink("showDEVis", label = NULL, icon = icon("angle-double-down", class = "angle_dd"))),
   conditionalPanel(
     "input.get_DEGs | input.showDEVis",
     tabsetPanel(
