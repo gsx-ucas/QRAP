@@ -174,30 +174,37 @@ fluidPage(
     fluidRow(
       style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
       column(
-        4, style = "text-align:center;border-right: 2px solid white;",
-        tags$img(src = "images/dist_demo.png",
+        4, style = "text-align:center;border-right: 2px solid white; padding-top:15px",
+        tags$img(src = "images/demo/GSEA_Plot.png",
                  width = "100%")
       ),
       column(
         8, style = "text-align:justify;",
-        h3("What is sample-to-sample distance (SSD) ?"),
-        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
-          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
-          distance metrics, which specify how the distance between the input samples. A commonly used approach for
-          measuring sample distance in RNA-seq data is to use Euclidean distance."),
-        h3("How to interpret the SSD analysis results ?"),
-        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
-          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
-          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
-          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
+        h3("What is Gene Set Enrichment Analysis (GSEA) ?"),
+        p("A common approach to analyzing gene expression profiles is identifying differentially 
+          expressed genes that are deemed interesting. The ORA enrichment analysis is based on these 
+          differentially expressed genes. This approach will find genes where the difference is large 
+          and will fail where the difference is small, but evidenced in coordinated way in a set of related 
+          genes. Gene Set Enrichment Analysis (GSEA)(Subramanian et al. 2005) directly addresses this limitation. 
+          All genes can be used in GSEA; GSEA aggregates the per gene statistics across genes within a gene set, 
+          therefore making it possible to detect situations where all genes in a predefined set change in a small 
+          but coordinated way. This is important since it is likely that many relevant phenotypic differences are 
+          manifested by small but consistent changes in a set of genes."),
+        p("In GSEA analysis, genes are ranked based on their phenotypes. Given apriori defined set of gene S 
+          (e.g., genes sharing the same GO category), the goal of GSEA is to determine whether the members of S 
+          are randomly distributed throughout the ranked gene list L (e.g., all the genes in your RNA-seq data that
+          ranked by log2foldchange of two biological states) or primarily found at the top or bottom.")
       )
     )
   ),
   column(
     12,
     hr(),
-    fluidRow(column(3, align = "right", actionLink("pGSEA", "<< Previous", style = "font-size: 20px")),
-             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
-             column(3, align = "left", actionLink("nGSEA", "Next >>", style = "font-size: 20px")))
+    fluidRow(
+      style = "margin-bottom:20px",
+      column(3, align = "right", actionLink("pGSEA", "<< Previous", style = "font-size: 20px")),
+      column(6, align = "center"),
+      column(3, align = "left", actionLink("nGSEA", "Next >>", style = "font-size: 20px"))
+    )
   )
 )

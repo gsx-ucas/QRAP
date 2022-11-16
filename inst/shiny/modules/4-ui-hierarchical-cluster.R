@@ -71,9 +71,9 @@ fluidPage(
     fluidRow(
       style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
       column(
-        4, style = "text-align:center;border-right: 2px solid white;",
+        4, style = "text-align:center;border-right: 2px solid white; padding-top:15px",
         # strong("PCA Example", style = "font-size: 20px"),
-        tags$img(src = "images/hca_demo.png",
+        tags$img(src = "images/demo/hc_heatmap.png",
                  width = "100%")
       ),
       column(

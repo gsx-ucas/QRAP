@@ -160,8 +160,12 @@ output$deg_hiera_ancol <- renderUI({
 })
 
 DeGene_heatmap <- eventReactive(input$plot_deheatmap,{
-  conditions <- strsplit(input$dea_genes, "_vs_") %>% unlist %>% unique
-  sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% conditions, ]
+  if (all(grepl(pattern = "_vs_", x = input$dea_genes))) {
+    conditions <- strsplit(input$dea_genes, "_vs_") %>% unlist %>% unique
+    sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% conditions, ]
+  }else {
+    sampleTable <- as.data.frame(dds()@colData)
+  }
   
   Des_list <- load.DEGs(input$dea_genes)
   DeGenes <- lapply(Des_list, function(x){
@@ -197,8 +201,13 @@ output$DeHeatmap_Pdf <- downloadHandler(
   filename = function()  {paste0("DE_Gene_HeatMap_Plot",".pdf")},
   content = function(file) {
     pdf(file, width = input$DeHeatmap_width, height = input$DeHeatmap_height)
-    conditions <- strsplit(input$dea_genes, "_vs_") %>% unlist %>% unique
-    sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% conditions, ]
+    
+    if (all(grepl(pattern = "_vs_", x = input$dea_genes))) {
+      conditions <- strsplit(input$dea_genes, "_vs_") %>% unlist %>% unique
+      sampleTable <- as.data.frame(dds()@colData)[dds()$condition %in% conditions, ]
+    }else {
+      sampleTable <- as.data.frame(dds()@colData)
+    }
     
     Des_list <- load.DEGs(input$dea_genes)
     DeGenes <- lapply(Des_list, function(x){

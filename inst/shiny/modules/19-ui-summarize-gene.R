@@ -59,29 +59,34 @@ fluidPage(
       style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
       column(
         4, style = "text-align:center;border-right: 2px solid white;",
-        tags$img(src = "images/dist_demo.png",
+        tags$img(src = "images/demo/summarize_gene.png",
                  width = "100%")
       ),
       column(
         8, style = "text-align:justify;",
-        h3("What is sample-to-sample distance (SSD) ?"),
-        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
-          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
-          distance metrics, which specify how the distance between the input samples. A commonly used approach for
-          measuring sample distance in RNA-seq data is to use Euclidean distance."),
-        h3("How to interpret the SSD analysis results ?"),
-        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
-          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
-          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
-          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
+        h3("Why should we summarize genes?"),
+        p("In our application, user can detected differentially expressed genes (DEG) of interested contrast conditions,
+          expression pattern of differentially expressed genes (DEG patterns) and WGCNA module genes (WGCNA modules).
+          These genes are grouped because the criteria for defining them are different, for example, the standard for 
+          differentially expressed genes is abs(log2 fold change) > 1 and p < 0.05.
+          Some genes that are meaningful but do not change significantly may be lost by such rough criteria. 
+          WGCNA analysis uses all the highly expressed genes for module detection and can correlate external phenotypic data, 
+          which can make up for the missing information in differential expression analysis to some extent.
+          Although the DEG patterns is based on the differential expression analysis, 
+          it can help us to understand the expression of differentially expressed genes with expression trend at a specific time point."),
+        p("Nevertheless, when the genes of three different modules point to the same biological meaning of interest, the 
+          intersection genes between the three modules may be some of the more important and critical genes.")
       )
     )
   ),
   column(
     12,
     hr(),
-    fluidRow(column(3, align = "right", actionLink("psgene", "<< Previous", style = "font-size: 20px")),
-             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
-             column(3, align = "left", actionLink("nsgene", "Next >>", style = "font-size: 20px")))
+    fluidRow(
+      style = "margin-bottom:20px",
+      column(3, align = "right", actionLink("psgene", "<< Previous", style = "font-size: 20px")),
+      column(6, align = "center"),
+      column(3, align = "left", actionLink("nsgene", "Next >>", style = "font-size: 20px"))
+    )
   )
 )

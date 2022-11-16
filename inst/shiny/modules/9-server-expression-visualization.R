@@ -87,8 +87,8 @@ Expr_plot <- eventReactive(input$plot_geneExpr,{
   
   matched_genes <- genes[genes %in% rownames(trans_value())]
   if (length(matched_genes) != length(genes)) {
-    shinyalert(title = "warning", type = "warning", confirmButtonText = "Close", 
-               text = paste0("Can not find input genes: '", genes[!genes %in% matched_genes], "'", "please check your input!"))
+    sendSweetAlert(title = "warning", type = "warning", 
+                   text = paste0("Can not find input genes: '", genes[!genes %in% matched_genes], "'", "please check your input!"))
   }
   
   if (input$data_use == "log2flc") {

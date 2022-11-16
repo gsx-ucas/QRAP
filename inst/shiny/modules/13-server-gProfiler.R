@@ -17,7 +17,7 @@ output$gprofiler_gsets <- renderUI({
       inputId = "gprofiler_degs",  label = "Select DEGs:",
       choices = dir("DEGs") %>% stringr::str_remove_all(".csv"),
       selected = stringr::str_remove_all(dir("DEGs"), ".csv")[1], 
-      multiple = T, search = F, width = "100%"
+      multiple = T, search = T, width = "100%"
     )
   }else if (input$gprofiler_genes=="DEG Patterns") {
     if (input$run_degsp == 0) {
@@ -33,7 +33,7 @@ output$gprofiler_gsets <- renderUI({
         inputId = "gprofiler_patterns",  label = "Select Patterns ID:",
         choices = degsp_object()$normalized$cluster %>% unique %>% as.character,
         selected = (degsp_object()$normalized$cluster %>% unique %>% as.character)[1], 
-        multiple = T, search = F, width = "100%"
+        multiple = T, search = T, width = "100%"
       )
     }
   }else if (input$gprofiler_genes=="WGCNA Modules") {
@@ -52,7 +52,7 @@ output$gprofiler_gsets <- renderUI({
         inputId = "gprofiler_modules",  label = "Select WGCNA Modules ID:",
         choices = substring(names(MEs), first = 3),
         selected = substring(names(MEs), first = 3)[1], 
-        multiple = T, search = F, width = "100%"
+        multiple = T, search = T, width = "100%"
       )
     }
   }
@@ -165,7 +165,7 @@ output$gprofiler_termID <- renderUI({
     return(NULL)
   req(input$gprofiler_type)
   if (input$gprofiler_type=='gostplot' | input$gprofiler_type=='gosttable') {
-    result_data <- gprofiler_object()$result
+    result_data <- gprofiler_object()$result[!gprofiler_object()$result$term_name %>% duplicated, ]
     id <- result_data$term_id
     names(id) <- paste0("(", result_data$source, ")", result_data$term_name)
     if (length(id) != 0) {
@@ -174,7 +174,7 @@ output$gprofiler_termID <- renderUI({
     }
   }else if (input$gprofiler_Top=='custom select terms') {
     result_data <- gprofiler_object()$result[gprofiler_object()$result$source == input$sourceTypes, ]
-    id <- result_data$term_name
+    id <- result_data$term_name %>% unique()
     if (length(id) != 0) {
       pickerInput("gprofiler_termID", "Terms to Plot:", choices = id, selected = id[1:10], 
                   options = list(`live-search` = TRUE, `actions-box` = TRUE, size = 5),multiple = T,width = "100%")
@@ -188,7 +188,7 @@ output$gprofiler_termID2 <- renderUI({
   if ('try-error' %in% class(gprofiler_object()))
     return(NULL)
   result_data <- gprofiler_object()$result[gprofiler_object()$result$source == input$sourceTypes, ]
-  id <- result_data$term_name
+  id <- result_data$term_name  %>% unique()
   if (length(id) != 0) {
     selectInput("gprofiler_termID2","Terms to Plot", choices = id, multiple = F, width = "100%")
   }

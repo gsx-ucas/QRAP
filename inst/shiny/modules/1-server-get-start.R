@@ -619,9 +619,9 @@ output$intro_start <- renderUI({
       fluidRow(
         style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
         column(
-          4, style = "text-align:center;border-right: 2px solid white;",
+          4, style = "text-align:center;border-right: 2px solid white; padding-top:15px",
           strong("Input Example", style = "font-size: 20px"),
-          tags$img(src = "images/input_example.jpg",
+          tags$img(src = "images/demo/input_table.jpg",
                    width = "100%")
         ),
         column(

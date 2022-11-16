@@ -62,30 +62,39 @@ fluidPage(
     fluidRow(
       style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
       column(
-        4, style = "text-align:center;border-right: 2px solid white;",
-        tags$img(src = "images/dist_demo.png",
+        4, style = "text-align:center;border-right: 2px solid white; padding-top:15px",
+        tags$img(src = "images/demo/pathview.png",
                  width = "100%")
       ),
       column(
         8, style = "text-align:justify;",
-        h3("What is sample-to-sample distance (SSD) ?"),
-        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
-          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
-          distance metrics, which specify how the distance between the input samples. A commonly used approach for
-          measuring sample distance in RNA-seq data is to use Euclidean distance."),
-        h3("How to interpret the SSD analysis results ?"),
-        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
-          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
-          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
-          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
+        h3("What is Pathview ?"),
+        p("Pathview is a tool set for pathway based data integration and visualization. 
+          It maps and renders a wide variety of biological data on relevant pathway graphs. 
+          All users need is to supply their data and specify the target pathway. 
+          Pathview automatically downloads the pathway graph data, parses the data file, 
+          maps user data to the pathway, and render pathway graph with the mapped data. 
+          In addition, Pathview also seamlessly integrates with pathway and gene set (enrichment) 
+          analysis tools for large-scale and fully automated analysis."),
+        p("Pathview (Luo and Brouwer, 2013) is a stand-alone software package for pathway based data integration 
+          and visualization. This package can be divided into four functional modules: the Downloader, Parser, Mapper 
+          and Viewer. Mostly importantly, pathview maps and renders user data on relevant pathway graphs."),
+        p("Pathview generates both native KEGG view (PNG format) and Graphviz view (PDF format) for pathways. 
+          KEGG view keeps all the meta-data on pathways, spacial and temporal information, tissue/cell types, 
+          inputs, outputs and connections. This is important for human reading and interpretation of pathway biology. 
+          Graphviz view provides better control of node and edge attributes, better view of pathway topology, better 
+          understanding of the pathway analysis statistics.")
       )
     )
   ),
   column(
     12,
     hr(),
-    fluidRow(column(3, align = "right", actionLink("pPathview", "<< Previous", style = "font-size: 20px")),
-             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
-             column(3, align = "left", actionLink("nPathview", "Next >>", style = "font-size: 20px")))
+    fluidRow(
+      style = "margin-bottom:20px",
+      column(3, align = "right", actionLink("pPathview", "<< Previous", style = "font-size: 20px")),
+      column(6, align = "center"),
+      column(3, align = "left", actionLink("nPathview", "Next >>", style = "font-size: 20px"))
+    )
   )
 )

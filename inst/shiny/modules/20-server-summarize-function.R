@@ -277,7 +277,7 @@ output$intf_plotUI <-  renderUI({
 output$intf_plot_Pdf <- downloadHandler(
   filename = function()  {"Intersected_function_Plot.pdf"},
   content = function(file) {
-    p <- intf_venn()
+    p <- intf_plot()
     ggsave(file, p, width = input$intf_plot_Pdf_width, height = input$intf_plot_Pdf_height)
   }
 )

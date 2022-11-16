@@ -159,30 +159,36 @@ fluidPage(
     fluidRow(
       style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
       column(
-        4, style = "text-align:center;border-right: 2px solid white;",
-        tags$img(src = "images/dist_demo.png",
+        4, style = "text-align:center;border-right: 2px solid white; padding-top:15px",
+        tags$img(src = "images/demo/ORA_dotplot.png",
                  width = "100%")
       ),
       column(
         8, style = "text-align:justify;",
-        h3("What is sample-to-sample distance (SSD) ?"),
-        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
-          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
-          distance metrics, which specify how the distance between the input samples. A commonly used approach for
-          measuring sample distance in RNA-seq data is to use Euclidean distance."),
-        h3("How to interpret the SSD analysis results ?"),
-        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
-          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
-          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
-          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
+        h3("What is Over-Representation Analysis (ORA) ?"),
+        p("Over Representation Analysis (ORA) is a widely used method to determine whether an 
+          experimentally-derived gene list, e.g. a list of differentially expressed genes (DEGs), 
+          are enriched in known biological functions or processes. Over-representation analysis is 
+          a statistical method that determines whether genes from pre-defined sets (ex: those beloging 
+          to a specific GO term or KEGG pathway) are present more than would be expected (over-represented) 
+          in a subset of your data. In this case, the subset of “interesting” genes can be 
+          differentially expressed genes (DEGs) or other gene list like DEG expression pattern and WGCNA modules.
+          
+          The R package clusterProfiler was used to accomplish this step, and only organisms with OrgDb object 
+          available can be supported in our application. A variety of visualization methods, such as dotplot, barplot, 
+          centplot and emapplot, make it easay for users to choices a preferred way to display the 
+          results and generate graphics for their publications.")
       )
     )
   ),
   column(
     12,
     hr(),
-    fluidRow(column(3, align = "right", actionLink("pORA", "<< Previous", style = "font-size: 20px")),
-             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
-             column(3, align = "left", actionLink("nORA", "Next >>", style = "font-size: 20px")))
+    fluidRow(
+      style = "margin-bottom:20px",
+      column(3, align = "right", actionLink("pORA", "<< Previous", style = "font-size: 20px")),
+      column(6, align = "center"),
+      column(3, align = "left", actionLink("nORA", "Next >>", style = "font-size: 20px"))
+    )
   )
 )

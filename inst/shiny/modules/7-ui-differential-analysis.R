@@ -11,7 +11,7 @@ fluidPage(
                                                 style = "height:40px;font-size:18px", class = "run-button", width = "300px"))
     )
   ),
-  column(12, align = "center", actionLink("showDEVis", label = NULL, icon = icon("angle-double-down", style = "font-size: 20px;"))),
+  column(12, align = "center", actionLink("showDEVis", label = NULL, icon = icon("angle-double-down", class = "angle_dd"))),
   conditionalPanel(
     "input.get_DEGs | input.showDEVis",
     tabsetPanel(
@@ -143,29 +143,38 @@ fluidPage(
     fluidRow(
       style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
       column(
-        4, style = "text-align:center;border-right: 2px solid white;",
-        tags$img(src = "images/dist_demo.png",
+        4, style = "text-align:center;border-right: 2px solid white; padding-top:15px",
+        tags$img(src = "images/demo/volcano_plot.png",
                  width = "100%")
       ),
       column(
         8, style = "text-align:justify;",
-        h3("What is sample-to-sample distance (SSD) ?"),
-        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
-          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
-          distance metrics, which specify how the distance between the input samples. A commonly used approach for
-          measuring sample distance in RNA-seq data is to use Euclidean distance."),
-        h3("How to interpret the SSD analysis results ?"),
-        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
-          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
-          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
-          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
+        h3("What is differential expression analysis (DEA) ?"),
+        p("The most important application of RNA-seq is to detect differentially expressed genes between variance conditions or groups.
+          Differential expression analysis (DEA) requires that gene expression values should be compared among samples.
+          We chose the DESeq2 package to perform the expression normalization to adjust abundance quantities in order to 
+          account for differences in read depth across the samples. After that, the function ‘results’ of DESeq2 wase used 
+          for calculating the foldchange of gene expression levels and P-values across experimental and control condition. 
+          Most commonly used standard to define differentially expressed gene (DEG) is |log2FoldChange| > 1 and P-value < 0.05, 
+          but we also provide the options for user’s custom defined standard to filter DEGs. We provide five approaches to visualize the 
+          DEGs, include volcano plot, MA-plot, bar-plot, heatmap, venn diagram."),
+        h3("How to perform differential expression analysis ?"),
+        p("Differential expression analysis with DESeq2 involves multiple steps as displayed in the flowchart below in blue. Briefly, DESeq2 
+          will model the raw counts, using normalization factors (size factors) to account for differences in library depth. Then, it will 
+          estimate the gene-wise dispersions and shrink these estimates to generate more accurate estimates of dispersion to model the counts. 
+          Finally, DESeq2 will fit the negative binomial model and perform hypothesis testing using the Wald test or Likelihood Ratio Test.")
       )
     )
   ),
   column(
     12, hr(),
-    fluidRow(column(3, align = "right", actionLink("pDEA", "<< Previous", style = "font-size: 20px")),
-             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
-             column(3, align = "left", actionLink("nDEA", "Next >>", style = "font-size: 20px")))
+    fluidRow(
+      style = "margin-bottom:20px",
+      column(3, align = "right", actionLink("pDEA", "<< Previous", style = "font-size: 20px")),
+      column(6, align = "center"
+             # HTML('<p style = "text-align:center;">Copyright &copy; 2022.Gou Shixue All rights reserved.</p>')
+      ),
+      column(3, align = "left", actionLink("nDEA", "Next >>", style = "font-size: 20px"))
+    )
   )
 )

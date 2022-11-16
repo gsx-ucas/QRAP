@@ -72,30 +72,35 @@ fluidRow(
     fluidRow(
       style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
       column(
-        4, style = "text-align:center;border-right: 2px solid white;",
-        tags$img(src = "images/dist_demo.png",
+        4, style = "text-align:center;border-right: 2px solid white; padding-top:15px",
+        tags$img(src = "images/demo/wgcna_gsmm.png",
                  width = "100%")
       ),
       column(
         8, style = "text-align:justify;",
-        h3("What is sample-to-sample distance (SSD) ?"),
-        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
-          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
-          distance metrics, which specify how the distance between the input samples. A commonly used approach for
-          measuring sample distance in RNA-seq data is to use Euclidean distance."),
-        h3("How to interpret the SSD analysis results ?"),
-        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
-          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
-          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
-          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
+        h3("Concept about Gene Significance (GS) and Module Membership (MM)"),
+        p("We quantify associations of individual genes with our trait of interest by defining 
+          Gene Significance GS as (the absolute value of) the correlation between the gene and the trait. 
+          For each module, we also define a quantitative measure of module membership MM as the correlation 
+          of the module eigengene and the gene expression profile. This allows us to quantify the similarity 
+          of all genes on the array to every module. "),
+        p("Using the GS and MM measures, we can identify genes that have a high significance for trait of interest 
+          as well as high module membership in interesting modules. As an example, we look at the turquoise module 
+          that has the highest association with HFD45 (hospital-free days at day 45) score of COVID-19 patients. 
+          We plot a scatterplot of Gene Significance vs. Module Membership in the turquoise module in the left."),
+        p("The scatter plot is shown in the left Clearly, GS and MM are highly correlated, illustrating that genes 
+          highly significantly associated with a trait are often also the most important (central) elements of modules associated with the trait.")
       )
     )
   ),
   column(
     12,
     hr(),
-    fluidRow(column(3, align = "right", actionLink("pWGCNA_scatter", "<< Previous", style = "font-size: 20px")),
-             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
-             column(3, align = "left", actionLink("nWGCNA_scatter", "Next >>", style = "font-size: 20px")))
+    fluidRow(
+      style = "margin-bottom:20px",
+      column(3, align = "right", actionLink("pWGCNA_scatter", "<< Previous", style = "font-size: 20px")),
+      column(6, align = "center"),
+      column(3, align = "left", actionLink("nWGCNA_scatter", "Next >>", style = "font-size: 20px"))
+    )
   )
 )

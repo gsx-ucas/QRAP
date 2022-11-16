@@ -92,30 +92,36 @@ fluidRow(
     fluidRow(
       style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
       column(
-        4, style = "text-align:center;border-right: 2px solid white;",
-        tags$img(src = "images/dist_demo.png",
+        4, style = "text-align:center;border-right: 2px solid white; padding-top:15px",
+        tags$img(src = "images/demo/wgcna_dendrogram.png",
                  width = "100%")
       ),
       column(
         8, style = "text-align:justify;",
-        h3("What is sample-to-sample distance (SSD) ?"),
-        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
-          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
-          distance metrics, which specify how the distance between the input samples. A commonly used approach for
-          measuring sample distance in RNA-seq data is to use Euclidean distance."),
-        h3("How to interpret the SSD analysis results ?"),
-        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
-          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
-          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
-          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
+        h3("How does WGCNA identify gene modules?"),
+        p("WGCNA assume that modules are groups of genes whose expression profiles are highly correlated across the samples. 
+          To group genes with coherent expression profiles into modules, it use average linkage hierarchical clustering coupled 
+          with the TOM-based dissimilarity. It also used the TOM-based dissimilarity in conjunction with partitioning around
+          medoid clustering. In WGCNA, gene modules correspond to branches of the hierarchical clustering tree (dendrogram).
+          The simplest (not necessarily best) method is to choose a height cutoff to cut branches off the tree. 
+          The resulting branches correspond to gene modules, i.e. sets of highly co-expressed genes. 
+          The parameter mergeCutHeight (default = 0.25) is the threshold for merging of modules.
+          The parameter soft-thresholding power should choose the most appropriate value based on the results detected in the previous step. 
+          If the result of the previous step is not satisfactory, you can try to select the value according to experience.
+          For the parameter networkType, we set the default value to 'signed', as suggested by the author. See the artical", 
+          a(em("Signed or unsigned: which network type is preferable?"), target = "_blank", 
+            href = "https://peterlangfelder.com/2018/11/25/signed-or-unsigned-which-network-type-is-preferable/"))
       )
     )
   ),
   column(
     12,
     hr(),
-    fluidRow(column(3, align = "right", actionLink("pWGCNA_3", "<< Previous", style = "font-size: 20px")),
-             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
-             column(3, align = "left", actionLink("nWGCNA_3", "Next >>", style = "font-size: 20px")))
+    fluidRow(
+      style = "margin-bottom:20px",
+      column(3, align = "right", actionLink("pWGCNA_3", "<< Previous", style = "font-size: 20px")),
+      column(6, align = "center"),
+      column(3, align = "left", actionLink("nWGCNA_3", "Next >>", style = "font-size: 20px"))
+    )
   )
 )

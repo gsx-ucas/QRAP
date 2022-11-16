@@ -36,30 +36,38 @@ fluidPage(
     fluidRow(
       style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
       column(
-        4, style = "text-align:center;border-right: 2px solid white;",
-        tags$img(src = "images/dist_demo.png",
+        4, style = "text-align:center;border-right: 2px solid white; padding-top:15px",
+        tags$img(src = "images/demo/ppi_network.jpg",
                  width = "100%")
       ),
       column(
         8, style = "text-align:justify;",
-        h3("What is sample-to-sample distance (SSD) ?"),
-        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
-          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
-          distance metrics, which specify how the distance between the input samples. A commonly used approach for
-          measuring sample distance in RNA-seq data is to use Euclidean distance."),
-        h3("How to interpret the SSD analysis results ?"),
-        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
-          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
-          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
-          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
+        h3("What is protein to protein interaction (PPI) ?"),
+        p("Protein-protein interaction plays key role in predicting the protein function of target proteins. 
+          The majority of genes and proteins realize resulting phenotype functions as a set of interactions.
+          Protein-protein interactions (PPIs) handle a wide range of biological processes, including cell-to-cell 
+          interactions and metabolic and developmental control. "),
+        p("PPI databases have become major resources for molecular and systems biology, alongside genomic and proteomic databases.
+          However, PPI data, perhaps more than other data types in systems biology, is scattered across a very large number of studies 
+          and is investigated by a great variety of experimental and computational methods. Consequently, PPI databases have undertaken 
+          large scale integration efforts including curating thousands of journal papers, creating a controlled vocabulary for describing 
+          PPI experiments, and defining common formats for PPI data. At the same time they have introduced quality control measures for 
+          curation, methods for scoring interactions, and approaches for associating interactions with context. Through these efforts, 
+          PPI networks have become a key resource for tasks such as prediction of gene function, identification of disease genes, and drug discovery."),
+        p("STRING (https://www.string-db.org) is a database of known and predicted protein-protein interactions. The interactions include direct (physical) 
+          and indirect (functional) associations. The database contains information from numerous sources, including experimental repositories, computational 
+          prediction methods and public text collections. Each interaction is associated with a combined confidence score that integrates the various evidences.")
       )
     )
   ),
   column(
     12,
     hr(),
-    fluidRow(column(3, align = "right", actionLink("pPPI", "<< Previous", style = "font-size: 20px")),
-             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
-             column(3, align = "left", actionLink("nPPI", "Next >>", style = "font-size: 20px")))
+    fluidRow(
+      style = "margin-bottom:20px",
+      column(3, align = "right", actionLink("pPPI", "<< Previous", style = "font-size: 20px")),
+      column(6, align = "center"),
+      column(3, align = "left", actionLink("nPPI", "Next >>", style = "font-size: 20px"))
+    )
   )
 )

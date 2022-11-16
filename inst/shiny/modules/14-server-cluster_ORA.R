@@ -21,7 +21,7 @@ output$clp_ora_gsets <- renderUI({
       inputId = "clp_ora_degs",  label = "DEGs:",
       choices = dir("DEGs") %>% stringr::str_remove_all(".csv"),
       selected = stringr::str_remove_all(dir("DEGs"), ".csv")[1],
-      multiple = T, search = F, width = "100%"
+      multiple = T, search = T, width = "100%"
     )
   }else if (input$clp_ora_genes=="DEG Patterns") {
     if (input$run_degsp == 0) {
@@ -37,7 +37,7 @@ output$clp_ora_gsets <- renderUI({
         inputId = "clp_ora_patterns",  label = "Select Patterns ID:",
         choices = degsp_object()$normalized$cluster %>% unique %>% as.character,
         selected = (degsp_object()$normalized$cluster %>% unique %>% as.character)[1],
-        multiple = T, search = F, width = "100%"
+        multiple = T, search = T, width = "100%"
       )
     }
   }else if (input$clp_ora_genes=="WGCNA Modules") {
@@ -48,13 +48,13 @@ output$clp_ora_gsets <- renderUI({
       # p("*Please Run WGCNA First!", style = "color: red; padding-top: 30px; padding-bttom: 30px; font-weight: 700px; width: 100%")
     }else {
       shinyjs::enable("start_clp_ora")
-      MEs0 = moduleEigengenes(datExpr(), moduleColors())$eigengenes
-      MEs = orderMEs(MEs0)
+      MEs0 = WGCNA::moduleEigengenes(datExpr(), moduleColors())$eigengenes
+      MEs = WGCNA::orderMEs(MEs0)
       virtualSelectInput(
         inputId = "clp_ora_modules",  label = "Select WGCNA Modules ID:",
         choices = substring(names(MEs), first = 3),
         selected = substring(names(MEs), first = 3)[1],
-        multiple = T, search = F, width = "100%"
+        multiple = T, search = T, width = "100%"
       )
     }
   }
@@ -173,8 +173,8 @@ output$oraPlot_type <- renderUI({
 output$ora_termID <- renderUI({
   if (dim(as.data.frame(clp_ora_object()))[1] != 0) {
     pickerInput("ora_termID", "Select terms from results:",
-                choices = as.data.frame(clp_ora_object())$Description,
-                selected = as.data.frame(clp_ora_object())$Description[1:10],
+                choices = as.data.frame(clp_ora_object())$Description %>% unique(),
+                selected = unique(as.data.frame(clp_ora_object())$Description)[1:10],
                 options = list(`actions-box` = TRUE, `live-search` = TRUE, size = 5), width = "100%", multiple = T)
   }else {
     p("no terms enriched ...", style = "color:red")
@@ -185,8 +185,8 @@ output$ora_termID <- renderUI({
 output$ora_termID2 <- renderUI({
   if (dim(as.data.frame(clp_ora_object()))[1] != 0) {
     selectInput("ora_termID2", "Select terms from results:",
-                choices = as.data.frame(clp_ora_object())$Description,
-                selected = as.data.frame(clp_ora_object())$Description[1],
+                choices = as.data.frame(clp_ora_object())$Description %>% unique(),
+                selected = unique(as.data.frame(clp_ora_object())$Description)[1],
                 width = "100%", multiple = F)
   }
 })

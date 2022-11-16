@@ -78,31 +78,34 @@ fluidPage(
     fluidRow(
       style = "background-color: rgb(248,249,250); border: 1px solid rgb(218,219,220); padding: 5px; margin:5px; border-radius: 15px;",
       column(
-        4, style = "text-align:center;border-right: 2px solid white;",
-        tags$img(src = "images/dist_demo.png",
+        4, style = "text-align:center;border-right: 2px solid white; padding-top:15px",
+        tags$img(src = "images/demo/genie3_network_plot.png",
                  width = "100%")
       ),
       column(
         8, style = "text-align:justify;",
         h3("What is sample-to-sample distance (SSD) ?"),
-        p("Sample-to-sample distance (SSD) is another method to assess sequencing and sample replicates
-          quality based on calculated distance between samples. SSDA calculated similarity between samples based on
-          distance metrics, which specify how the distance between the input samples. A commonly used approach for
-          measuring sample distance in RNA-seq data is to use Euclidean distance."),
-        h3("How to interpret the SSD analysis results ?"),
-        p("SSDA can elucidate samples distance in the high-dimensional space. In RNA-seq data, each gene is a dimension,
-          so the data has tens of thousands of dimensions. SSDA uses Euclidean distance to elucidate samples distance in the
-          high-dimensional space, which helps to understand the relationship of samples across exprimental conditions or sample replicates.
-          The heatmap clusters samples with similar distances, which makes the results easier to interpret.")
+        p("One of the pressing open problems of computational systems biology is the elucidation of the topology of 
+        genetic regulatory networks (GRNs) using high throughput genomic data, in particular microarray gene expression data.
+        GENIE3 is a machine learning-based algorithm based on regression trees for inferring gene regulatory networks from expression data.
+        GENIE3 decomposes the prediction of a regulatory network between p genes into p different regression problems.
+        In each of the regression problems, the expression pattern of one of the genes (target gene) is predicted from the expression patterns of 
+        all the other genes (input genes), using tree-based ensemble methods Random Forests or Extra-Trees. 
+        The importance of an input gene in the prediction of the target gene expression pattern is taken as an indication of a putative regulatory link.
+        Putative regulatory links are then aggregated over all genes to provide a ranking of interactions from which the whole network is reconstructed.
+        It doesn't make any assumption about the nature of gene regulation, can deal with combinatorial and non-linear interactions, produces directed GRNs, and is fast and scalable.")
       )
     )
   ),
   column(
     12,
     hr(),
-    fluidRow(column(3, align = "right", actionLink("pgenie3", "<< Previous", style = "font-size: 20px")),
-             column(6, align = "center", HTML('<p style = "text-align:center;">Copyright &copy; 2022.Shixue All rights reserved.</p>')),
-             column(3, align = "left", actionLink("ngenie3", "Next >>", style = "font-size: 20px")))
+    fluidRow(
+      style = "margin-bottom:20px",
+      column(3, align = "right", actionLink("pgenie3", "<< Previous", style = "font-size: 20px")),
+      column(6, align = "center"),
+      column(3, align = "left", actionLink("ngenie3", "Next >>", style = "font-size: 20px"))
+    )
   )
 )
 

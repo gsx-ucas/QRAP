@@ -99,8 +99,51 @@ output$wgcna_expressionUI <- renderUI({
 output$wgcna_exp_Pdf <- downloadHandler(
   filename = function()  {paste0("WGCNA_Expression_Visualization",".pdf")},
   content = function(file) {
-    pdf(file, width = input$wgcna_exp_width, height = input$wgcna_exp_height)
-    wgcna_expression()
-    dev.off()
+    sampleTable <- as.data.frame(dds()@colData)[rownames(datExpr()), ]
+    sampleTable <- sampleTable[order(sampleTable[, input$wgcna_exp_trait], na.last = FALSE), ]
+    
+    module_genes <- names(moduleColors())[moduleColors() == input$wgcna_exp_module]
+    expression_df <- as.data.frame(SummarizedExperiment::assay(trans_value()))[module_genes, rownames(sampleTable)]
+    
+    if (input$wgcna_exp_ptype == "Pheatmap") {
+      if (!is.null(input$wgcna_exp_anno)) {
+        annotation_col = data.frame(row.names = rownames(sampleTable), V1 = sampleTable[, c(input$wgcna_exp_trait, input$wgcna_exp_anno)])
+        colnames(annotation_col) <- c(input$wgcna_exp_trait, input$wgcna_exp_anno)
+      }else {
+        annotation_col = data.frame(row.names = rownames(sampleTable), V1 = sampleTable[, input$wgcna_exp_trait])
+        colnames(annotation_col) <- input$wgcna_exp_trait
+      }
+      
+      annotation_colors <- set_anno_color(anno_row = NULL, anno_col = annotation_col)
+      
+      pdf(file, width = input$wgcna_exp_width, height = input$wgcna_exp_height)
+      
+      color = colorRampPalette(strsplit(input$wgcna_hiera_color, ",")[[1]])(100)
+      pheatmap::pheatmap(expression_df, border_color = NA, scale = "row", show_rownames = F,
+                         show_colnames = input$wgcna_hiera_colname, treeheight_row = 20,
+                         annotation_col = annotation_col, annotation_colors = annotation_colors,
+                         cluster_cols = F, col = color,  fontsize = input$wgcna_hiera_fontsize, angle_col = input$wgcna_hiera_angle)
+      dev.off()
+    }else {
+      MEs0 = WGCNA::moduleEigengenes(datExpr(), moduleColors())$eigengenes
+      MEs = WGCNA::orderMEs(MEs0)[rownames(sampleTable), ]
+      
+      p <- ggplot(data = NULL)+
+        geom_bar(aes(x = factor(rownames(MEs), levels = rownames(MEs)), y = MEs[, paste0("ME", input$wgcna_exp_module)]), stat = "identity", fill = input$wgcna_exp_module)+
+        labs(x = "array samples", y = "eigengene expression")+
+        theme_classic()+
+        theme(text = element_text(size = input$wgcna_bar_cex),
+              axis.title = element_text(size = input$wgcna_bar_lab),
+              axis.text.y = element_text(size = input$wgcna_bar_axis),
+              axis.text.x = element_text(size = input$wgcna_bar_axis, angle = 45, hjust = 1))
+      
+      if (nchar(input$wgcna_expr_ggText != 0)) {
+        add_funcs <- strsplit(input$wgcna_expr_ggText, "\\+")[[1]]
+        p <- p + lapply(add_funcs, function(x){
+          eval(parse(text = x))
+        })
+      }
+      ggsave(file, plot = p, width = input$wgcna_exp_width, height = input$wgcna_exp_height)
+    }
   }
 )

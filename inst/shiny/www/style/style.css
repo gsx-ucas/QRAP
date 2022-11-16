@@ -300,3 +300,6 @@ button ~ ul.dropdown-menu {
   align-items: right;
 }
 
+.angle_dd {
+  font-size: 20px;
+}
