@@ -9,7 +9,7 @@ ridgeplot2(
   showCategory = 30,
   fill = "p.adjust",
   core_enrichment = TRUE,
-  label_format = 30,
+  label_format = 300,
   orderBy = "NES",
   decreasing = FALSE,
   terms = NULL
