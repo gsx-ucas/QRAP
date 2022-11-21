@@ -7,6 +7,7 @@ We designed an interactive RNA-seq analysis toolkit based on R Shiny package, na
   <img src="inst/shiny/www/images/workflow.jpg" alt="QRAP workflow" width="100%" style="max-width: 100%;" />
 </figure>
 
+
 <figure>
   <center>2.QRAP Features</center>
   <img src="inst/shiny/www/images/features.jpg" alt="QRAP workflow" width="100%" style="max-width: 100%;" />

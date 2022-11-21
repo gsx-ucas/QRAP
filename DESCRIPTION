@@ -8,7 +8,7 @@ Description: QRAP is an R shiny application can easily launched from local web b
 License: MIT
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Depends: R (>= 4.0)
 Imports: 
     DT,
