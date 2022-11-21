@@ -3,13 +3,13 @@
 We designed an interactive RNA-seq analysis toolkit based on R Shiny package, named QRAP (Quick RNA-seq Analysis Platform), which can easily accomplish RNA-seq data analysis and visualization through an intuitive graphical interface on the web page. As a comprehensive RNA-seq analysis tool, QRAP can support to analyze publicly available and user-generated data, which include regular RNA-seq data, time-course RNA-seq, data and clinically relevant RNA-seq data, and provide function annotation for approximately 500 species.
 
 <figure>
+  <center>1.QRAP workflow</center>
   <img src="inst/shiny/www/images/workflow.jpg" alt="QRAP workflow" width="100%" style="max-width: 100%;" />
-  <center>QRAP workflow</center>
 </figure>
 
 <figure>
+  <center>2.QRAP Features</center>
   <img src="inst/shiny/www/images/features.jpg" alt="QRAP workflow" width="100%" style="max-width: 100%;" />
-  <center>QRAP Features</center>
 </figure>
 
 ## Usage
