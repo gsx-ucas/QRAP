@@ -77,8 +77,8 @@ output$preview_card <- renderUI({
   }else {
     box(
       id = "upload_box", title = "Upload local file", width = 12, status = NULL, solidHeader = TRUE, collapsible = T,
-      fileInput("file", "Choose input File:", accept = c("text/csv", "text/comma-separated-values,text/plain",
-                                                         ".csv"), placeholder = "*(.csv/.txt reads counts file)", width = "100%"),
+      fileInput("file", "Choose input File:", accept = c(".csv", ".tsv", ".tab"),
+                placeholder = "*(.csv/.txt format reads counts file)", width = "100%"),
       checkboxInput(inputId = "header", label = "First row as header ?", value = TRUE, width = "100%"),
       checkboxInput(inputId = "row_names", label = "First column as rownames ?", value = TRUE, width = "100%"),
       fluidRow(

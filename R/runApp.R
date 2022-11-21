@@ -5,7 +5,7 @@
 #' @export
 #'
 
-startQRAP <- function(launch.browser = TRUE, port = 4986) {
+startQRAP <- function(launch.browser = TRUE, port = getOption("shiny.port"), host = getOption("shiny.host", "127.0.0.1")) {
 
   # set upload file size limit as 100MB
   options(shiny.maxRequestSize = 1000 * 1024^2, warn = -1, shiny.sanitize.errors = TRUE)
@@ -18,7 +18,7 @@ startQRAP <- function(launch.browser = TRUE, port = 4986) {
   # kegg_dir <- system.file("shiny", "www/Kegg_dir", package = "QRAP")
   # lapply(dir(kegg_dir, full.names = TRUE), function(x){file.remove(x)})
 
-  shinyApp(ui = mainUI, server = mainServer) %>% runApp(launch.browser = launch.browser, port = port)
+  shinyApp(ui = mainUI, server = mainServer) %>% runApp(launch.browser = launch.browser, host = host, port = port)
 
   # appDir <- system.file("shiny", "myApp", package = "QRAP")
   #
