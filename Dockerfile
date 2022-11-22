@@ -1,7 +1,8 @@
 FROM rocker/r-ver:4
 
 RUN apt update && apt upgrade -y \
-    && apt install -y libssl-dev libfontconfig1-dev \
+    && apt install -y --no-install-recommends \
+    libssl-dev libfontconfig1-dev \
     libcurl4-openssl-dev libxml2-dev \
     libharfbuzz-dev libfribidi-dev \
     libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev \
