@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>QRAP: an R package and Shiny app for interactive RNA sequencing data analysis</title>
+  <title>Chapter 1 Introduction | QRAP: an R package and Shiny app for interactive RNA sequencing data analysis</title>
   <meta name="description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
   <meta name="generator" content="bookdown 0.30 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="QRAP: an R package and Shiny app for interactive RNA sequencing data analysis" />
+  <meta property="og:title" content="Chapter 1 Introduction | QRAP: an R package and Shiny app for interactive RNA sequencing data analysis" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="QRAP: an R package and Shiny app for interactive RNA sequencing data analysis" />
+  <meta name="twitter:title" content="Chapter 1 Introduction | QRAP: an R package and Shiny app for interactive RNA sequencing data analysis" />
   
   <meta name="twitter:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="intro.html"/>
+<link rel="prev" href="index.html"/>
+<link rel="next" href="data-input-and-pre-processing.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -227,23 +227,80 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">QRAP: an R package and Shiny app for interactive RNA sequencing data analysis</h1>
-<p class="author"><em>Shixue Gou</em></p>
-<p class="date"><em>2022-12-05</em></p>
+<div id="intro" class="section level1 hasAnchor" number="1">
+<h1><span class="header-section-number">Chapter 1</span> Introduction<a href="intro.html#intro" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction" class="section level2 hasAnchor" number="1.1">
+<h2><span class="header-section-number">1.1</span> Introduction<a href="intro.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p style="text-align:justify">
+<strong>Motivation:</strong> RNA-sequencing (RNA-seq) has become the most commonly used tool in life science research for exploring whole transcript profiles. The advancement of next-generation sequencing has promoted a large amount of RNA-seq data. However, the popularity of bioinformatics lags far behind the generation of sequencing data, resulting in the inability of most researchers to analyze RNA-seq data. Although a large number of tools are currently available for RNA-seq analysis, data uploading, analysis, and visualization through an interactive interface are more acceptable to researchers than command-line codes.
+</p>
+<p style="text-align:justify">
+<strong>Results:</strong> We designed an interactive RNA-seq analysis toolkit based on the R Shiny package, named QRAP (Quick RNA-seq Analysis Platform), which can easily accomplish RNA-seq data analysis and visualization through a user-friendly interface on the web page. As a comprehensive RNA-seq analysis tool, QRAP can support the analysis of publicly available and user-generated data, which include regular RNA-seq data, time-course RNA-seq data, and clinically relevant RNA-seq data, and provide functional annotation for approximately 500 species.
+</p>
+<p style="text-align:justify">
+<strong>Availability and implementation:</strong> As an open source R package, QRAP can be freely accessed at <a href="https://github.com/gsx-ucas/QRAP" class="uri">https://github.com/gsx-ucas/QRAP</a>.
+</p>
 </div>
-<div id="preface" class="section level1 unnumbered hasAnchor">
-<h1>Preface<a href="index.html#preface" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p><img src="images/workflow.jpg" /></p>
+<div id="installation" class="section level2 hasAnchor" number="1.2">
+<h2><span class="header-section-number">1.2</span> Installation<a href="intro.html#installation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="r-package" class="section level3 hasAnchor" number="1.2.1">
+<h3><span class="header-section-number">1.2.1</span> R package<a href="intro.html#r-package" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>To install QRAP, R version 4.0 or greater is required. We also recommend installing R Studio.<br />
+</p>
+<div id="install-the-release-version-of-qrap" class="section level4 hasAnchor" number="1.2.1.1">
+<h4><span class="header-section-number">1.2.1.1</span> Install the release version of QRAP<a href="intro.html#install-the-release-version-of-qrap" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="intro.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Enter commands in R (or R studio, if installed) </span></span>
+<span id="cb1-2"><a href="intro.html#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Install the remotes package install.packages(&#39;devtools&#39;) </span></span>
+<span id="cb1-3"><a href="intro.html#cb1-3" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;gsx-ucas/QRAP&quot;</span>)</span></code></pre></div>
+</div>
+<div id="install-the-development-version-of-qrap" class="section level4 hasAnchor" number="1.2.1.2">
+<h4><span class="header-section-number">1.2.1.2</span> Install the development version of QRAP<a href="intro.html#install-the-development-version-of-qrap" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="intro.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Enter commands in R (or R studio, if installed) </span></span>
+<span id="cb2-2"><a href="intro.html#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Install the remotes package install.packages(&#39;devtools&#39;) </span></span>
+<span id="cb2-3"><a href="intro.html#cb2-3" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;gsx-ucas/QRAP&quot;</span>, <span class="at">ref =</span> <span class="st">&quot;dev&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="docker-image" class="section level3 hasAnchor" number="1.2.2">
+<h3><span class="header-section-number">1.2.2</span> Docker image<a href="intro.html#docker-image" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We provide docker images for QRAP via dockerhub. To pull the latest image using the command line:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="intro.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Enter commands in shell</span></span>
+<span id="cb3-2"><a href="intro.html#cb3-2" aria-hidden="true" tabindex="-1"></a>docker pull goushixue<span class="sc">/</span>qrap<span class="sc">:</span>latest</span></code></pre></div>
+</div>
+</div>
+<div id="get-started" class="section level2 hasAnchor" number="1.3">
+<h2><span class="header-section-number">1.3</span> Get started<a href="intro.html#get-started" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="launch-the-qrap-application-in-r-or-rstudio" class="section level3 hasAnchor" number="1.3.1">
+<h3><span class="header-section-number">1.3.1</span> Launch the QRAP application in R or Rstudio<a href="intro.html#launch-the-qrap-application-in-r-or-rstudio" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="intro.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(QRAP) <span class="co"># loading the QRAP library to R environment</span></span>
+<span id="cb4-2"><a href="intro.html#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">startQRAP</span>() <span class="co"># launch the QRAP application to web browser</span></span></code></pre></div>
+<p>Then you would get the link to activate your browser:
+<img src="images/launch_R.jpeg" /><br />
+Use the link <a href="http://127.0.0.1:4986" class="uri">http://127.0.0.1:4986</a> to access the interactive analysis interface. Note that the port (4986) should change to yours.<br />
+</p>
+</div>
+<div id="launch-the-qrap-application-by-docker-image-in-shell" class="section level3 hasAnchor" number="1.3.2">
+<h3><span class="header-section-number">1.3.2</span> Launch the QRAP application by docker image in shell<a href="intro.html#launch-the-qrap-application-by-docker-image-in-shell" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="intro.html#cb5-1" aria-hidden="true" tabindex="-1"></a>docker run  <span class="sc">-</span>p <span class="dv">3838</span><span class="sc">:</span><span class="dv">3838</span> goushixue<span class="sc">/</span>qrap <span class="co"># use the 3838 port </span></span></code></pre></div>
+<p>Then you would get the output like this:
+<img src="images/launch_docker.jpeg" />
+Use the link <a href="http://localhost:3838/" class="uri">http://localhost:3838/</a> to access the interactive analysis interface.<br />
+</p>
+</div>
+<div id="access-the-interactive-analysis-interface" class="section level3 hasAnchor" number="1.3.3">
+<h3><span class="header-section-number">1.3.3</span> Access the interactive analysis interface<a href="intro.html#access-the-interactive-analysis-interface" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Just start your analysis by clicking, clicking, clicking…
+<img src="images/launch_interface.jpeg" /></p>
 
+</div>
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="intro.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="data-input-and-pre-processing.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

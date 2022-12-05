@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>QRAP: an R package and Shiny app for interactive RNA sequencing data analysis</title>
+  <title>Chapter 2 Data input and pre-processing | QRAP: an R package and Shiny app for interactive RNA sequencing data analysis</title>
   <meta name="description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
   <meta name="generator" content="bookdown 0.30 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="QRAP: an R package and Shiny app for interactive RNA sequencing data analysis" />
+  <meta property="og:title" content="Chapter 2 Data input and pre-processing | QRAP: an R package and Shiny app for interactive RNA sequencing data analysis" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="QRAP: an R package and Shiny app for interactive RNA sequencing data analysis" />
+  <meta name="twitter:title" content="Chapter 2 Data input and pre-processing | QRAP: an R package and Shiny app for interactive RNA sequencing data analysis" />
   
   <meta name="twitter:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="intro.html"/>
+<link rel="prev" href="intro.html"/>
+<link rel="next" href="data-quality-exploring.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -227,23 +227,79 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">QRAP: an R package and Shiny app for interactive RNA sequencing data analysis</h1>
-<p class="author"><em>Shixue Gou</em></p>
-<p class="date"><em>2022-12-05</em></p>
+<div id="data-input-and-pre-processing" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">Chapter 2</span> Data input and pre-processing<a href="data-input-and-pre-processing.html#data-input-and-pre-processing" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="data-input" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Data input<a href="data-input-and-pre-processing.html#data-input" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>QRAP can support to analyze publicly available and user-generated data. There are two action buttons, ‘Get Started Local’ and ‘Get Started GEO,’ can activate corresponding data upload and processing pipeline.</p>
+<p><img src="images/start_button.jpeg" /></p>
+<div id="upload-local-file" class="section level3 hasAnchor" number="2.1.1">
+<h3><span class="header-section-number">2.1.1</span> Upload local file<a href="data-input-and-pre-processing.html#upload-local-file" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>For user generated local files, click the ‘Get Started Local’ button to enter the data upload page.</p>
+<p><strong><em>Parameters in this section:</em></strong><br />
+- Choose input file: browser and upload the expression matrix file, accept .csv/.tsv/.tab/.txt format.<br />
+- First row as header ? This means use the first row of the expression matrix as column names, often is samples names.<br />
+- First column as rownames ? This means use the first column of the expression matrix as row names, often is gene names.<br />
+</p>
+<p><img src="images/upload_local_file.jpeg" /></p>
+<p>After select the local files and set the parameters, click the ‘Upload’ button to preview the expression matrix.</p>
+<p><img src="images/local_expression_preview.jpeg" /></p>
+<p>Click ‘Example’ will upload the example dataset internal, transcriptomes of SARS-Cov-2 infected normal human bronchial epithelial cells (GSE147507).</p>
 </div>
-<div id="preface" class="section level1 unnumbered hasAnchor">
-<h1>Preface<a href="index.html#preface" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p><img src="images/workflow.jpg" /></p>
+<div id="pull-down-geo-datasets" class="section level3 hasAnchor" number="2.1.2">
+<h3><span class="header-section-number">2.1.2</span> Pull down GEO datasets<a href="data-input-and-pre-processing.html#pull-down-geo-datasets" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The Gene Expression Omnibus (GEO) is a public repository that archives and freely distributes comprehensive sets of microarray, next-generation sequencing, and other forms of high-throughput functional genomic data submitted by the scientific community.</p>
+<p>After you input the GEO Acession Number and active the ‘Download matrix’ button, We will download the value matrix tables within GDSxxx or supplementary files within GSExxx, these files will store in the working directory of the R project you created.
+<img src="images/search_geo_dataset.jpeg" /></p>
+<p>When the files download accomplished, there will show the download files name in the Parameter setting panel, and you should select file(s) that contain interested gene expression matrix and active the ‘Loading GEO’ button to preview the matrix.
+<img src="images/geo_preview_single.jpeg" />
+Please Note that if the files are in a tar archive format, such as htseq-count generated results, these files will contain Gene ID and Gene Expression Value of each sample, respectively. Therefore, you need to provid the column number of the Gene ID and Gene Expression Value to help merge the files to generate an analysis ready gene expression matrix.</p>
+<ul>
+<li>Step 1. Choose a single file, and leave the ‘First row as header’ and ‘First column as rownames’ unchecked, then click the button ‘Loading GEO’ to preview what the file contained.
+<img src="images/geo_preview_multiple_setp1.jpeg" /></li>
+<li>Step 2. Choose all or interested files, set the column number of geneID and readCounts, then click the button ‘Loading GEO’ to generate and preview the analysis ready expression matrix.
+<img src="images/geo_preview_multiple_setp2.jpeg" /></li>
+</ul>
+</div>
+</div>
+<div id="data-pre-processing" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Data pre-processing<a href="data-input-and-pre-processing.html#data-pre-processing" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>QRAP starts with a read-counts matrix or GEO accession number, and then filters out low expression genes under an given threshold. We then specify the organisms and filtered out low expression genes.
+<img src="images/prefiltering.jpeg" /></p>
+<div id="note-the-gene-types" class="section level6 unnumbered hasAnchor">
+<h6>Note the Gene Types:<a href="data-input-and-pre-processing.html#note-the-gene-types" class="anchor-section" aria-label="Anchor link to header"></a></h6>
+<table>
+<thead>
+<tr class="header">
+<th align="left">SYMBOL</th>
+<th align="left">ENSEMBL</th>
+<th align="left">ENTREZID</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">GAPDH</td>
+<td align="left">ENSG00000111640</td>
+<td align="left">2597</td>
+</tr>
+<tr class="even">
+<td align="left">TP53</td>
+<td align="left">ENSG00000141510</td>
+<td align="left">7157</td>
+</tr>
+</tbody>
+</table>
 
+</div>
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="intro.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="intro.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="data-quality-exploring.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
