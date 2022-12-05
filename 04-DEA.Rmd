@@ -1,0 +1,7 @@
+# Differential expression analysis
+
+Some _significant_ applications are demonstrated in this chapter.
+
+## Extract DEGs
+
+## Visualize DEGs

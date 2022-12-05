@@ -1,0 +1,21 @@
+--- 
+title: "QRAP: an R package and Shiny app for interactive RNA sequencing data analysis"
+author: "Shixue Gou"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+colorlinks: yes
+description: "This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook."
+classoption: oneside
+linestretch: 1.25
+geometry: "left=3cm, right=3cm, top=2.5cm, bottom=2.5cm"
+toc-depth: 2
+indent: False
+papersize: a4
+---
+
+# Preface {-}
+![](images/workflow.jpg)

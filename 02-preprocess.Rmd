@@ -1,0 +1,48 @@
+# Data input and pre-processing
+
+## Data input
+QRAP can support to analyze publicly available and user-generated data. There are two action buttons, 'Get Started Local' and 'Get Started GEO', can activate corresponding data upload and processing pipeline. 
+
+![](images/start_button.jpeg)
+
+### Upload local file
+For user generated local files, click the 'Get Started Local' button to enter the data upload page.
+
+***Parameters in this section:*** \
+- Choose input file: browser and upload the expression matrix file, accept .csv/.tsv/.tab/.txt format. \
+- First row as header ? This means use the first row of the expression matrix as column names, often is samples names. \
+- First column as rownames ? This means use the first column of the expression matrix as row names, often is gene names. \
+
+![](images/upload_local_file.jpeg)
+
+After select the local files and set the parameters, click the 'Upload' button to preview the expression matrix.
+
+![](images/local_expression_preview.jpeg)
+
+Click 'Example' will upload the example dataset internal, transcriptomes of SARS-Cov-2 infected normal human bronchial epithelial cells (GSE147507).
+
+### Pull down GEO datasets
+The Gene Expression Omnibus (GEO) is a public repository that archives and freely distributes comprehensive sets of microarray, next-generation sequencing, and other forms of high-throughput functional genomic data submitted by the scientific community. 
+
+After you input the GEO Acession Number and active the 'Download matrix' button, We will download the value matrix tables within GDSxxx or supplementary files within GSExxx, these files will store in the working directory of the R project you created. \
+![](images/search_geo_dataset.jpeg) \
+
+When the files download accomplished, there will show the download files name in the Parameter setting panel, and you should select file(s) that contain interested gene expression matrix and active the 'Loading GEO' button to preview the matrix. \
+![](images/geo_preview_single.jpeg) \
+Please Note that if the files are in a tar archive format, such as htseq-count generated results, these files will contain Gene ID and Gene Expression Value of each sample, respectively. Therefore, you need to provid the column number of the Gene ID and Gene Expression Value to help merge the files to generate an analysis ready gene expression matrix.
+
+- Step 1. Choose a single file, and leave the 'First row as header' and 'First column as rownames' unchecked, then click the button 'Loading GEO' to preview what the file contained. \
+![](images/geo_preview_multiple_setp1.jpeg)
+- Step 2. Choose all or interested files, set the column number of geneID and readCounts, then click the button 'Loading GEO' to generate and preview the analysis ready expression matrix. \
+![](images/geo_preview_multiple_setp2.jpeg)
+
+## Data pre-processing
+QRAP starts with a read-counts matrix or GEO accession number, and then filters out low expression genes under an given threshold. We then specify the organisms and filtered out low expression genes. \
+![](images/prefiltering.jpeg)
+
+###### Note the Gene Types:{-}
+
+| SYMBOL      | ENSEMBL | ENTREZID     |
+| :---        |    :----   |          :--- |
+| GAPDH      | ENSG00000111640       | 2597   |
+| TP53   | ENSG00000141510        | 7157      |

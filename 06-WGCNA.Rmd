@@ -1,0 +1,19 @@
+# weighted correlation network analysis
+
+We have finished a nice book.
+
+## Data preparation
+
+
+## Soft threshold detection
+
+
+## Gene module detection
+
+
+## Module-Traits relationship
+
+
+## MM vs. GS scatterplot
+
+## Module gene expression visualization

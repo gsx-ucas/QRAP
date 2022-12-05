@@ -1,0 +1,11 @@
+# Data quality exploring
+
+We describe our methods in this chapter.
+
+## principal component analysis (PCA)
+
+## hierarchical clustering heatmap
+
+## sample-to-sample heatmap
+
+## sample correlation coefficient
