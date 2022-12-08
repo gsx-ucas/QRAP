@@ -23,7 +23,7 @@
 <meta name="author" content="Shixue Gou" />
 
 
-<meta name="date" content="2022-12-05" />
+<meta name="date" content="2022-12-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -58,6 +58,7 @@
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
@@ -158,14 +159,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.1.1" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#upload-local-file"><i class="fa fa-check"></i><b>2.1.1</b> Upload local file</a></li>
 <li class="chapter" data-level="2.1.2" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#pull-down-geo-datasets"><i class="fa fa-check"></i><b>2.1.2</b> Pull down GEO datasets</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#data-pre-processing"><i class="fa fa-check"></i><b>2.2</b> Data pre-processing</a></li>
+<li class="chapter" data-level="2.2" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#data-pre-filtering"><i class="fa fa-check"></i><b>2.2</b> Data pre-filtering</a></li>
+<li class="chapter" data-level="2.3" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#design-table-formula"><i class="fa fa-check"></i><b>2.3</b> Design table &amp; formula</a></li>
+<li class="chapter" data-level="2.4" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#batch-effect-correction"><i class="fa fa-check"></i><b>2.4</b> Batch effect correction</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html"><i class="fa fa-check"></i><b>3</b> Data quality exploring</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#principal-component-analysis-pca"><i class="fa fa-check"></i><b>3.1</b> principal component analysis (PCA)</a></li>
-<li class="chapter" data-level="3.2" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#hierarchical-clustering-heatmap"><i class="fa fa-check"></i><b>3.2</b> hierarchical clustering heatmap</a></li>
-<li class="chapter" data-level="3.3" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#sample-to-sample-heatmap"><i class="fa fa-check"></i><b>3.3</b> sample-to-sample heatmap</a></li>
-<li class="chapter" data-level="3.4" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#sample-correlation-coefficient"><i class="fa fa-check"></i><b>3.4</b> sample correlation coefficient</a></li>
+<li class="chapter" data-level="3.1" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#principal-component-analysis-pca"><i class="fa fa-check"></i><b>3.1</b> Principal component analysis (PCA)</a></li>
+<li class="chapter" data-level="3.2" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#hierarchical-clustering"><i class="fa fa-check"></i><b>3.2</b> Hierarchical clustering</a></li>
+<li class="chapter" data-level="3.3" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#sample-to-sample-distance"><i class="fa fa-check"></i><b>3.3</b> Sample-to-sample distance</a></li>
+<li class="chapter" data-level="3.4" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#sample-correlation-coefficient"><i class="fa fa-check"></i><b>3.4</b> Sample correlation coefficient</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="differential-expression-analysis.html"><a href="differential-expression-analysis.html"><i class="fa fa-check"></i><b>4</b> Differential expression analysis</a>
 <ul>
@@ -189,11 +192,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html"><i class="fa fa-check"></i><b>7</b> functional enrichment analysis</a>
 <ul>
 <li class="chapter" data-level="7.1" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#gprofiler-api"><i class="fa fa-check"></i><b>7.1</b> Gprofiler API</a></li>
-<li class="chapter" data-level="7.2" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#clusterprofiler"><i class="fa fa-check"></i><b>7.2</b> ClusterProfiler</a>
-<ul>
-<li class="chapter" data-level="7.2.1" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#ora"><i class="fa fa-check"></i><b>7.2.1</b> ORA</a></li>
-<li class="chapter" data-level="7.2.2" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#gsea"><i class="fa fa-check"></i><b>7.2.2</b> GSEA</a></li>
-</ul></li>
+<li class="chapter" data-level="7.2" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#clusterprofiler-ora"><i class="fa fa-check"></i><b>7.2</b> ClusterProfiler-ORA</a></li>
+<li class="chapter" data-level="7.3" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#clusterprofiler-gsea"><i class="fa fa-check"></i><b>7.3</b> ClusterProfiler-GSEA</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="gene-regulatory-network.html"><a href="gene-regulatory-network.html"><i class="fa fa-check"></i><b>8</b> Gene regulatory network</a>
 <ul>
@@ -229,12 +229,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="differential-expression-analysis" class="section level1 hasAnchor" number="4">
 <h1><span class="header-section-number">Chapter 4</span> Differential expression analysis<a href="differential-expression-analysis.html#differential-expression-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>Some <em>significant</em> applications are demonstrated in this chapter.</p>
+<p>The most important application of RNA-seq is to detect differentially expressed genes between variance conditions or groups. Differential expression analysis (DEA) requires that gene expression values should be compared among samples. We chose the DESeq2 package to perform the expression normalization to adjust abundance quantities in order to account for differences in read depth across the samples. After that, the function ‘results’ of DESeq2 wase used for calculating the foldchange of gene expression levels and P-values across experimental and control condition.</p>
 <div id="extract-degs" class="section level2 hasAnchor" number="4.1">
 <h2><span class="header-section-number">4.1</span> Extract DEGs<a href="differential-expression-analysis.html#extract-degs" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>To extract DEGs, user should specify one group as control, and one or more groups as treatment. Then, the threshold of P value and log2 fold change shold be specified as well. Most commonly used standard to define differentially expressed gene (DEG) is |log2FoldChange| &gt; 1 and P-value &lt; 0.05, but we also provide the options for user’s custom defined standard to filter DEGs.</p>
+<p><img src="images/dea-de.jpeg" /></p>
 </div>
 <div id="visualize-degs" class="section level2 hasAnchor" number="4.2">
 <h2><span class="header-section-number">4.2</span> Visualize DEGs<a href="differential-expression-analysis.html#visualize-degs" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>We provide five approaches to visualize the DEGs, include volcano plot, MA-plot, bar-plot, heatmap, venn diagram.</p>
+<ul>
+<li><p>Volcano plot
+<img src="images/dea-volcano.jpeg" /></p></li>
+<li><p>Heatmap
+<img src="images/dea-heatmap.jpeg" /></p></li>
+<li><p>Venn diagram
+<img src="images/dea-venn.jpeg" /></p></li>
+<li><p>Bar-plot
+<img src="images/dea-bar.jpeg" /></p></li>
+<li><p>The details of DEGs
+<img src="images/dea-tab.jpeg" /></p></li>
+</ul>
 
 </div>
 </div>

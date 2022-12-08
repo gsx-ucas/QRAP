@@ -1,7 +1,25 @@
 # Differential expression analysis
 
-Some _significant_ applications are demonstrated in this chapter.
+The most important application of RNA-seq is to detect differentially expressed genes between variance conditions or groups. Differential expression analysis (DEA) requires that gene expression values should be compared among samples. We chose the DESeq2 package to perform the expression normalization to adjust abundance quantities in order to account for differences in read depth across the samples. After that, the function ‘results’ of DESeq2 wase used for calculating the foldchange of gene expression levels and P-values across experimental and control condition. 
 
 ## Extract DEGs
 
+To extract DEGs, user should specify one group as control, and one or more groups as treatment. Then, the threshold of P value and log2 fold change shold be specified as well. Most commonly used standard to define differentially expressed gene (DEG) is |log2FoldChange| > 1 and P-value < 0.05, but we also provide the options for user’s custom defined standard to filter DEGs.
+
+![](images/dea-de.jpeg)
+
 ## Visualize DEGs
+
+We provide five approaches to visualize the DEGs, include volcano plot, MA-plot, bar-plot, heatmap, venn diagram.
+
+- Volcano plot
+![](images/dea-volcano.jpeg)
+- Heatmap
+![](images/dea-heatmap.jpeg)
+- Venn diagram
+![](images/dea-venn.jpeg)
+- Bar-plot
+![](images/dea-bar.jpeg)
+
+- The details of DEGs
+![](images/dea-tab.jpeg)

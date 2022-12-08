@@ -23,7 +23,7 @@
 <meta name="author" content="Shixue Gou" />
 
 
-<meta name="date" content="2022-12-05" />
+<meta name="date" content="2022-12-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -58,6 +58,7 @@
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
@@ -158,14 +159,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.1.1" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#upload-local-file"><i class="fa fa-check"></i><b>2.1.1</b> Upload local file</a></li>
 <li class="chapter" data-level="2.1.2" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#pull-down-geo-datasets"><i class="fa fa-check"></i><b>2.1.2</b> Pull down GEO datasets</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#data-pre-processing"><i class="fa fa-check"></i><b>2.2</b> Data pre-processing</a></li>
+<li class="chapter" data-level="2.2" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#data-pre-filtering"><i class="fa fa-check"></i><b>2.2</b> Data pre-filtering</a></li>
+<li class="chapter" data-level="2.3" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#design-table-formula"><i class="fa fa-check"></i><b>2.3</b> Design table &amp; formula</a></li>
+<li class="chapter" data-level="2.4" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#batch-effect-correction"><i class="fa fa-check"></i><b>2.4</b> Batch effect correction</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html"><i class="fa fa-check"></i><b>3</b> Data quality exploring</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#principal-component-analysis-pca"><i class="fa fa-check"></i><b>3.1</b> principal component analysis (PCA)</a></li>
-<li class="chapter" data-level="3.2" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#hierarchical-clustering-heatmap"><i class="fa fa-check"></i><b>3.2</b> hierarchical clustering heatmap</a></li>
-<li class="chapter" data-level="3.3" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#sample-to-sample-heatmap"><i class="fa fa-check"></i><b>3.3</b> sample-to-sample heatmap</a></li>
-<li class="chapter" data-level="3.4" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#sample-correlation-coefficient"><i class="fa fa-check"></i><b>3.4</b> sample correlation coefficient</a></li>
+<li class="chapter" data-level="3.1" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#principal-component-analysis-pca"><i class="fa fa-check"></i><b>3.1</b> Principal component analysis (PCA)</a></li>
+<li class="chapter" data-level="3.2" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#hierarchical-clustering"><i class="fa fa-check"></i><b>3.2</b> Hierarchical clustering</a></li>
+<li class="chapter" data-level="3.3" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#sample-to-sample-distance"><i class="fa fa-check"></i><b>3.3</b> Sample-to-sample distance</a></li>
+<li class="chapter" data-level="3.4" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#sample-correlation-coefficient"><i class="fa fa-check"></i><b>3.4</b> Sample correlation coefficient</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="differential-expression-analysis.html"><a href="differential-expression-analysis.html"><i class="fa fa-check"></i><b>4</b> Differential expression analysis</a>
 <ul>
@@ -189,11 +192,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html"><i class="fa fa-check"></i><b>7</b> functional enrichment analysis</a>
 <ul>
 <li class="chapter" data-level="7.1" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#gprofiler-api"><i class="fa fa-check"></i><b>7.1</b> Gprofiler API</a></li>
-<li class="chapter" data-level="7.2" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#clusterprofiler"><i class="fa fa-check"></i><b>7.2</b> ClusterProfiler</a>
-<ul>
-<li class="chapter" data-level="7.2.1" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#ora"><i class="fa fa-check"></i><b>7.2.1</b> ORA</a></li>
-<li class="chapter" data-level="7.2.2" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#gsea"><i class="fa fa-check"></i><b>7.2.2</b> GSEA</a></li>
-</ul></li>
+<li class="chapter" data-level="7.2" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#clusterprofiler-ora"><i class="fa fa-check"></i><b>7.2</b> ClusterProfiler-ORA</a></li>
+<li class="chapter" data-level="7.3" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#clusterprofiler-gsea"><i class="fa fa-check"></i><b>7.3</b> ClusterProfiler-GSEA</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="gene-regulatory-network.html"><a href="gene-regulatory-network.html"><i class="fa fa-check"></i><b>8</b> Gene regulatory network</a>
 <ul>
@@ -273,7 +273,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">1.3.1</span> Launch the QRAP application in R or Rstudio<a href="intro.html#launch-the-qrap-application-in-r-or-rstudio" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="intro.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(QRAP) <span class="co"># loading the QRAP library to R environment</span></span>
 <span id="cb4-2"><a href="intro.html#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">startQRAP</span>() <span class="co"># launch the QRAP application to web browser</span></span></code></pre></div>
-<p>Then you would get the link to activate your browser:
+<p>Then you would get the link to activate your browser:<br />
 <img src="images/launch_R.jpeg" /><br />
 Use the link <a href="http://127.0.0.1:4986" class="uri">http://127.0.0.1:4986</a> to access the interactive analysis interface. Note that the port (4986) should change to yours.<br />
 </p>
@@ -281,15 +281,16 @@ Use the link <a href="http://127.0.0.1:4986" class="uri">http://127.0.0.1:4986</
 <div id="launch-the-qrap-application-by-docker-image-in-shell" class="section level3 hasAnchor" number="1.3.2">
 <h3><span class="header-section-number">1.3.2</span> Launch the QRAP application by docker image in shell<a href="intro.html#launch-the-qrap-application-by-docker-image-in-shell" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="intro.html#cb5-1" aria-hidden="true" tabindex="-1"></a>docker run  <span class="sc">-</span>p <span class="dv">3838</span><span class="sc">:</span><span class="dv">3838</span> goushixue<span class="sc">/</span>qrap <span class="co"># use the 3838 port </span></span></code></pre></div>
-<p>Then you would get the output like this:
-<img src="images/launch_docker.jpeg" />
+<p>Then you would get the output like this:<br />
+<img src="images/launch_docker.jpeg" /><br />
 Use the link <a href="http://localhost:3838/" class="uri">http://localhost:3838/</a> to access the interactive analysis interface.<br />
 </p>
 </div>
 <div id="access-the-interactive-analysis-interface" class="section level3 hasAnchor" number="1.3.3">
 <h3><span class="header-section-number">1.3.3</span> Access the interactive analysis interface<a href="intro.html#access-the-interactive-analysis-interface" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Just start your analysis by clicking, clicking, clicking…
-<img src="images/launch_interface.jpeg" /></p>
+<p>Just start your analysis by clicking, clicking, clicking…<br />
+<img src="images/launch_interface.jpeg" /><br />
+</p>
 
 </div>
 </div>

@@ -23,7 +23,7 @@
 <meta name="author" content="Shixue Gou" />
 
 
-<meta name="date" content="2022-12-05" />
+<meta name="date" content="2022-12-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -58,6 +58,7 @@
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
@@ -158,14 +159,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.1.1" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#upload-local-file"><i class="fa fa-check"></i><b>2.1.1</b> Upload local file</a></li>
 <li class="chapter" data-level="2.1.2" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#pull-down-geo-datasets"><i class="fa fa-check"></i><b>2.1.2</b> Pull down GEO datasets</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#data-pre-processing"><i class="fa fa-check"></i><b>2.2</b> Data pre-processing</a></li>
+<li class="chapter" data-level="2.2" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#data-pre-filtering"><i class="fa fa-check"></i><b>2.2</b> Data pre-filtering</a></li>
+<li class="chapter" data-level="2.3" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#design-table-formula"><i class="fa fa-check"></i><b>2.3</b> Design table &amp; formula</a></li>
+<li class="chapter" data-level="2.4" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#batch-effect-correction"><i class="fa fa-check"></i><b>2.4</b> Batch effect correction</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html"><i class="fa fa-check"></i><b>3</b> Data quality exploring</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#principal-component-analysis-pca"><i class="fa fa-check"></i><b>3.1</b> principal component analysis (PCA)</a></li>
-<li class="chapter" data-level="3.2" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#hierarchical-clustering-heatmap"><i class="fa fa-check"></i><b>3.2</b> hierarchical clustering heatmap</a></li>
-<li class="chapter" data-level="3.3" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#sample-to-sample-heatmap"><i class="fa fa-check"></i><b>3.3</b> sample-to-sample heatmap</a></li>
-<li class="chapter" data-level="3.4" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#sample-correlation-coefficient"><i class="fa fa-check"></i><b>3.4</b> sample correlation coefficient</a></li>
+<li class="chapter" data-level="3.1" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#principal-component-analysis-pca"><i class="fa fa-check"></i><b>3.1</b> Principal component analysis (PCA)</a></li>
+<li class="chapter" data-level="3.2" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#hierarchical-clustering"><i class="fa fa-check"></i><b>3.2</b> Hierarchical clustering</a></li>
+<li class="chapter" data-level="3.3" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#sample-to-sample-distance"><i class="fa fa-check"></i><b>3.3</b> Sample-to-sample distance</a></li>
+<li class="chapter" data-level="3.4" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#sample-correlation-coefficient"><i class="fa fa-check"></i><b>3.4</b> Sample correlation coefficient</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="differential-expression-analysis.html"><a href="differential-expression-analysis.html"><i class="fa fa-check"></i><b>4</b> Differential expression analysis</a>
 <ul>
@@ -189,11 +192,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html"><i class="fa fa-check"></i><b>7</b> functional enrichment analysis</a>
 <ul>
 <li class="chapter" data-level="7.1" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#gprofiler-api"><i class="fa fa-check"></i><b>7.1</b> Gprofiler API</a></li>
-<li class="chapter" data-level="7.2" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#clusterprofiler"><i class="fa fa-check"></i><b>7.2</b> ClusterProfiler</a>
-<ul>
-<li class="chapter" data-level="7.2.1" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#ora"><i class="fa fa-check"></i><b>7.2.1</b> ORA</a></li>
-<li class="chapter" data-level="7.2.2" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#gsea"><i class="fa fa-check"></i><b>7.2.2</b> GSEA</a></li>
-</ul></li>
+<li class="chapter" data-level="7.2" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#clusterprofiler-ora"><i class="fa fa-check"></i><b>7.2</b> ClusterProfiler-ORA</a></li>
+<li class="chapter" data-level="7.3" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#clusterprofiler-gsea"><i class="fa fa-check"></i><b>7.3</b> ClusterProfiler-GSEA</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="gene-regulatory-network.html"><a href="gene-regulatory-network.html"><i class="fa fa-check"></i><b>8</b> Gene regulatory network</a>
 <ul>
@@ -231,11 +231,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">Chapter 2</span> Data input and pre-processing<a href="data-input-and-pre-processing.html#data-input-and-pre-processing" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <div id="data-input" class="section level2 hasAnchor" number="2.1">
 <h2><span class="header-section-number">2.1</span> Data input<a href="data-input-and-pre-processing.html#data-input" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>QRAP can support to analyze publicly available and user-generated data. There are two action buttons, ‘Get Started Local’ and ‘Get Started GEO,’ can activate corresponding data upload and processing pipeline.</p>
+<p>QRAP can support to analyze publicly available and user-generated data. There are two action buttons, ‘Get Started Local’ and ‘Get Started GEO’, can activate corresponding data upload and processing pipeline.</p>
 <p><img src="images/start_button.jpeg" /></p>
 <div id="upload-local-file" class="section level3 hasAnchor" number="2.1.1">
 <h3><span class="header-section-number">2.1.1</span> Upload local file<a href="data-input-and-pre-processing.html#upload-local-file" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>For user generated local files, click the ‘Get Started Local’ button to enter the data upload page.</p>
+<p>For user generated local files, click the ‘Get Started Local’ button to enter the data upload page. Users need to upload a read-count matrix, in which rows represent the genes and columns represent the samples, while the contents represent the gene expression values of given sample</p>
 <p><strong><em>Parameters in this section:</em></strong><br />
 - Choose input file: browser and upload the expression matrix file, accept .csv/.tsv/.tab/.txt format.<br />
 - First row as header ? This means use the first row of the expression matrix as column names, often is samples names.<br />
@@ -249,22 +249,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="pull-down-geo-datasets" class="section level3 hasAnchor" number="2.1.2">
 <h3><span class="header-section-number">2.1.2</span> Pull down GEO datasets<a href="data-input-and-pre-processing.html#pull-down-geo-datasets" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The Gene Expression Omnibus (GEO) is a public repository that archives and freely distributes comprehensive sets of microarray, next-generation sequencing, and other forms of high-throughput functional genomic data submitted by the scientific community.</p>
-<p>After you input the GEO Acession Number and active the ‘Download matrix’ button, We will download the value matrix tables within GDSxxx or supplementary files within GSExxx, these files will store in the working directory of the R project you created.
-<img src="images/search_geo_dataset.jpeg" /></p>
-<p>When the files download accomplished, there will show the download files name in the Parameter setting panel, and you should select file(s) that contain interested gene expression matrix and active the ‘Loading GEO’ button to preview the matrix.
-<img src="images/geo_preview_single.jpeg" />
+<p>For GEO datasets, users need to input an accession number to query the gene expression matrix through GEOquery. After you input the GEO Acession Number and active the ‘Download matrix’ button, We will download the value matrix tables within GDSxxx or supplementary files within GSExxx, these files will store in the working directory of the R project you created.<br />
+<img src="images/search_geo_dataset.jpeg" /><br />
+</p>
+<p>When the files download accomplished, there will show the download files name in the Parameter setting panel, and you should select file(s) that contain interested gene expression matrix and active the ‘Loading GEO’ button to preview the matrix.<br />
+<img src="images/geo_preview_single.jpeg" /><br />
 Please Note that if the files are in a tar archive format, such as htseq-count generated results, these files will contain Gene ID and Gene Expression Value of each sample, respectively. Therefore, you need to provid the column number of the Gene ID and Gene Expression Value to help merge the files to generate an analysis ready gene expression matrix.</p>
 <ul>
-<li>Step 1. Choose a single file, and leave the ‘First row as header’ and ‘First column as rownames’ unchecked, then click the button ‘Loading GEO’ to preview what the file contained.
+<li>Step 1. Choose a single file, and leave the ‘First row as header’ and ‘First column as rownames’ unchecked, then click the button ‘Loading GEO’ to preview what the file contained.<br />
 <img src="images/geo_preview_multiple_setp1.jpeg" /></li>
-<li>Step 2. Choose all or interested files, set the column number of geneID and readCounts, then click the button ‘Loading GEO’ to generate and preview the analysis ready expression matrix.
+<li>Step 2. Choose all or interested files, set the column number of geneID and readCounts, then click the button ‘Loading GEO’ to generate and preview the analysis ready expression matrix.<br />
 <img src="images/geo_preview_multiple_setp2.jpeg" /></li>
 </ul>
 </div>
 </div>
-<div id="data-pre-processing" class="section level2 hasAnchor" number="2.2">
-<h2><span class="header-section-number">2.2</span> Data pre-processing<a href="data-input-and-pre-processing.html#data-pre-processing" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>QRAP starts with a read-counts matrix or GEO accession number, and then filters out low expression genes under an given threshold. We then specify the organisms and filtered out low expression genes.
+<div id="data-pre-filtering" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Data pre-filtering<a href="data-input-and-pre-processing.html#data-pre-filtering" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>QRAP starts with a read-counts matrix or GEO accession number, and then filters out low expression genes under an given threshold. We then specify the organisms and filtered out low expression genes.<br />
 <img src="images/prefiltering.jpeg" /></p>
 <div id="note-the-gene-types" class="section level6 unnumbered hasAnchor">
 <h6>Note the Gene Types:<a href="data-input-and-pre-processing.html#note-the-gene-types" class="anchor-section" aria-label="Anchor link to header"></a></h6>
@@ -289,8 +290,24 @@ Please Note that if the files are in a tar archive format, such as htseq-count g
 </tr>
 </tbody>
 </table>
-
 </div>
+</div>
+<div id="design-table-formula" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Design table &amp; formula<a href="data-input-and-pre-processing.html#design-table-formula" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>A DESeqDataSet object must have an associated design formula. The design formula expresses the variables which will be used in modeling. QRAP will automatically produces an dataframe that contain sample names in the first column and condition variables in the second column. The condition column was simply generated by deleting the replicates numbers (eg. -1, -2, -3). User can download this design table by the button where the arrow indicated.
+<img src="images/design_table-auto.jpeg" />
+If the condition variables in the second column were not produced correctly, user should adjust it manually in Microsoft Excel and save it as .csv format file. Then, user need choose the ‘Re-upload’ option where the arrow shows and re-upload the corrected design table through the file upload box.
+<img src="images/design_table-reupload.jpeg" /></p>
+<p>The formula should be a tilde (~) followed by the variables, and the is used to estimate the dispersions and to estimate the log2 fold changes of the model. The transformation functions can be specified as rlog (regularized logarithm) and vst (variance stabilizing transformations).</p>
+</div>
+<div id="batch-effect-correction" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> Batch effect correction<a href="data-input-and-pre-processing.html#batch-effect-correction" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>If there is unwanted variation present in the data (e.g. batch effects) it is always recommend to correct for this. The batch effects can be accommodated in DESeq2 by including in the design any known batch variables, and estimated by functions ComBat in sva (Leek 2014) or removwBatchEffect in limma (Matthew et al. 2015).
+1. For performing batch effect correction, the two factor variables batch and condition should be columns of the design table.
+<img src="images/design_table-batch.jpeg" />
+2. Setting the batch correction parameters by click “Additional Parameters …” button. Two functions were provide to perform batch correction, ComBat in sva or removwBatchEffect in limma.
+<img src="images/batch-remove-parameter.jpeg" /></p>
+
 </div>
 </div>
             </section>

@@ -23,7 +23,7 @@
 <meta name="author" content="Shixue Gou" />
 
 
-<meta name="date" content="2022-12-05" />
+<meta name="date" content="2022-12-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -58,6 +58,7 @@
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
@@ -158,14 +159,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.1.1" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#upload-local-file"><i class="fa fa-check"></i><b>2.1.1</b> Upload local file</a></li>
 <li class="chapter" data-level="2.1.2" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#pull-down-geo-datasets"><i class="fa fa-check"></i><b>2.1.2</b> Pull down GEO datasets</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#data-pre-processing"><i class="fa fa-check"></i><b>2.2</b> Data pre-processing</a></li>
+<li class="chapter" data-level="2.2" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#data-pre-filtering"><i class="fa fa-check"></i><b>2.2</b> Data pre-filtering</a></li>
+<li class="chapter" data-level="2.3" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#design-table-formula"><i class="fa fa-check"></i><b>2.3</b> Design table &amp; formula</a></li>
+<li class="chapter" data-level="2.4" data-path="data-input-and-pre-processing.html"><a href="data-input-and-pre-processing.html#batch-effect-correction"><i class="fa fa-check"></i><b>2.4</b> Batch effect correction</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html"><i class="fa fa-check"></i><b>3</b> Data quality exploring</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#principal-component-analysis-pca"><i class="fa fa-check"></i><b>3.1</b> principal component analysis (PCA)</a></li>
-<li class="chapter" data-level="3.2" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#hierarchical-clustering-heatmap"><i class="fa fa-check"></i><b>3.2</b> hierarchical clustering heatmap</a></li>
-<li class="chapter" data-level="3.3" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#sample-to-sample-heatmap"><i class="fa fa-check"></i><b>3.3</b> sample-to-sample heatmap</a></li>
-<li class="chapter" data-level="3.4" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#sample-correlation-coefficient"><i class="fa fa-check"></i><b>3.4</b> sample correlation coefficient</a></li>
+<li class="chapter" data-level="3.1" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#principal-component-analysis-pca"><i class="fa fa-check"></i><b>3.1</b> Principal component analysis (PCA)</a></li>
+<li class="chapter" data-level="3.2" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#hierarchical-clustering"><i class="fa fa-check"></i><b>3.2</b> Hierarchical clustering</a></li>
+<li class="chapter" data-level="3.3" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#sample-to-sample-distance"><i class="fa fa-check"></i><b>3.3</b> Sample-to-sample distance</a></li>
+<li class="chapter" data-level="3.4" data-path="data-quality-exploring.html"><a href="data-quality-exploring.html#sample-correlation-coefficient"><i class="fa fa-check"></i><b>3.4</b> Sample correlation coefficient</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="differential-expression-analysis.html"><a href="differential-expression-analysis.html"><i class="fa fa-check"></i><b>4</b> Differential expression analysis</a>
 <ul>
@@ -189,11 +192,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html"><i class="fa fa-check"></i><b>7</b> functional enrichment analysis</a>
 <ul>
 <li class="chapter" data-level="7.1" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#gprofiler-api"><i class="fa fa-check"></i><b>7.1</b> Gprofiler API</a></li>
-<li class="chapter" data-level="7.2" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#clusterprofiler"><i class="fa fa-check"></i><b>7.2</b> ClusterProfiler</a>
-<ul>
-<li class="chapter" data-level="7.2.1" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#ora"><i class="fa fa-check"></i><b>7.2.1</b> ORA</a></li>
-<li class="chapter" data-level="7.2.2" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#gsea"><i class="fa fa-check"></i><b>7.2.2</b> GSEA</a></li>
-</ul></li>
+<li class="chapter" data-level="7.2" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#clusterprofiler-ora"><i class="fa fa-check"></i><b>7.2</b> ClusterProfiler-ORA</a></li>
+<li class="chapter" data-level="7.3" data-path="functional-enrichment-analysis.html"><a href="functional-enrichment-analysis.html#clusterprofiler-gsea"><i class="fa fa-check"></i><b>7.3</b> ClusterProfiler-GSEA</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="gene-regulatory-network.html"><a href="gene-regulatory-network.html"><i class="fa fa-check"></i><b>8</b> Gene regulatory network</a>
 <ul>
@@ -230,7 +230,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="header">
 <h1 class="title">QRAP: an R package and Shiny app for interactive RNA sequencing data analysis</h1>
 <p class="author"><em>Shixue Gou</em></p>
-<p class="date"><em>2022-12-05</em></p>
+<p class="date"><em>2022-12-08</em></p>
 </div>
 <div id="preface" class="section level1 unnumbered hasAnchor">
 <h1>Preface<a href="index.html#preface" class="anchor-section" aria-label="Anchor link to header"></a></h1>
