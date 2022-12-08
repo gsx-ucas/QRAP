@@ -39,7 +39,6 @@ shinyUI(
   fluidPage(
     style = "width:100%; padding: 0px",
 
-    useShinyalert(),
     useShinydashboard(),
 
     useShinyjs(),

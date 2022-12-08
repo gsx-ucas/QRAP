@@ -67,7 +67,7 @@ CorrPlot <- eventReactive(input$plot_corr,{
 
     p <- p + eval(parse(text = paste0(input$corr_theme, "()")))
 
-    if (nchar(input$corr_ggText != 0)) {
+    if (nchar(input$corr_ggText) != 0) {
       add_funcs <- strsplit(input$corr_ggText, "\\+")[[1]]
       p <- p + lapply(add_funcs, function(x){
         eval(parse(text = x))
@@ -125,7 +125,7 @@ CorrPlot <- eventReactive(input$plot_corr,{
                                                            stars = TRUE, align_percent = 0.8, color = "red", size = input$pairs_fontsize)))+
       theme_bw()
     
-    if (nchar(input$pairs_ggText != 0)) {
+    if (nchar(input$pairs_ggText) != 0) {
       add_funcs <- strsplit(input$pairs_ggText, "\\+")[[1]]
       p <- p + lapply(add_funcs, function(x){
         eval(parse(text = x))

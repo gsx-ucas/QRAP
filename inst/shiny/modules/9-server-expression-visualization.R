@@ -133,7 +133,7 @@ Expr_plot <- eventReactive(input$plot_geneExpr,{
 
       p <- p + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-      if (nchar(input$exprs_ggText != 0)) {
+      if (nchar(input$exprs_ggText) != 0) {
         add_funcs <- strsplit(input$exprs_ggText, "\\+")[[1]]
         p <- p + lapply(add_funcs, function(x){
           eval(parse(text = x))
@@ -256,7 +256,7 @@ Expr_plot <- eventReactive(input$plot_geneExpr,{
         theme_bw()+
         theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-      if (nchar(input$exprs_ggText != 0)) {
+      if (nchar(input$exprs_ggText) != 0) {
         add_funcs <- strsplit(input$exprs_ggText, "\\+")[[1]]
         p <- p + lapply(add_funcs, function(x){
           eval(parse(text = x))
@@ -278,7 +278,7 @@ Expr_plot <- eventReactive(input$plot_geneExpr,{
           theme_bw()
       }
 
-      if (nchar(input$exprs_ggText != 0)) {
+      if (nchar(input$exprs_ggText) != 0) {
         add_funcs <- strsplit(input$exprs_ggText, "\\+")[[1]]
         p <- p + lapply(add_funcs, function(x){
           eval(parse(text = x))

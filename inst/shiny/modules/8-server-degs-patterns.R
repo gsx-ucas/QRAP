@@ -116,7 +116,7 @@ degsp_plot <- eventReactive(input$plot_degsp, {
     p <- QRAP::degPlotCluster(table = data, time = input$degp_time, color = "colored", angle = 45,
                          points = input$degsp_points, boxes = input$degsp_boxes, lines = input$degsp_lines,
                          facet_col = input$degsp_cols, facet_scales = input$degsp_scales, cluster_order = input$degsp_cluster)
-    if (nchar(input$degsp_ggText != 0)) {
+    if (nchar(input$degsp_ggText) != 0) {
       add_funcs <- strsplit(input$degsp_ggText, "\\+")[[1]]
       p <- p + lapply(add_funcs, function(x){
         eval(parse(text = x))

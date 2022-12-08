@@ -214,7 +214,7 @@ oraPlots <- eventReactive(input$plotORA, {
   if (input$oraPlot_type == 'dotplot') {
     p <- dotplotResults(object = clp_ora_object(), showCategory = input$n_terms, color = input$ora_colorBy,
                    terms = terms, size = input$ora_orderBy)
-    if (nchar(input$cl_ora_ggText != 0)) {
+    if (nchar(input$cl_ora_ggText) != 0) {
       add_funcs <- strsplit(input$cl_ora_ggText, "\\+")[[1]]
       p <- p + lapply(add_funcs, function(x){
         eval(parse(text = x))
@@ -224,7 +224,7 @@ oraPlots <- eventReactive(input$plotORA, {
   }else if (input$oraPlot_type == 'barplot') {
     p <- barplotResults(object = clp_ora_object(), x = input$ora_orderBy, showCategory = input$n_terms, color = input$ora_colorBy,
                    terms = terms, font.size = input$ora_fontsize)
-    if (nchar(input$cl_ora_ggText != 0)) {
+    if (nchar(input$cl_ora_ggText) != 0) {
       add_funcs <- strsplit(input$cl_ora_ggText, "\\+")[[1]]
       p <- p + lapply(add_funcs, function(x){
         eval(parse(text = x))

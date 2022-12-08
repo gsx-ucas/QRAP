@@ -217,7 +217,7 @@ gprofilerPlot <- eventReactive(input$Plot_gprofiler,{
     pp <- publish_gostplot2(p, highlight_terms = input$gprofiler_termID, filename = NULL,
                             fontsize = input$gprofiler_tbfontsize, show_link = input$gprofiler_showLink  %>% as.logical,
                             show_columns = input$gprofiler_showColumns)
-    if (nchar(input$gprofiler_gostplot_ggText != 0)) {
+    if (nchar(input$gprofiler_gostplot_ggText) != 0) {
       add_funcs <- strsplit(input$gprofiler_gostplot_ggText, "\\+")[[1]]
       pp <- pp + lapply(add_funcs, function(x){
         eval(parse(text = x))
@@ -227,7 +227,7 @@ gprofilerPlot <- eventReactive(input$Plot_gprofiler,{
     pp <- publish_gosttable2(gostres, highlight_terms = input$gprofiler_termID, use_colors = TRUE,filename = NULL,
                             fontsize = input$gprofiler_tbfontsize, show_link = input$gprofiler_showLink %>% as.logical,
                             show_columns = input$gprofiler_showColumns)
-    if (nchar(input$gprofiler_gosttable_ggText != 0)) {
+    if (nchar(input$gprofiler_gosttable_ggText) != 0) {
       add_funcs <- strsplit(input$gprofiler_gosttable_ggText, "\\+")[[1]]
       pp <- pp + lapply(add_funcs, function(x){
         eval(parse(text = x))
@@ -241,7 +241,7 @@ gprofilerPlot <- eventReactive(input$Plot_gprofiler,{
     }
     pp <- publish_gostdot(object = gostres, by = input$gprofiler_orderBy, terms = plot_terms,
                              source = input$sourceTypes, showCategory = input$gprofiler_n_terms)
-    if (nchar(input$gprofiler_dotplot_ggText != 0)) {
+    if (nchar(input$gprofiler_dotplot_ggText) != 0) {
       add_funcs <- strsplit(input$gprofiler_dotplot_ggText, "\\+")[[1]]
       pp <- pp + lapply(add_funcs, function(x){
         eval(parse(text = x))
