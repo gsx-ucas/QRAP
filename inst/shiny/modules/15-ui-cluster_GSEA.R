@@ -70,7 +70,7 @@ fluidPage(
             # textInput("gsea_heatmap_color", "color:", value = "navy,white,red",  width = "100%"),
             # numericRangeInput("gsea_cluster_break", "Color bar value:", value = c(-2,2), width = "100%")
           ),
-          numericInput("gsea_fontsize", "Fontsize:", value = 10,  min = 0, max = 50, width = "100%"),
+          numericInput("gsea_fontsize", "Fontsize:", value = 15,  min = 0, max = 50, width = "100%"),
           # conditionalPanel(
           #   "input.gseaPlot_type == 'exprs_heatmap'",
           #   awesomeCheckbox( inputId = "gsea_cluster_row", label = "Cluster genes:", value = TRUE, status = "info", width = "100%" )
@@ -87,28 +87,28 @@ fluidPage(
             style = "text-align:justify;color:black;background-color:lavender;border-radius:10px;border:1px solid black;",
             conditionalPanel(
               "input.gseaPlot_type=='dotplot'",
-              h2("Additional Parameters of 'Volcano Plot':"), hr(),
+              h2("Additional Parameters of 'dotplot':"), hr(),
               textAreaInput("gsea_dotplot_ggText", "ggplot2 codes:", value = 'theme(axis.title = element_text(size = 21, face = "bold", color = "black", family = "Times"),
                   axis.text = element_text(size = 18, face = "bold", color = "black", family = "Times"),
                   text = element_text(size = 18, face = "bold", color = "black", family = "Times"))', width = "100%", rows = 12)
             ),
             conditionalPanel(
               "input.gseaPlot_type=='gseaplot2'",
-              h2("Additional Parameters of 'Volcano Plot':"), hr(),
-              textAreaInput("gsea_gseaplot2_ggText", "ggplot2 codes:", value = 'theme(axis.title = element_text(size = 21, face = "bold", color = "black", family = "Times"),
-                  axis.text = element_text(size = 18, face = "bold", color = "black", family = "Times"),
-                  text = element_text(size = 18, face = "bold", color = "black", family = "Times"))', width = "100%", rows = 12)
+              h2("Additional Parameters of 'gseaplot2':"), hr(),
+              # textAreaInput("gsea_gseaplot2_ggText", "ggplot2 codes:", value = 'theme(axis.title = element_text(size = 21, face = "bold", color = "black", family = "Times"),
+              #     axis.text = element_text(size = 18, face = "bold", color = "black", family = "Times"),
+              #     text = element_text(size = 18, face = "bold", color = "black", family = "Times"))', width = "100%", rows = 12)
             ),
             conditionalPanel(
               "input.gseaPlot_type=='ridgeplot'",
-              h2("Additional Parameters of 'Volcano Plot':"), hr(),
+              h2("Additional Parameters of 'ridgeplot':"), hr(),
               textAreaInput("gsea_ridgeplot_ggText", "ggplot2 codes:", value = 'theme(axis.title = element_text(size = 21, face = "bold", color = "black", family = "Times"),
                   axis.text = element_text(size = 18, face = "bold", color = "black", family = "Times"),
                   text = element_text(size = 18, face = "bold", color = "black", family = "Times"))', width = "100%", rows = 12)
             ),
             conditionalPanel(
               "input.gseaPlot_type == 'exprs_heatmap'",
-              h2("Additional Parameters of 'DE Heatmap':"), hr(),
+              h2("Additional Parameters of 'exprs_heatmap':"), hr(),
               conditionalPanel(
                 "input.gsea_heat_colname",
                 selectInput("gsea_heat_angle", "Column names angle:", choices = c('0', '45', '90', '270', '315'), selected = '315', width = "100%")

@@ -78,7 +78,7 @@ wgcna_expression <- eventReactive(input$wgcna_plot_exp, {
             axis.text.y = element_text(size = input$wgcna_bar_axis),
             axis.text.x = element_text(size = input$wgcna_bar_axis, angle = 45, hjust = 1))
     
-    if (nchar(input$wgcna_expr_ggText != 0)) {
+    if (nchar(input$wgcna_expr_ggText) != 0) {
       add_funcs <- strsplit(input$wgcna_expr_ggText, "\\+")[[1]]
       p <- p + lapply(add_funcs, function(x){
         eval(parse(text = x))
@@ -137,7 +137,7 @@ output$wgcna_exp_Pdf <- downloadHandler(
               axis.text.y = element_text(size = input$wgcna_bar_axis),
               axis.text.x = element_text(size = input$wgcna_bar_axis, angle = 45, hjust = 1))
       
-      if (nchar(input$wgcna_expr_ggText != 0)) {
+      if (nchar(input$wgcna_expr_ggText) != 0) {
         add_funcs <- strsplit(input$wgcna_expr_ggText, "\\+")[[1]]
         p <- p + lapply(add_funcs, function(x){
           eval(parse(text = x))

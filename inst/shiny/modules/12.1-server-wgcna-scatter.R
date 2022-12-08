@@ -95,7 +95,7 @@ verboseScatter <- eventReactive(input$plot_wgcna_scatter, {
       theme_bw()+
       theme(plot.title = element_text(hjust = 0.5), text = element_text(size = input$wgcna_scatter_fontsize))
     
-    if (nchar(input$wgcna_scatter_ggText != 0)) {
+    if (nchar(input$wgcna_scatter_ggText) != 0) {
       add_funcs <- strsplit(input$wgcna_scatter_ggText, "\\+")[[1]]
       p <- p + lapply(add_funcs, function(x){
         eval(parse(text = x))
@@ -206,7 +206,7 @@ output$verboseScatter_Pdf <- downloadHandler(
         theme_bw()+
         theme(plot.title = element_text(hjust = 0.5), text = element_text(size = input$wgcna_scatter_fontsize))
       
-      if (nchar(input$wgcna_scatter_ggText != 0)) {
+      if (nchar(input$wgcna_scatter_ggText) != 0) {
         add_funcs <- strsplit(input$wgcna_scatter_ggText, "\\+")[[1]]
         p <- p + lapply(add_funcs, function(x){
           eval(parse(text = x))

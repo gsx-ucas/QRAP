@@ -128,7 +128,7 @@ VolPlot <- eventReactive(input$plot_volcano,{
       # geom_text(x=xlims[2]*0.9, y=ylims*0.9, aes(label=paste0('Up: ', dim(up)[1])), col='red', size = 5, data=NULL)
   }
   
-  if (nchar(input$deVol_ggText != 0)) {
+  if (nchar(input$deVol_ggText) != 0) {
     add_funcs <- strsplit(input$deVol_ggText, "\\+")[[1]]
     p <- p + lapply(add_funcs, function(x){
       eval(parse(text = x))
@@ -264,7 +264,7 @@ VennPlot <- eventReactive(input$plot_venn,{
   p <- ggvenn::ggvenn(VennGeneList(), show_percentage = T, stroke_size = 0.5, set_name_size = input$venn_nsize, text_size = input$venn_lsize) 
   # venn(VennGeneList(), zcolor = 'style', ilcs = input$venn_lsize, sncs = input$venn_nsize, box = F)
   
-  if (nchar(input$deVenn_ggText != 0)) {
+  if (nchar(input$deVenn_ggText) != 0) {
     add_funcs <- strsplit(input$deVenn_ggText, "\\+")[[1]]
     p <- p + lapply(add_funcs, function(x){
       eval(parse(text = x))
@@ -323,7 +323,7 @@ DeGene_barPlot <- eventReactive(input$plot_debar,{
     p <- p + geom_text(aes(y = dea_number * 1.01, label = dea_number), position = position_dodge(width = 1), size = 5)
   }
 
-  if (nchar(input$deBar_ggText != 0)) {
+  if (nchar(input$deBar_ggText) != 0) {
     add_funcs <- strsplit(input$deBar_ggText, "\\+")[[1]]
     p <- p + lapply(add_funcs, function(x){
       eval(parse(text = x))

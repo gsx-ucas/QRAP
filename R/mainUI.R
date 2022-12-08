@@ -28,15 +28,10 @@ mainUI <- function() {
     fluidPage(
       style = "width:100%; padding: 0px",
 
-      useShinyalert(),
       useShinydashboard(),
 
       useShinyjs(),
       extendShinyjs(text = jsCode, functions = "collapse"),
-
-      # use_waiter(),
-      # waiter_show_on_load(),
-      # waiter_show_on_load(html = spin_ball()), # place at the top before content
 
       navbarPage(
         id = "mainMenu",

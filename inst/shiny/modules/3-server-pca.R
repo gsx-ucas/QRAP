@@ -70,7 +70,7 @@ PCA <- eventReactive(input$plot_pca, {
                              cex = input$pca_text_cex)
   }
   p <- p + eval(parse(text = paste0(input$pca_theme, "()")))
-  if (nchar(input$pca_ggText != 0)) {
+  if (nchar(input$pca_ggText) != 0) {
     add_funcs <- strsplit(input$pca_ggText, "\\+")[[1]]
     p <- p + lapply(add_funcs, function(x){
       eval(parse(text = x))

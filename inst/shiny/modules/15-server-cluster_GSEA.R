@@ -58,7 +58,7 @@ clp_gsea_object <- eventReactive(input$start_clp_gsea, {
       #               "', pAdjustMethod = '", input$clp_gsea_pAdjustMethod, "', by = '", input$gsea_method, "', minGSSize = ", input$clp_gsea_minGSSize,
       #               ", maxGSSize = 1000, pvalueCutoff = ", input$clp_gsea_pval, ")")
       # objects <- eval(parse(text = cmd))
-      objects <- gseGO(geneList = GeneList, OrgDb = eval(parse(text = OrgDb())), ont = input$GO_ont, eps = 0,
+      objects <- gseGO(geneList = GeneList, OrgDb = eval(parse(text = OrgDb())), ont = input$GO_ont, eps = 0, nPerm = 100000,
                        keyType = keyType(), pAdjustMethod = input$clp_gsea_pAdjustMethod, seed = as.logical(input$clp_gsea_seed),
                        by = input$gsea_method, minGSSize = input$clp_gsea_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clp_gsea_pval)
     }else if (input$clp_gsea_source=='KEGG' | input$clp_gsea_source=='Reactome') {
@@ -76,17 +76,18 @@ clp_gsea_object <- eventReactive(input$start_clp_gsea, {
       
       if (input$clp_gsea_source=='KEGG') {
         incProgress(0.4, detail = paste("Runing gseKEGG..."))
-        objects <- gseKEGG(geneList = GeneList, organism = species()$kegg_code[species()$display_name == input$gprofiler_species], eps = 0,
+        objects <- gseKEGG(geneList = GeneList, organism = species()$kegg_code[species()$display_name == input$gprofiler_species], eps = 0, nPerm = 100000,
                            by = input$gsea_method, pAdjustMethod = input$clp_gsea_pAdjustMethod, seed = as.logical(input$clp_gsea_seed),
                            minGSSize = input$clp_gsea_minGSSize, maxGSSize = input$clp_gsea_maxGSSize, pvalueCutoff = input$clp_gsea_pval)
       }else if (input$clp_gsea_source=='Reactome') {
         incProgress(0.4, detail = paste("Runing gsePathway..."))
-        objects <- gsePathway(geneList = GeneList, organism = input$gsea_reactome_organism, by = input$gsea_method, eps = 0,
+        objects <- gsePathway(geneList = GeneList, organism = input$gsea_reactome_organism, by = input$gsea_method, eps = 0, nPerm = 100000,
                               pAdjustMethod = input$clp_gsea_pAdjustMethod, seed = as.logical(input$clp_gsea_seed),
                               minGSSize = input$clp_gsea_minGSSize, maxGSSize = 1000, pvalueCutoff = input$clp_gsea_pval)
       }
     }
   })
+  saveRDS(objects, "gseaObject.rds")
   return(objects)
 })
 
@@ -146,20 +147,21 @@ gseaPlot <- eventReactive(input$PlotGSEA,{
   require(ggplot2)
   if (input$gseaPlot_type == 'gseaplot2') {
     gsea_id <- as.data.frame(clp_gsea_object())[as.data.frame(clp_gsea_object())$Description == input$expr_gseaID, "ID"]
+    
     p <- enrichplot::gseaplot2(x = clp_gsea_object(), geneSetID = gsea_id, title = gsea_id, color = "green",
               pvalue_table = as.logical(input$gsea_pTable), ES_geom = input$gsea_ES, base_size = input$gsea_fontsize)
     
-    if (nchar(input$gsea_gseaplot2_ggText != 0)) {
-      add_funcs <- strsplit(input$gsea_gseaplot2_ggText, "\\+")[[1]]
-      p <- p + lapply(add_funcs, function(x){
-        eval(parse(text = x))
-      })
-    }
+    # if (nchar(input$gsea_gseaplot2_ggText) != 0) {
+    #   add_funcs <- strsplit(input$gsea_gseaplot2_ggText, "\\+")[[1]]
+    #   p <- p + lapply(add_funcs, function(x){
+    #     eval(parse(text = x))
+    #   })
+    # }
     return(p)
   }else if (input$gseaPlot_type == 'ridgeplot') {
     p <- ridgeplot2(x = clp_gsea_object(), showCategory = input$gsea_nterms, terms = input$gseaID, fill = input$gsea_colorBy)
     
-    if (nchar(input$gsea_ridgeplot_ggText != 0)) {
+    if (nchar(input$gsea_ridgeplot_ggText) != 0) {
       add_funcs <- strsplit(input$gsea_ridgeplot_ggText, "\\+")[[1]]
       p <- p + lapply(add_funcs, function(x){
         eval(parse(text = x))
@@ -172,7 +174,7 @@ gseaPlot <- eventReactive(input$PlotGSEA,{
   }else if (input$gseaPlot_type == 'dotplot') {
     p <- dotplotResults(clp_gsea_object(), x = "NES", showCategory = input$gsea_nterms, terms = input$gseaID, color = input$gsea_colorBy)
     
-    if (nchar(input$gsea_dotplot_ggText != 0)) {
+    if (nchar(input$gsea_dotplot_ggText) != 0) {
       add_funcs <- strsplit(input$gsea_dotplot_ggText, "\\+")[[1]]
       p <- p + lapply(add_funcs, function(x){
         eval(parse(text = x))
