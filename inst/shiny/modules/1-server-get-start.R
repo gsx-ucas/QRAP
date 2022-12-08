@@ -24,6 +24,9 @@ observeEvent(input$Start_Local3, {
 observeEvent(input$Start_Local4, {
   input_data$values <- "local"
 })
+observeEvent(input$Start_Local5, {
+  input_data$values <- "local"
+})
 
 observeEvent(input$Start_GEO, {
   input_data$values <- "geo"
@@ -41,11 +44,16 @@ observeEvent(input$Start_GEO3, {
 observeEvent(input$Start_GEO4, {
   input_data$values <- "geo"
 })
+observeEvent(input$Start_GEO5, {
+  input_data$values <- "geo"
+})
 
 # update get started panel
 observe({
-  if (input$Start_Local | input$Start_Local1 | input$Start_Local2 | input$Start_Local3 | input$Start_Local4 |
-      input$Start_GEO | input$Start_GEO1 | input$Start_GEO2 | input$Start_GEO3 | input$Start_GEO4 | input$pCondition) {
+  if (input$Start_Local | input$Start_Local1 | input$Start_Local2 | 
+      input$Start_Local3 | input$Start_Local4 | input$Start_Local5 |
+      input$Start_GEO | input$Start_GEO1 | input$Start_GEO2 | input$Start_GEO3 | 
+      input$Start_GEO4 | input$Start_GEO5 | input$pCondition) {
     updateTabsetPanel(session = session, inputId = 'mainMenu', selected = "get_start")
   }
 })
@@ -77,8 +85,8 @@ output$preview_card <- renderUI({
   }else {
     box(
       id = "upload_box", title = "Upload local file", width = 12, status = NULL, solidHeader = TRUE, collapsible = T,
-      fileInput("file", "Choose input File:", accept = c("text/csv", "text/comma-separated-values,text/plain",
-                                                         ".csv"), placeholder = "*(.csv/.txt reads counts file)", width = "100%"),
+      fileInput("file", "Choose input File:", accept = c(".csv", ".tsv", ".txt", ".tab"),
+                placeholder = "*(.csv/.txt format reads counts file)", width = "100%"),
       checkboxInput(inputId = "header", label = "First row as header ?", value = TRUE, width = "100%"),
       checkboxInput(inputId = "row_names", label = "First column as rownames ?", value = TRUE, width = "100%"),
       fluidRow(
@@ -523,8 +531,6 @@ OrgDb <- eventReactive(input$filter_local | input$filter_local, {
     db <- "org.Ag.eg.db"
   }else if (gprofiler_species == "ptroglodytes") {
     db <- "org.Pt.eg.db"
-  }else if (gprofiler_species == "pfalciparum") {
-    db <- "org.Pf.plasmo.db"
   }else {
     db <- NULL
   }
