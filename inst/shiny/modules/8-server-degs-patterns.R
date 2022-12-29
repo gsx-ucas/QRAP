@@ -65,7 +65,7 @@ degsp_object <- eventReactive(input$run_degsp, {
       print(head(DeAssay))
       incProgress(0.4, detail = "Calculating co-expression genes, this will take a while ...")
       if (dim(DeAssay)[1] < input$degsp_minc) {
-        des_patterns <- DEGreport::degPatterns(ma = DeAssay, metadata = sampleTable,reduce = input$degsp_reduce, col = input_degp_col,
+        des_patterns <- DEGreport::degPatterns(ma = DeAssay, metadata = sampleTable, reduce = input$degsp_reduce, col = input_degp_col,
                                     scale = input$degsp_scale, minc = dim(DeAssay)[1] / 2, time = input$degp_time, plot = F)
       }else {
         des_patterns <- DEGreport::degPatterns(ma = DeAssay, metadata = sampleTable,reduce = input$degsp_reduce,col = input_degp_col,
@@ -113,7 +113,13 @@ degsp_plot <- eventReactive(input$plot_degsp, {
     data[, input$degp_time] <- factor(data[, input$degp_time], levels = input$degsp_order)
     data <- data[data$cluster %in% as.numeric(input$degsp_cluster), ]
     
-    p <- QRAP::degPlotCluster(table = data, time = input$degp_time, color = "colored", angle = 45,
+    if (input$degp_col == "NULL") {
+      degp_color <- "colored"
+    }else {
+      degp_color <- input$degp_col
+    }
+    
+    p <- QRAP::degPlotCluster(table = data, time = input$degp_time, color = degp_color, angle = 45,
                          points = input$degsp_points, boxes = input$degsp_boxes, lines = input$degsp_lines,
                          facet_col = input$degsp_cols, facet_scales = input$degsp_scales, cluster_order = input$degsp_cluster)
     if (nchar(input$degsp_ggText) != 0) {
