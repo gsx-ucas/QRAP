@@ -23,7 +23,7 @@
 <meta name="author" content="Shixue Gou" />
 
 
-<meta name="date" content="2022-12-08" />
+<meta name="date" content="2022-12-29" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -172,13 +172,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="4" data-path="differential-expression-analysis.html"><a href="differential-expression-analysis.html"><i class="fa fa-check"></i><b>4</b> Differential expression analysis</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="differential-expression-analysis.html"><a href="differential-expression-analysis.html#extract-degs"><i class="fa fa-check"></i><b>4.1</b> Extract DEGs</a></li>
+<li class="chapter" data-level="4.1" data-path="differential-expression-analysis.html"><a href="differential-expression-analysis.html#extract-degs"><i class="fa fa-check"></i><b>4.1</b> Extract DEGs</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="differential-expression-analysis.html"><a href="differential-expression-analysis.html#wald-significance-tests"><i class="fa fa-check"></i><b>4.1.1</b> Wald significance tests</a></li>
+<li class="chapter" data-level="4.1.2" data-path="differential-expression-analysis.html"><a href="differential-expression-analysis.html#likelihood-ratio-test"><i class="fa fa-check"></i><b>4.1.2</b> Likelihood ratio test</a></li>
+</ul></li>
 <li class="chapter" data-level="4.2" data-path="differential-expression-analysis.html"><a href="differential-expression-analysis.html#visualize-degs"><i class="fa fa-check"></i><b>4.2</b> Visualize DEGs</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="deg-expression-pattern-detection.html"><a href="deg-expression-pattern-detection.html"><i class="fa fa-check"></i><b>5</b> DEG expression pattern detection</a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="deg-expression-pattern-detection.html"><a href="deg-expression-pattern-detection.html#detect-deg-expression-pattern"><i class="fa fa-check"></i><b>5.1</b> Detect DEG expression pattern</a></li>
-<li class="chapter" data-level="5.2" data-path="deg-expression-pattern-detection.html"><a href="deg-expression-pattern-detection.html#visualize-deg-expression-pattern"><i class="fa fa-check"></i><b>5.2</b> Visualize DEG expression pattern</a></li>
+<li class="chapter" data-level="5.1" data-path="deg-expression-pattern-detection.html"><a href="deg-expression-pattern-detection.html#one-way-time-coures-experiment"><i class="fa fa-check"></i><b>5.1</b> One-way time coures experiment</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="deg-expression-pattern-detection.html"><a href="deg-expression-pattern-detection.html#pre-processing-and-preparation"><i class="fa fa-check"></i><b>5.1.1</b> pre-processing and preparation</a></li>
+<li class="chapter" data-level="5.1.2" data-path="deg-expression-pattern-detection.html"><a href="deg-expression-pattern-detection.html#detect-deg-expression-pattern"><i class="fa fa-check"></i><b>5.1.2</b> Detect DEG expression pattern</a></li>
+<li class="chapter" data-level="5.1.3" data-path="deg-expression-pattern-detection.html"><a href="deg-expression-pattern-detection.html#visualize-deg-expression-pattern"><i class="fa fa-check"></i><b>5.1.3</b> Visualize DEG expression pattern</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="deg-expression-pattern-detection.html"><a href="deg-expression-pattern-detection.html#two-way-time-coures-experiment"><i class="fa fa-check"></i><b>5.2</b> Two-way time coures experiment</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="deg-expression-pattern-detection.html"><a href="deg-expression-pattern-detection.html#pre-processing-and-preparation-1"><i class="fa fa-check"></i><b>5.2.1</b> pre-processing and preparation</a></li>
+<li class="chapter" data-level="5.2.2" data-path="deg-expression-pattern-detection.html"><a href="deg-expression-pattern-detection.html#detect-deg-expression-pattern-1"><i class="fa fa-check"></i><b>5.2.2</b> Detect DEG expression pattern</a></li>
+<li class="chapter" data-level="5.2.3" data-path="deg-expression-pattern-detection.html"><a href="deg-expression-pattern-detection.html#visualize-deg-expression-pattern-1"><i class="fa fa-check"></i><b>5.2.3</b> Visualize DEG expression pattern</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="weighted-correlation-network-analysis.html"><a href="weighted-correlation-network-analysis.html"><i class="fa fa-check"></i><b>6</b> weighted correlation network analysis</a>
 <ul>
@@ -232,8 +246,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The most important application of RNA-seq is to detect differentially expressed genes between variance conditions or groups. Differential expression analysis (DEA) requires that gene expression values should be compared among samples. We chose the DESeq2 package to perform the expression normalization to adjust abundance quantities in order to account for differences in read depth across the samples. After that, the function ‘results’ of DESeq2 wase used for calculating the foldchange of gene expression levels and P-values across experimental and control condition.</p>
 <div id="extract-degs" class="section level2 hasAnchor" number="4.1">
 <h2><span class="header-section-number">4.1</span> Extract DEGs<a href="differential-expression-analysis.html#extract-degs" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>DESeq2 offers two kinds of hypothesis tests: the Wald test, where we use the estimated standard error of a log2 fold change to test if it is equal to zero, and the likelihood ratio test (LRT). The LRT examines two models for the counts, a full model with a certain number of terms and a reduced model, in which some of the terms of the full model are removed. The test determines if the increased likelihood of the data using the extra terms in the full model is more than expected if those extra terms are truly zero.</p>
+<div id="wald-significance-tests" class="section level3 hasAnchor" number="4.1.1">
+<h3><span class="header-section-number">4.1.1</span> Wald significance tests<a href="differential-expression-analysis.html#wald-significance-tests" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>To extract DEGs, user should specify one group as control, and one or more groups as treatment. Then, the threshold of P value and log2 fold change shold be specified as well. Most commonly used standard to define differentially expressed gene (DEG) is |log2FoldChange| &gt; 1 and P-value &lt; 0.05, but we also provide the options for user’s custom defined standard to filter DEGs.</p>
 <p><img src="images/dea-de.jpeg" /></p>
+</div>
+<div id="likelihood-ratio-test" class="section level3 hasAnchor" number="4.1.2">
+<h3><span class="header-section-number">4.1.2</span> Likelihood ratio test<a href="differential-expression-analysis.html#likelihood-ratio-test" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>To extract DEGs by LRT, user just need to specify one group as control and one groups as treatment, cause LRT will return only one group DEGs. P-value threshold should be set no more than 0.05. Note that log2FoldChange should be set to 0.
+<img src="images/dea-de-lrt.jpeg" /></p>
+</div>
 </div>
 <div id="visualize-degs" class="section level2 hasAnchor" number="4.2">
 <h2><span class="header-section-number">4.2</span> Visualize DEGs<a href="differential-expression-analysis.html#visualize-degs" class="anchor-section" aria-label="Anchor link to header"></a></h2>
