@@ -12,4 +12,4 @@ RUN apt update && apt upgrade -y \
 WORKDIR /home/QRAP
 EXPOSE 3838
 
-CMD R -e "QRAP::startQRAP(port = 3838, host = '0.0.0.0')"
+ENTRYPOINT ["R", "-e", 'QRAP::startQRAP(port = 3838, host = "0.0.0.0")']
