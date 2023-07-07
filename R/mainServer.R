@@ -42,4 +42,8 @@ mainServer <- function(input, output, session) {
   source(system.file("shiny", "modules/18-server-genie3-network.R", package = "QRAP"), local = T)
   source(system.file("shiny", "modules/19-server-summarize-gene.R", package = "QRAP"), local = T)
   source(system.file("shiny", "modules/20-server-summarize-function.R", package = "QRAP"), local = T)
+  
+  session$onSessionEnded(function() {
+    stopApp()
+  })
 }
