@@ -9,7 +9,7 @@ RUN apt update && apt upgrade -y \
     && R -e "install.packages(c('digest', 'devtools'), repos = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/')" \
     && R -e "devtools::install_github('gsx-ucas/QRAP', upgrade = 'always', repos = 'https://mirrors.tuna.tsinghua.edu.cn/CRAN/')"
 
-WORKDIR /home/QRAP
+WORKDIR /QRAP
 EXPOSE 3838
 
 CMD R -e "QRAP::startQRAP(port = 3838, host = '0.0.0.0')"
